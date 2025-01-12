@@ -11,7 +11,7 @@ import { requiredError } from "@/Types/types";
 import { Fragment, useEffect, useState } from "react";
 import { z } from "zod";
 
-const allowedMimeTypes = ["image/jpeg", "image/jpg", "image/png"];
+const allowedMimeTypes = ["application/pdf", "image/jpeg", "image/jpg", "image/png"];
 
 const COCSCHEMA = z
     .object({
