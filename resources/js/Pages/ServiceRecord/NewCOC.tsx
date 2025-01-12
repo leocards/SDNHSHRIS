@@ -28,10 +28,10 @@ const COCSCHEMA = z
             .nullable(),
         numofhours: z
             .string()
-            .min(1, requiredError("number of hours"))
+            .optional()
             .default(""),
     })
-    .superRefine(({ memofileid, coafileid, dtrfileid, from, to }, ctx) => {
+    .superRefine(({ memofileid, coafileid, dtrfileid, from, to, session }, ctx) => {
         if (!memofileid) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
@@ -84,6 +84,14 @@ const COCSCHEMA = z
                 });
             }
         }
+
+        if(session === "halfday")
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: requiredError("number of hours"),
+                path: ['numofhours']
+            })
+
     });
 
 type IFormCOC = z.infer<typeof COCSCHEMA>;
@@ -142,6 +150,8 @@ const NewCOC: React.FC<Props> = ({ show, onClose }) => {
     useEffect(() => {
         if(watchSession === "halfday") {
             form.setValue('to', null)
+        } else if(watchSession === "fullday") {
+            form.setValue('numofhours', '')
         }
     }, [watchSession])
 
@@ -203,6 +213,7 @@ const NewCOC: React.FC<Props> = ({ show, onClose }) => {
                                 form={form}
                                 name="numofhours"
                                 label="Number of hours"
+                                required={watchSession === "halfday"}
                             />
                         </div>
 
