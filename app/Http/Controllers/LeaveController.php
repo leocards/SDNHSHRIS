@@ -124,7 +124,7 @@ class LeaveController extends Controller
 
             if ($request->type !== "maternity" && $request->type !== "sick") {
                 if ($request->type == "vacation" || $request->type == "mandatory") {
-                    if (!$this->verifyDateFiveDaysAhead($request->from)) {
+                    if ($this->verifyDateFiveDaysAhead($request->from)) {
                         throw new Exception("You must send application 5 days ahead.", 1);
                     }
                 }
