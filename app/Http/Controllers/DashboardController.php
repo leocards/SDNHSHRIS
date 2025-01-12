@@ -22,7 +22,7 @@ class DashboardController extends Controller
         $isChangePassword = Hash::check('12345678', Auth::user()->password);
         $user = Auth::user();
 
-        $lastSevenSchoolYears = SchoolYear::latest()->limit(7)->get()->pluck('id');
+        $lastSevenSchoolYears = SchoolYear::latest()->limit(7)->get()?->pluck('id');
 
 
         return Inertia::render('Dashboard/Dashboard', [
@@ -73,20 +73,20 @@ class DashboardController extends Controller
                 "approved" => Leave::select('type', DB::raw('COUNT(id) as total'))
                     ->where('hrstatus', 'approved')
                     ->where('principalstatus', 'approved')
-                    ->where('schoolyearid', $lastSevenSchoolYears[0])
+                    ->where('schoolyearid', count($lastSevenSchoolYears) > 0 ? $lastSevenSchoolYears[0] : "")
                     ->groupBy('type')
                     ->get(),
                 "disapproved" => Leave::select('type', DB::raw('COUNT(id) as total'))
                     ->where('hrstatus', 'disapproved')
                     ->where('principalstatus', 'disapproved')
-                    ->where('schoolyearid', $lastSevenSchoolYears[0])
+                    ->where('schoolyearid', count($lastSevenSchoolYears) > 0 ? $lastSevenSchoolYears[0] : null)
                     ->groupBy('type')
                     ->get(),
                 "appliedleaves" => Leave::select('type')
                     ->whereIn('id', function ($query) use ($lastSevenSchoolYears) {
                         $query->selectRaw('MAX(id)')
                             ->from('leaves')
-                            ->where('schoolyearid', $lastSevenSchoolYears[0])
+                            ->where('schoolyearid', count($lastSevenSchoolYears) > 0 ? $lastSevenSchoolYears[0] : null)
                             ->whereIn('principalstatus', ['approved', 'disapproved'])
                             ->whereIn('hrstatus', ['approved', 'disapproved'])
                             ->groupBy('type');
