@@ -15,16 +15,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'firstname' => 'Test',
-            'lastname' => 'User',
+            'firstname' => 'Floramie',
+            'lastname' => 'Lopez',
             'birthday' => '2000-02-23',
-            'gender' => 'male',
+            'gender' => 'female',
             'personnelid' => 'SDNHS-123',
             'department' => 'junior',
             'role' => 'hr',
-            'hiredate' => '2001-03-01',
+            'hiredate' => '2024-06-20',
             'enable_email_notification' => true,
-            'email' => 'test@example.com',
+            'email' => 'sdnhs.lopez.floramie@gmail.com',
             'password' => Hash::make((12345678)),
         ]);
     }
