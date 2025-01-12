@@ -216,7 +216,7 @@ class LeaveController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
 
-            return redirect()->back()->with(['title' => 'Application for Leave', 'message' => $th->getMessage() . 'Failed to send an application for leave.', 'status' => 'error']);
+            return redirect()->back()->with(['title' => 'Application for Leave', 'message' => $th->getMessage(), 'status' => 'error']);
         }
         return back();
     }

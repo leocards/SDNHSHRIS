@@ -63,35 +63,7 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal }) => {
 
             <div className="flex flex-row-reverse items-center gap-3 my-5 border-b pb-3 mt-7">
                 <HrComponents>
-                    {leave.hrstatus === "pending" ? (
-                        <>
-                            <TooltipLabel label="Approve">
-                                <Button
-                                    className="bg-green-600 hover:bg-green-500"
-                                    onClick={() => {
-                                        setRespond("approved");
-                                        setShowRespond(true);
-                                    }}
-                                >
-                                    <Like1 />
-                                    <div>Approve</div>
-                                </Button>
-                            </TooltipLabel>
-
-                            <TooltipLabel label="Disapprove">
-                                <Button
-                                    className="bg-destructive hover:bg-destructive/85"
-                                    onClick={() => {
-                                        setRespond("disapproved");
-                                        setShowRespond(true);
-                                    }}
-                                >
-                                    <Dislike />
-                                    <div>Disapprove</div>
-                                </Button>
-                            </TooltipLabel>
-                        </>
-                    ) : (
+                    {leave.hrstatus !== "pending" && (
                         <div
                             className={cn(
                                 {
@@ -108,35 +80,7 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal }) => {
                 </HrComponents>
 
                 <PrincipalComponents>
-                    {leave.principalstatus === "pending" ? (
-                        <>
-                            <TooltipLabel label="Approve">
-                                <Button
-                                    className="bg-green-600 hover:bg-green-500"
-                                    onClick={() => {
-                                        setRespond("approved");
-                                        setShowRespond(true);
-                                    }}
-                                >
-                                    <Like1 />
-                                    <div>Approve</div>
-                                </Button>
-                            </TooltipLabel>
-
-                            <TooltipLabel label="Disapprove">
-                                <Button
-                                    className="bg-destructive hover:bg-destructive/85"
-                                    onClick={() => {
-                                        setRespond("disapproved");
-                                        setShowRespond(true);
-                                    }}
-                                >
-                                    <Dislike />
-                                    <div>Disapprove</div>
-                                </Button>
-                            </TooltipLabel>
-                        </>
-                    ) : (
+                    {leave.principalstatus !== "pending" && (
                         <div
                             className={cn(
                                 {
@@ -160,8 +104,11 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal }) => {
                             variant="outline"
                             disabled={getResponse(leave)}
                             onClick={() => {
-                                if(leave.hrstatus === "approved" && leave.principalstatus === "approved")
-                                    handlePrint()
+                                if (
+                                    leave.hrstatus === "approved" &&
+                                    leave.principalstatus === "approved"
+                                )
+                                    handlePrint();
                             }}
                         >
                             <Printer />
@@ -175,8 +122,11 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal }) => {
                             variant="outline"
                             disabled={getResponse(leave)}
                             onClick={() => {
-                                if(leave.hrstatus === "approved" && leave.principalstatus === "approved")
-                                    download_pdf.toPDF()
+                                if (
+                                    leave.hrstatus === "approved" &&
+                                    leave.principalstatus === "approved"
+                                )
+                                    download_pdf.toPDF();
                             }}
                         >
                             <Download />
@@ -185,7 +135,7 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal }) => {
 
                     <div className="border-r border-border h-7" />
 
-                    {(role !== "hr" && role !== "principal") && (
+                    {role !== "hr" && role !== "principal" && (
                         <TooltipLabel label="Upload Medical">
                             <Button
                                 className=""
@@ -243,6 +193,72 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal }) => {
                         }
                     />
                 </div>
+            </div>
+
+            <div className="flex gap-4 justify-end mt-7 border-t border-border pt-4 pb-10">
+                <HrComponents>
+                    {leave.hrstatus === "pending" && (
+                        <>
+                            <TooltipLabel label="Approve">
+                                <Button
+                                    className="bg-green-600 hover:bg-green-500"
+                                    onClick={() => {
+                                        setRespond("approved");
+                                        setShowRespond(true);
+                                    }}
+                                >
+                                    <Like1 />
+                                    <div>Approve</div>
+                                </Button>
+                            </TooltipLabel>
+
+                            <TooltipLabel label="Disapprove">
+                                <Button
+                                    className="bg-destructive hover:bg-destructive/85"
+                                    onClick={() => {
+                                        setRespond("disapproved");
+                                        setShowRespond(true);
+                                    }}
+                                >
+                                    <Dislike />
+                                    <div>Disapprove</div>
+                                </Button>
+                            </TooltipLabel>
+                        </>
+                    )}
+                </HrComponents>
+
+                <PrincipalComponents>
+                    {leave.principalstatus === "pending" && (
+                        <>
+                            <TooltipLabel label="Approve">
+                                <Button
+                                    className="bg-green-600 hover:bg-green-500"
+                                    onClick={() => {
+                                        setRespond("approved");
+                                        setShowRespond(true);
+                                    }}
+                                >
+                                    <Like1 />
+                                    <div>Approve</div>
+                                </Button>
+                            </TooltipLabel>
+
+                            <TooltipLabel label="Disapprove">
+                                <Button
+                                    className="bg-destructive hover:bg-destructive/85"
+                                    onClick={() => {
+                                        setRespond("disapproved");
+                                        setShowRespond(true);
+                                    }}
+                                >
+                                    <Dislike />
+                                    <div>Disapprove</div>
+                                </Button>
+                            </TooltipLabel>
+                        </>
+                    )}
+                </PrincipalComponents>
             </div>
 
             <LeaveDetails
