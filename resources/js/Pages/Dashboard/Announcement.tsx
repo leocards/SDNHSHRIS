@@ -28,19 +28,20 @@ const Announcement = ({ announcements }: Props) => {
     const [selected, setSelected] = useState<ANNOUNCEMENT | null>(null);
     const [newAnnounemcent, setNewAnnounemcent] = useState(false);
     const [view, setView] = useState(false);
-    const [announceList, setAnnounceList] = useState<ANNOUNCEMENT[]>(announcements)
+    const [announceList, setAnnounceList] =
+        useState<ANNOUNCEMENT[]>(announcements);
 
     const onRefresh = () => {
         if (!refresh) {
             setRefresh(true);
 
-            window.axios.get(route('announcement'))
+            window.axios
+                .get(route("announcement"))
                 .then((response) => {
-                    setAnnounceList(response.data)
+                    setAnnounceList(response.data);
                 })
-                .finally(() =>  setRefresh(false))
+                .finally(() => setRefresh(false));
         }
-
     };
 
     return (
@@ -75,7 +76,7 @@ const Announcement = ({ announcements }: Props) => {
                     </Button>
                 )}
             </div>
-            <div className="p-2 overflow-y-auto relative">
+            <div className="p-2 overflow-y-auto relative space-y-2">
                 {announcements.length === 0 && (
                     <div className="flex flex-col items-center absolute inset-0 justify-center top-0">
                         <img
@@ -89,25 +90,28 @@ const Announcement = ({ announcements }: Props) => {
                 )}
 
                 {announceList.map((announce, index) => (
-                    <div
-                        key={index}
-                        className="relative"
-                        onMouseOver={() => setSelected(announce)}
-                        onClick={() => setView(true)}
-                    >
+                    <div key={index} className="relative">
                         {role === "hr" && (
                             <Button
                                 className="size-7 absolute top-1 right-1"
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => {
+                                    setSelected(announce);
                                     setNewAnnounemcent(true);
                                 }}
                             >
                                 <Edit className="!size-4" />
                             </Button>
                         )}
-                        <Card className="p-3" role="button">
+                        <Card
+                            className="p-3"
+                            role="button"
+                            onClick={() => {
+                                setSelected(announce);
+                                setView(true);
+                            }}
+                        >
                             <div className="flex flex-col gap-0">
                                 <TypographySmall className="text-base">
                                     {announce.title}
@@ -118,13 +122,15 @@ const Announcement = ({ announcements }: Props) => {
                                               announce.details.date,
                                               "MMM dd, y"
                                           ) +
-                                          " | " +
-                                          format(
-                                              timeConverter(
-                                                  announce.details.time
-                                              ),
-                                              "hh:m aaa"
-                                          )
+                                          (announce.details.time
+                                              ? " | " +
+                                                format(
+                                                    timeConverter(
+                                                        announce.details.time
+                                                    ),
+                                                    "hh:m aaa"
+                                                )
+                                              : "")
                                         : ""}
                                 </TypographySmall>
                             </div>
@@ -140,7 +146,7 @@ const Announcement = ({ announcements }: Props) => {
                     setNewAnnounemcent(false);
                     setTimeout(() => {
                         setSelected(null);
-                    }, 500);
+                    }, 300);
                 }}
             />
 
@@ -154,7 +160,7 @@ const Announcement = ({ announcements }: Props) => {
 };
 
 export const timeConverter = (time: string) => {
-    const [hours, minutes] = time.split(":").map(Number);
+    const [hours, minutes] = time?.split(":").map(Number);
 
     // Create a new Date object for the current date
     const date = new Date();
