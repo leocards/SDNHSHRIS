@@ -43,7 +43,7 @@ const COCSCHEMA = z
         if (!coafileid) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: requiredError("Certificate of Attendance"),
+                message: requiredError("Certificate of Appearance"),
                 path: ["coafileid"],
             });
         }
@@ -213,7 +213,7 @@ const NewCOC: React.FC<Props> = ({ show, onClose }) => {
                                     errors?.coafileid && "text-destructive"
                                 )}
                             >
-                                Certificate of Attendance
+                                Certificate of Appearance
                             </TypographySmall>
                             <FilePondUploader
                                 route={route("sr.temporary")}
