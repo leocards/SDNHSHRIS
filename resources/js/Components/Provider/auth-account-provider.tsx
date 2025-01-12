@@ -87,7 +87,7 @@ const AccountProvider: React.FC<AccountProviderProps> = ({
         let notifindex = list.findIndex(n => n.id === notification.id)
         list[notifindex].viewed = true
 
-        window.axios.post(route('notification.read', [notification.id]))
+        window.axios.get(route('notification.read', [notification.id]))
             .then(() => {
                 unreadNotification !== 0 && updateNotificationCounter(-1)
                 setNotifications(list)

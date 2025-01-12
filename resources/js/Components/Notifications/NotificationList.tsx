@@ -13,25 +13,18 @@ import { format, formatDistanceToNow } from "date-fns";
 const NotificationList = () => {
     const { close } = usePopover();
     const { setProcess } = useProcessIndicator();
-    const { notifications, onMarkAsRead } = useAccount();
-
-    const onClickNavigate = (url: string) => {
-        router.get(
-            url,
-            {},
-            {
-                onBefore: () => setProcess(true),
-                onFinish: () => close()
-            }
-        );
-    };
+    const { notifications, onMarkAsRead, onRedirectNotification } = useAccount();
 
     return notifications.map((list, index) => (
         <div key={index} className="relative group">
             <Card
                 className="rounded-md shadow-none border-none hover:bg-secondary transition duration-150"
                 role="button"
-                onClick={() => onClickNavigate(list?.details.link)}
+                onClick={() => {
+                    setProcess(true)
+                    close()
+                    onRedirectNotification(list)
+                }}
             >
                 <CardContent
                     className={cn(

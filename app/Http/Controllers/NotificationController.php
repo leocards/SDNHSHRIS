@@ -25,7 +25,12 @@ class NotificationController extends Controller
 
     public function view(Notification $notification)
     {
-        return redirect($notification->details->link);
+        if(!$notification->viewed) {
+            $notification->viewed = true;
+            $notification->save();
+        }
+
+        return redirect($notification->details['link']);
     }
 
     public function setNotificationAsRead(Notification $notification)
