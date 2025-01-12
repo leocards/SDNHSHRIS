@@ -158,9 +158,8 @@ const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
                     data={["tardinesses"]}
                     length={8}
                     columns={[
-                        "minmax(6rem,1fr)",
                         ...Array.from({ length: 4 }).map(
-                            () => "minmax(7.5rem,10rem)"
+                            () => "1fr"
                         ),
                     ]}
                 >
@@ -169,11 +168,10 @@ const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
                             <TableHeader
                                 style={{ gridTemplateColumns: column }}
                             >
-                                <div>Name</div>
-                                <div>Days Present</div>
-                                <div>Days Absent</div>
-                                <div>SY</div>
-                                <div>Month</div>
+                                <div className="justify-center">Days Present</div>
+                                <div className="justify-center">Days Absent</div>
+                                <div className="justify-center">SY</div>
+                                <div className="justify-center">Month</div>
                             </TableHeader>
                             {page?.data.length === 0 && (
                                 <div className="flex flex-col items-center absolute inset-0 justify-center">
@@ -192,20 +190,12 @@ const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
                                     key={index}
                                     style={{ gridTemplateColumns: column }}
                                 >
-                                    <div className="gap-2">
-                                        <ProfilePhoto
-                                            src={tardiness?.user?.avatar}
-                                        />
-                                        <div className="line-clamp-1 break-words">
-                                            {tardiness?.user?.name}
-                                        </div>
-                                    </div>
-                                    <div>{tardiness?.present}</div>
-                                    <div>{tardiness?.absent}</div>
-                                    <div>
+                                    <div className="justify-center">{tardiness?.present}</div>
+                                    <div className="justify-center">{tardiness?.absent}</div>
+                                    <div className="justify-center">
                                         {tardiness?.schoolyear?.schoolyear}
                                     </div>
-                                    <div>{tardiness?.month}</div>
+                                    <div className="justify-center">{tardiness?.month}</div>
                                 </TableRow>
                             ))}
                         </Fragment>

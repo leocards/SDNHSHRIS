@@ -41,8 +41,8 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
                     });
 
                     if (page.props.flash.status === "success") {
-                        setStatus(reponse)
-                        onClose(false)
+                        setStatus(reponse);
+                        onClose(false);
                     }
                 },
             }
@@ -52,36 +52,6 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
     return (
         <Modal show={show} onClose={onClose} maxWidth="5xl" closeable={false}>
             <div className="flex items-center">
-                {!isLoading ? (
-                    status == "pending" ? (
-                        <Fragment>
-                            <Button
-                                className="bg-green-600 hover:bg-green-500"
-                                onClick={() => onRespond("approved")}
-                            >
-                                Approve
-                            </Button>
-                            <Button
-                                className="ml-3 bg-destructive hover:bg-destructive/85"
-                                onClick={() => onRespond("disapproved")}
-                            >
-                                Disapprove
-                            </Button>
-                        </Fragment>
-                    ) : (
-                        <TypographySmall
-                            className={cn(
-                                "capitalize",
-                                status == "approved"
-                                    ? "text-green-600"
-                                    : "text-destructive"
-                            )}
-                        >
-                            {status}
-                        </TypographySmall>
-                    )
-                ) : null}
-
                 <Button
                     className="ml-auto"
                     variant="outline"
@@ -125,6 +95,38 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
                     onStatus={setStatus}
                     onLoad={setIsLoading}
                 />
+            </div>
+
+            <div className="flex mt-5 justify-end">
+                {!isLoading ? (
+                    status == "pending" ? (
+                        <Fragment>
+                            <Button
+                                className="bg-green-600 hover:bg-green-500"
+                                onClick={() => onRespond("approved")}
+                            >
+                                Approve
+                            </Button>
+                            <Button
+                                className="ml-3 bg-destructive hover:bg-destructive/85"
+                                onClick={() => onRespond("disapproved")}
+                            >
+                                Disapprove
+                            </Button>
+                        </Fragment>
+                    ) : (
+                        <TypographySmall
+                            className={cn(
+                                "capitalize",
+                                status == "approved"
+                                    ? "text-green-600"
+                                    : "text-destructive"
+                            )}
+                        >
+                            {status}
+                        </TypographySmall>
+                    )
+                ) : null}
             </div>
         </Modal>
     );
