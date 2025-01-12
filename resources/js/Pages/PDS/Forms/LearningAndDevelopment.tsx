@@ -8,6 +8,7 @@ import { useFieldArray } from "react-hook-form";
 import { Form, FormCalendar, FormInput } from "@/Components/ui/form";
 import { X } from "lucide-react";
 import { useToast } from "@/Hooks/use-toast";
+import { isValidDate } from "@/Types/types";
 
 type LearningAndDevelopmentProps = {
     data: LEARNINGANDEVELOPMENTTYPE | null
@@ -24,8 +25,8 @@ const LearningAndDevelopment: React.FC<LearningAndDevelopmentProps> = ({ data })
             ldid: ld.id,
             title: ld.title,
             inclusivedates: {
-                from: new Date(ld.inclusivedates.from),
-                to: new Date(ld.inclusivedates.to),
+                from:  isValidDate(ld.inclusivedates.from) ?  new Date(ld.inclusivedates.from) : undefined,
+                to:  isValidDate(ld.inclusivedates.to) ?  new Date(ld.inclusivedates.to) : undefined,
             },
             numberofhours: ld.numofhours,
             typeofld: ld.type,

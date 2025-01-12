@@ -21,6 +21,7 @@ import { Add, Trash } from "iconsax-react";
 import { Button } from "@/Components/ui/button";
 import { X } from "lucide-react";
 import { useToast } from "@/Hooks/use-toast";
+import { isValidDate } from "@/Types/types";
 
 type WorkExperienceProps = {
     data: WORKEXPERIENCETYPE | null
@@ -36,8 +37,8 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({ data }) => {
         values: { we: data ? data.map((we) => ({
             weid: we.id,
             inclusivedates: {
-                from: new Date(we.inlcusivedates.from),
-                to: we.inlcusivedates.to == "Present" ? "Present" : new Date(we.inlcusivedates.to),
+                from: isValidDate(we.inlcusivedates.from) ? new Date(we.inlcusivedates.from) : undefined,
+                to: we.inlcusivedates.to == "Present" ? "Present" : isValidDate(we.inlcusivedates.to) ? new Date(we.inlcusivedates.to) : undefined,
             },
             positiontitle: we.positiontitle,
             department: we.department,

@@ -13,6 +13,7 @@ import { X } from "lucide-react";
 import { Add, Trash } from "iconsax-react";
 import { useToast } from "@/Hooks/use-toast";
 import { useEffect } from "react";
+import { isValidDate } from "@/Types/types";
 
 type VoluntaryWorkProps = {
     data: VOLUNTARYWORKTYPE | null
@@ -33,8 +34,8 @@ const VoluntaryWork: React.FC<VoluntaryWorkProps> = ({ data }) => {
             vwid: vw.id,
             nameandaddress: vw.organization,
             inclusivedates: {
-                from: new Date(vw.inclusivedates.from),
-                to: new Date(vw.inclusivedates.to)
+                from: isValidDate(vw.inclusivedates.from) ? new Date(vw.inclusivedates.from) : undefined,
+                to: isValidDate(vw.inclusivedates.to) ? new Date(vw.inclusivedates.to) : undefined
             },
             numberofhours: vw.numberofhours,
             positionornatureofwork: vw.position

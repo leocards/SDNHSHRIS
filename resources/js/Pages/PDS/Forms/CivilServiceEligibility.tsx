@@ -13,6 +13,7 @@ import { Button } from "@/Components/ui/button";
 import { useFieldArray } from "react-hook-form";
 import { Add, Trash } from "iconsax-react";
 import { useToast } from "@/Hooks/use-toast";
+import { isValidDate } from "@/Types/types";
 
 type CivilServiceEligibilityProps = {
     data: CIVILSERVICETYPE | null
@@ -33,7 +34,7 @@ const CivilServiceEligibility: React.FC<CivilServiceEligibilityProps> = ({ data 
             placeofexaminationconferment: cs.placeexamination,
             license: {
                 number: cs.licensenumber,
-                dateofvalidity: cs.validity ? new Date(cs.validity) : null
+                dateofvalidity: cs.validity ? (isValidDate(cs.validity) ? new Date(cs.validity) : null) : null
             }
         })) : [], deletedCS: []},
         async: true,
