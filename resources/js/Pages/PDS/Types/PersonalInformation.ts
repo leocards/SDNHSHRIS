@@ -38,7 +38,7 @@ export const PERSONALINFORMATIONSCHEMA = z.object({
     placeofbirth: z.string().min(1, requiredError("place of birth")).default(""),
     height: z.string().min(1, requiredError("height")).default(""),
     weight: z.string().min(1, requiredError("weight")).default(""),
-    bloodtype: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], {
+    bloodtype: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'O', 'A', 'B', 'AB'], {
         required_error: requiredError("blood type"),
         invalid_type_error: "Must be a valid blood type.",
     }),
@@ -99,7 +99,7 @@ export type PERSONALINFORMATIONTYPE = {
     };
     height: string;
     weight: string;
-    bloodtype: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
+    bloodtype: "A" | "A+" | "A-" | "B+" | "B" | "B-" | "AB" | "AB+" | "AB-" | "O" | "O+" | "O-";
     gsis: string | null;
     pagibig: string | null;
     philhealth: string | null;

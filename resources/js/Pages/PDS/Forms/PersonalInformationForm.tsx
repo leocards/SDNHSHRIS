@@ -353,10 +353,16 @@ const PersonalInformationForm: React.FC<{
                                 triggerClass="uppercase"
                                 items={
                                     <>
+                                        <SelectItem value="A" children="A" />
                                         <SelectItem value="A+" children="A+" />
                                         <SelectItem value="A-" children="A-" />
+                                        <SelectItem value="B" children="B" />
                                         <SelectItem value="B+" children="B+" />
                                         <SelectItem value="B-" children="B-" />
+                                        <SelectItem
+                                            value="AB"
+                                            children="AB"
+                                        />
                                         <SelectItem
                                             value="AB+"
                                             children="AB+"
@@ -365,6 +371,7 @@ const PersonalInformationForm: React.FC<{
                                             value="AB-"
                                             children="AB-"
                                         />
+                                        <SelectItem value="O" children="O" />
                                         <SelectItem value="O+" children="O+" />
                                         <SelectItem value="O-" children="O-" />
                                     </>

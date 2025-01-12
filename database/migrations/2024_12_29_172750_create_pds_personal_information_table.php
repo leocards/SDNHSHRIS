@@ -19,14 +19,18 @@ return new class extends Migration
             $table->string('height')->nullable();
             $table->string('weight')->nullable();
             $table->enum('bloodtype', [
+                'A',
                 'A+',
                 'A-',
+                'B',
                 'B+',
                 'B-',
+                'AB',
                 'AB+',
                 'AB-',
+                'O',
                 'O+',
-                'O-'
+                'O-',
             ])->nullable();
             $table->string('gsis')->nullable();
             $table->string('pagibig')->nullable();
