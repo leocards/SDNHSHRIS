@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TardinessRequest;
+use App\Models\Notification;
 use App\Models\SchoolYear;
 use App\Models\Tardiness;
 use App\Models\User;
@@ -91,6 +92,17 @@ class TardinessController extends Controller
                     "present" => $attendance['present'],
                     "absent" => $attendance['absent'],
                     "month" => $month,
+                ]);
+
+                Notification::create([
+                    'user_id' => $attendance['user']['id'],
+                    'type' => 'tardiness',
+                    'details' => collect([
+                        'link' => route('tardiness'),
+                        'name' =>  "HR",
+                        'avatar' => $request->user()->avatar,
+                        'message' => 'has uploaded your attendance.'
+                    ])->toArray()
                 ]);
             }
 

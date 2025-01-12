@@ -48,7 +48,7 @@ const Tardiness: React.FC<TardinessProps> = ({ ...props }) => {
     );
 };
 
-const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
+const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
     const { page, onQuery } = usePagination<TARDINESSTYPE>();
     const { props } = usePage();
 
@@ -60,8 +60,7 @@ const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
         label: schoolyears[0].schoolyear,
     });
     const [filterMonth, setFilterMonth] = useState(format(new Date(), "MMMM"));
-    const [showAttendace, setShowAttendance] = useState(false);
-    const [attendance, setAttendance] = useState<TARDINESSTYPE | null>(null);
+    
 
     return (
         <div>
