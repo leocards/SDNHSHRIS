@@ -119,6 +119,7 @@ const ViewCertificate: React.FC<ViewCertificateProps> = ({
                                     user={data?.user}
                                     name={data?.details?.name}
                                     path={data?.details?.path}
+                                    filename={data?.details?.filename}
                                 />
 
                                 <div className="mt-2 space-y-1">
@@ -241,6 +242,7 @@ export const COCImages = ({
                         user={user}
                         name={details?.name}
                         path={details?.coa}
+                        filename={details?.coa}
                     />
                 </TabsContent>
                 <TabsContent value="dtr">
@@ -248,6 +250,7 @@ export const COCImages = ({
                         user={user}
                         name={details?.name}
                         path={details?.dtr}
+                        filename={details?.dtr}
                     />
                 </TabsContent>
                 <TabsContent value="memo">
@@ -255,6 +258,7 @@ export const COCImages = ({
                         user={user}
                         name={details?.name}
                         path={details?.memo}
+                        filename={details?.memo}
                     />
                 </TabsContent>
             </Tabs>
@@ -293,58 +297,107 @@ export const COCImages = ({
     );
 };
 
+function getFileType(filename: string): string | null {
+    const parts = filename.split(".");
+    return parts.length > 1 ? parts.pop()?.toLowerCase() || null : null;
+}
+
 const ImageViewer = ({
     name,
     path,
     user,
+    filename,
 }: {
     name: string;
     path: string;
     user: Pick<User, "name" | "avatar">;
+    filename: string;
 }) => {
     const role = usePage().props.auth.user.role;
     const [maximize, setMaximize] = useState(false);
+    const filetype = getFileType(filename ?? "") ?? "jpg";
 
     return (
         <div>
-            <div className="border border-border rounded-md overflow-hidden relative h-[21rem] bg-black/5 flex">
-                <div className="absolute top-0 right-0 w-full p-3 bg-gradient-to-b from-black/70 flex">
-                    {role == "hr" && (
-                        <div className="flex items-center gap-3">
-                            <ProfilePhoto
-                                className="size-8 shadow"
-                                src={user?.avatar}
-                            />
-                            <TypographySmall className="text-primary-foreground">
-                                {user?.name}
-                            </TypographySmall>
-                        </div>
-                    )}
+            {filetype != "pdf" && (
+                <div className="border border-border rounded-md overflow-hidden relative h-[21rem] bg-black/5 flex">
+                    <div className="absolute top-0 right-0 w-full p-3 bg-gradient-to-b from-black/70 flex">
+                        {role == "hr" && (
+                            <div className="flex items-center gap-3">
+                                <ProfilePhoto
+                                    className="size-8 shadow"
+                                    src={user?.avatar}
+                                />
+                                <TypographySmall className="text-primary-foreground">
+                                    {user?.name}
+                                </TypographySmall>
+                            </div>
+                        )}
 
-                    <TooltipLabel label="Maximize" className="ml-auto">
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="size-8 ml-auto"
-                            onClick={() => setMaximize(true)}
-                        >
-                            <Maximize3 />
-                        </Button>
-                    </TooltipLabel>
+                        <TooltipLabel label="Maximize" className="ml-auto">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="size-8 ml-auto"
+                                onClick={() => setMaximize(true)}
+                            >
+                                <Maximize3 />
+                            </Button>
+                        </TooltipLabel>
+                    </div>
+
+                    <img
+                        src={path}
+                        className="object-contain mx-auto my-auto size-full"
+                    />
+
+                    <div className="absolute bottom-0 left-0 w-full p-3">
+                        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black opacit z-10"></div>
+                        <TypographyLarge className="relative z-10 line-clamp-2 text-primary-foreground">
+                            {name}
+                        </TypographyLarge>
+                    </div>
                 </div>
+            )}
 
-                <img
-                    src={path}
-                    className="object-contain mx-auto my-auto size-full"
-                />
+            {filetype == "pdf" && (
+                <div className="border border-border rounded-md overflow-hidden relative h-[21rem] bg-black/5 flex">
+                    <div className="absolute top-0 right-0 w-full p-3 bg-gradient-to-b from-black/90 flex">
+                        {role == "hr" && (
+                            <div className="flex items-center gap-3">
+                                <ProfilePhoto
+                                    className="size-8 shadow"
+                                    src={user?.avatar}
+                                />
+                                <TypographySmall className="text-primary-foreground">
+                                    {user?.name}
+                                </TypographySmall>
+                            </div>
+                        )}
 
-                <div className="absolute bottom-0 left-0 w-full p-3">
-                    <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black opacit z-10"></div>
-                    <TypographyLarge className="relative z-10 line-clamp-2 text-primary-foreground">
-                        {name}
-                    </TypographyLarge>
+                        <TooltipLabel label="Maximize" className="ml-auto">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="size-8 ml-auto"
+                                onClick={() => setMaximize(true)}
+                            >
+                                <Maximize3 />
+                            </Button>
+                        </TooltipLabel>
+                    </div>
+                    <embed
+                        src={path + "#toolbar=0&navpanes=0&scrollbar=0"}
+                        className="w-full"
+                    />
+                    <div className="absolute bottom-0 left-0 w-full p-3">
+                        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black opacit z-10"></div>
+                        <TypographyLarge className="relative z-10 line-clamp-2 text-primary-foreground">
+                            {name}
+                        </TypographyLarge>
+                    </div>
                 </div>
-            </div>
+            )}
 
             {maximize &&
                 createPortal(
@@ -359,10 +412,20 @@ const ImageViewer = ({
                                 <X />
                             </Button>
 
-                            <img
-                                src={path}
-                                className="object-contain size-full m-auto rounded-lg"
-                            />
+                            {filetype !== "pdf" ? (
+                                <img
+                                    src={path}
+                                    className="object-contain size-full m-auto rounded-lg"
+                                />
+                            ) : (
+                                <embed
+                                    src={
+                                        path +
+                                        "#toolbar=0&navpanes=0&scrollbar=0"
+                                    }
+                                    className="w-full"
+                                />
+                            )}
                         </div>
                     </div>,
                     document.body

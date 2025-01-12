@@ -17,7 +17,7 @@ import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 import { SelectItem } from "@/Components/ui/select";
 
 const allowedMimeTypes = [
-    // "application/pdf",
+    "application/pdf",
     "image/jpeg",
     "image/jpg",
     "image/png",

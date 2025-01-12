@@ -10,7 +10,7 @@ import { usePage } from "@inertiajs/react";
 import empty from "@/Assets/empty-graph.svg";
 import { PERSONNELPERFORMANCETYPE } from "./type";
 import { TrendingUp } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
     ChartConfig,
@@ -84,6 +84,12 @@ const YearlyPerformanceGraph = ({ performance }: Props) => {
                                 tickMargin={8}
                                 tickFormatter={(value) => value.slice(0, 3)}
                             />
+                            <YAxis
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                tickCount={3}
+                            />
                             <ChartTooltip
                                 cursor={false}
                                 content={<ChartTooltipContent />}
@@ -109,7 +115,7 @@ const YearlyPerformanceGraph = ({ performance }: Props) => {
                                 </linearGradient>
                             </defs>
                             <Area
-                                dataKey="mobile"
+                                dataKey="rating"
                                 type="natural"
                                 fill="url(#fillRating)"
                                 fillOpacity={0.4}
