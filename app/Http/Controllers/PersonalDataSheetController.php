@@ -202,6 +202,8 @@ class PersonalDataSheetController extends Controller
             $path = $request->file('file')->store('public/PDSfiles');
 
             $user->personalDataSheet()->updateOrCreate([
+                "user_id" => $user->id
+            ],[
                 'status' => 'pending',
                 "file" => $path,
                 "original" => $request->file('file')->getClientOriginalName(),
