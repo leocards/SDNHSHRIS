@@ -31,6 +31,6 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return back();
+        return back()->with(['title' => 'Change Password', 'message' => 'You have successfully changed your password.', 'status' => 'success']);
     }
 }
