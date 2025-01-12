@@ -124,7 +124,7 @@ class LeaveController extends Controller
 
             if ($request->type !== "maternity" && $request->type !== "sick") {
                 if ($request->type == "vacation" || $request->type == "mandatory") {
-                    if ($this->verifyDateFiveDaysAhead($request->from)) {
+                    if (!$this->verifyDateFiveDaysAhead($request->filingfrom, $request->from)) {
                         throw new Exception("You must send application 5 days ahead.", 1);
                     }
                 }
@@ -418,20 +418,30 @@ class LeaveController extends Controller
         }
     }
 
-    function verifyDateFiveDaysAhead($inputDate)
+    function verifyDateFiveDaysAhead($filingfrom, $inputDate)
     {
-        // Current date
-        $currentDate = Carbon::now();
-        // Add 5 days to the current date
-        $dateFiveDaysAhead = $currentDate->copy()->addDays(5);
+        // Current date in UTC
+        $currentDate = Carbon::now('Asia/Manila');
 
-        // Parse the input date
+        // Add 5 business days to the current date (skipping weekends)
+        $dateFiveBusinessDaysAhead = $currentDate->copy();
+        $businessDaysAdded = 0;
+
+        while ($businessDaysAdded < 5) {
+            $dateFiveBusinessDaysAhead->addDay(); // Add one day
+            if (!$dateFiveBusinessDaysAhead->isWeekend()) { // Skip weekends
+                $businessDaysAdded++; // Only count business days
+            }
+        }
+
+        // Parse the input date and normalize it to UTC
         try {
-            $inputDateTime = Carbon::parse($inputDate);
+            $inputDateTime = Carbon::parse($inputDate)->setTimezone('Asia/Manila');
         } catch (\Exception $e) {
             throw new Exception("Error: Invalid date format. Please use a valid date.");
         }
 
-        return $inputDateTime->isSameDay($dateFiveDaysAhead);
+        // Compare the normalized dates (ignoring timezone offsets)
+        return $inputDateTime->isSameDay($dateFiveBusinessDaysAhead);
     }
 }

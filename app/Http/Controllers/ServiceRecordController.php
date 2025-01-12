@@ -114,7 +114,8 @@ class ServiceRecordController extends Controller
         $request->validate([
             'from' => 'required|date',
             'to' => 'nullable|date',
-            'numofhours' => ['required', 'regex:/^[0-9]+$/'],
+            'session' => 'in:halfday,fullday',
+            'numofhours' => ['required_if:session,halfday', 'nullable', 'regex:/^[0-9]+$/'],
         ], [
             'numofhours.required' => 'The number of hours field is required',
             'numofhours.regex' => 'The number of hours must be numeric in value.'
