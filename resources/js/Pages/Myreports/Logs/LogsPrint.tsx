@@ -214,7 +214,7 @@ const LogsPrint: React.FC<Props> = ({
                                                     </div>
                                                     <hr className="border-black" />
                                                     <div>
-                                                        {principal.position ??
+                                                        {principal?.position ??
                                                             "No principal added"}
                                                     </div>
                                                 </div>

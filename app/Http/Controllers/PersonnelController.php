@@ -41,9 +41,9 @@ class PersonnelController extends Controller
         return Inertia::render('Personnel/Personnel', [
             "personnels" => Inertia::defer(fn () => $personnel),
             "personneltype" => $pt,
-            "jhs" => User::where('department', 'junior')->count(),
-            "shs" => User::where('department', 'senior')->count(),
-            "accounting" => User::where('department', 'accounting')->count(),
+            "jhs" => User::excludeHr()->where('department', 'junior')->count(),
+            "shs" => User::excludeHr()->where('department', 'senior')->count(),
+            "accounting" => User::excludeHr()->where('department', 'accounting')->count(),
         ]);
     }
 
@@ -112,9 +112,9 @@ class PersonnelController extends Controller
     public function listOfPersonnel()
     {
 
-        $jhs = User::where('department', 'junior')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
-        $shs = User::where('department', 'senior')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
-        $accounting = User::where('department', 'accounting')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
+        $jhs = User::excludeHr()->where('department', 'junior')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
+        $shs = User::excludeHr()->where('department', 'senior')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
+        $accounting = User::excludeHr()->where('department', 'accounting')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
 
         return Inertia::render('Myreports/ListOfPersonnel/ListOfPersonnel', [
             "list" => collect([
