@@ -89,7 +89,7 @@ const NotificationFloatingList = () => {
                 </CardContent>
             </ScrollArea>
             <CardFooter className="mt-5">
-                <Button className="w-full" onClick={onMarkAllAsRead} disabled={proccesMarkAllRead}>
+                <Button className="w-full" onClick={onMarkAllAsRead} disabled={proccesMarkAllRead||!unreadNotification}>
                     <Check /> Mark all as read
                 </Button>
             </CardFooter>
