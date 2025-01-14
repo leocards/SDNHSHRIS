@@ -214,7 +214,7 @@ const NewCOC: React.FC<Props> = ({ show, onClose }) => {
                                 name="numofhours"
                                 label="Number of hours"
                                 required={watchSession === "halfday"}
-                                disabled={watchSession === "fullday"}
+                                disabled={watchSession === "fullday" || !watchSession}
                             />
                         </div>
 
