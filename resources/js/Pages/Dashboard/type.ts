@@ -45,9 +45,9 @@ export const getTimeRemains = ({ from, to }: { from: Date; to?: Date }) => {
     let endDate = to ? getRemainingTime(to) : null;
 
     if (days > 0) {
-        return `${days}d and ${hours}hr${hours > 1 && "s"} `;
+        return `${days}d and ${hours}hr${hours > 1 ? "s":""} `;
     } else if (hours > 0) {
-        return `${hours}hr${hours > 1 && "s"} and ${minutes}min`;
+        return `${hours}hr${hours > 1 ? "s":""} and ${minutes}min`;
     } else if (minutes > 0) {
         return `${minutes} min `;
     } else if (seconds > 0) {
