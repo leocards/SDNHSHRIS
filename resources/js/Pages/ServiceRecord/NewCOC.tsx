@@ -31,7 +31,7 @@ const COCSCHEMA = z
             .optional()
             .default(""),
     })
-    .superRefine(({ memofileid, coafileid, dtrfileid, from, to, session }, ctx) => {
+    .superRefine(({ memofileid, coafileid, dtrfileid, from, to, session, numofhours }, ctx) => {
         if (!memofileid) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
@@ -85,7 +85,7 @@ const COCSCHEMA = z
             }
         }
 
-        if(session === "halfday")
+        if(session === "halfday" && !numofhours)
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: requiredError("number of hours"),
