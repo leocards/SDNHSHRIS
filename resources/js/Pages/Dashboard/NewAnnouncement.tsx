@@ -83,7 +83,7 @@ const NewAnnouncement: React.FC<Props> = ({ announcement, show, onClose }) => {
     }, [show])
 
     return (
-        <Modal show={show} onClose={onClose} title="New Announcement" maxWidth="lg">
+        <Modal show={show} onClose={onClose} title={(announcement ? "Update" : "New") + " Announcement"} maxWidth="lg">
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
                     <div className="space-y-4 min-h-40">
@@ -123,7 +123,7 @@ const NewAnnouncement: React.FC<Props> = ({ announcement, show, onClose }) => {
                         <Button type="button" variant="outline" onClick={() => onClose(false)}>
                             Cancel
                         </Button>
-                        <Button className="ml-auto">Create Announement</Button>
+                        <Button className="ml-auto">{announcement ? "Update" : "Create"} Announcement</Button>
                     </div>
                 </form>
             </Form>
