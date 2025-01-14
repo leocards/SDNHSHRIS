@@ -374,7 +374,7 @@ export default function UpdateProfileInformation({
                                 children="Department"
                                 className="text-foreground/60"
                             />
-                            <div>{Departments[user.department] ?? "N/A"}</div>
+                            <div>{user.role === "hr" || user.role === "principal" ? "N/A" : Departments[user.department] ?? "N/A"}</div>
                         </div>
 
                         <div className="mt-5">
