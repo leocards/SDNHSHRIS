@@ -201,11 +201,11 @@ const NewCOC: React.FC<Props> = ({ show, onClose }) => {
                                 form={form}
                                 name={`session`}
                                 label="Session"
-                                displayValue={(watchSession === "halfday" ? "Half-day":!watchSession ? "" :"Full-day")}
+                                displayValue={(watchSession === "halfday" ? "Half-day":!watchSession ? "" :"Whole-day")}
                                 items={
                                     <Fragment>
                                         <SelectItem value="halfday" children="Half-day" />
-                                        <SelectItem value="fullday" children="Full-day" />
+                                        <SelectItem value="fullday" children="Whole-day" />
                                     </Fragment>
                                 }
                             />

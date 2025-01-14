@@ -23,7 +23,22 @@ class LeaveRequest extends FormRequest
     {
         return [
             'filingfrom' => ['required', 'date'],
-            'filingto' => ['required', 'nullable', 'date'],
+            'filingto' => [
+                'required',
+                'nullable',
+                'date',
+                'after_or_equal:filingfrom',
+                function ($attribute, $value, $fail) {
+                    $dateFrom = $this->input('filingfrom');
+                    $dateFromCarbon = \Carbon\Carbon::parse($dateFrom);
+                    $dateToCarbon = \Carbon\Carbon::parse($value);
+
+                    // Check if 'date_to' is within 5 days of 'date_from'
+                    if ($dateFromCarbon->diffInDays($dateToCarbon, false) > 5) {
+                        $fail("The 'date of filing to' must be within 5 days of the 'date of filing from'.");
+                    }
+                }
+            ],
             'salary' => ['required', 'numeric'],
             'type' => ['required', 'in:vacation,mandatory,sick,maternity,paternity,spl,solo,study,vowc,rehabilitation,slbw,emergency,adoption,others'],
             'others' => ['required_if:type,others'],

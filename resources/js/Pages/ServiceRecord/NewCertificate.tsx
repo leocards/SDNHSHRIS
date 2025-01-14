@@ -278,11 +278,11 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
                     form={form}
                     name={`sr.${index}.session`}
                     label="Session"
-                    displayValue={(watchSession === "halfday" ? "Half-day":watchSession==="fullday"?"Full-day":"")}
+                    displayValue={(watchSession === "halfday" ? "Half-day":watchSession==="fullday"?"Whole-day":"")}
                     items={
                         <Fragment>
                             <SelectItem value="halfday" children="Half-day" />
-                            <SelectItem value="fullday" children="Full-day" />
+                            <SelectItem value="fullday" children="Whole-day" />
                         </Fragment>
                     }
                 />

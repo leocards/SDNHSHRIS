@@ -51,7 +51,7 @@ const MessageBox = () => {
         setMinimize,
         closeMessageBox,
         setConversations,
-        setSearchedConversation
+        setSearchedConversation,
     } = useMessage();
     const { activeUsers } = useAccount();
     const [showSearchConversation, setShowSearchConversation] = useState(false);
@@ -106,9 +106,11 @@ const MessageBox = () => {
     };
 
     useEffect(() => {
-        if(searchedConversation) {
-            console.log(searchedConversation)
-            const element = document.getElementById("conversation_"+searchedConversation);
+        if (searchedConversation) {
+            console.log(searchedConversation);
+            const element = document.getElementById(
+                "conversation_" + searchedConversation
+            );
             if (element) {
                 element.scrollIntoView({
                     behavior: "smooth",
@@ -116,20 +118,20 @@ const MessageBox = () => {
                 });
             }
         }
-    }, [searchedConversation])
+    }, [searchedConversation]);
 
     return (
         <Fragment>
             <Card
-                className="fixed bottom-0 transition-all !shadow-lg duration-200 data-[view=true]:h-[48.8px] right-4 sm:right-16 w-[360px] h-[477.2px] grid grid-rows-[auto,1fr,auto] rounded-md rounded-b-none z-40 overflow-hidden"
+                className="fixed bottom-0 transition-all !shadow-lg duration-200 data-[view=true]:h-[48.8px] right-4 sm:right-16 w-[360px] h-[477.2px] grid grid-rows-[auto,1fr,auto] rounded-lg rounded-b-none z-40 overflow-hidden"
                 data-view={minimize}
             >
-                <CardHeader className="border-b border-border flex !flex-row gap-1 items-center p-1.5">
-                    <Menubar className="h-fit !m-0 shadow-none dark:bg-transparent">
+                <CardHeader className="border-b border-border flex !flex-row gap-1 items-center p-1.5 bg-blue-600 dark:bg-secondary white/10 text-primary-foreground dark:text-foreground">
+                    <Menubar className="h-fit !m-0 shadow-none bg-transparent">
                         <MenubarMenu>
                             <TooltipLabel label="More">
                                 <MenubarTrigger
-                                    className="size-7 m-0"
+                                    className="size-7 m-0 dark:hover:bg-foreground/30"
                                     variant="ghost"
                                 >
                                     <EllipsisVertical className="!size-4" />
@@ -145,12 +147,18 @@ const MessageBox = () => {
                                     <MessageSearch />
                                     <div>Search Conversation</div>
                                 </MenubarItem>
-                                <MenubarItem className="gap-2" onClick={() => setExportConversation(true)}>
+                                <MenubarItem
+                                    className="gap-2"
+                                    onClick={() => setExportConversation(true)}
+                                >
                                     <ExportCurve />
                                     <div>Export Conversation</div>
                                 </MenubarItem>
                                 <MenubarSeparator />
-                                <MenubarItem className="gap-2 !text-red-500 dark:hover:!bg-destructive/30 hover:!bg-red-100" onClick={() => setDeleteConversation(true)}>
+                                <MenubarItem
+                                    className="gap-2 !text-red-500 dark:hover:!bg-destructive/30 hover:!bg-red-100"
+                                    onClick={() => setDeleteConversation(true)}
+                                >
                                     <Trash />
                                     <div>Delete Conversation</div>
                                 </MenubarItem>
@@ -158,22 +166,41 @@ const MessageBox = () => {
                         </MenubarMenu>
                     </Menubar>
                     <div className="size-fit !m-0">
-                        <ProfilePhoto src={openedUser?.avatar ?? ""} />
+                        <ProfilePhoto
+                            src={openedUser?.avatar ?? ""}
+                            className="text-foreground"
+                        />
                     </div>
                     <div className="grow !m-0 !ml-3">
                         <CardTitle className="font-medium line-clamp-1">
                             {openedUser?.name}
                         </CardTitle>
-                        <CardDescription className="text-xs">
-                            {activeUsers.find(({ id }) => id === openedUser?.id)
-                                ? "Active"
-                                : "Offline"}
+                        <style>
+                            {`
+                                #status::before {
+                                    content: attr(data-value);
+                                    display: block;
+                                    width: fit-content;
+                                }
+                            `}
+                        </style>
+                        <CardDescription
+                            className="text-xs data-[value=Active]:text-green-400 data-[value=Offline]:text-primary-foreground dark:text-foreground"
+                            id="status"
+                            data-value={
+                                activeUsers.find(
+                                    ({ id }) => id === openedUser?.id
+                                )
+                                    ? "Active"
+                                    : "Offline"
+                            }
+                        >
                         </CardDescription>
                     </div>
                     <div className="!mt-0 mr-1 flex items-center gap-1">
                         <TooltipLabel label="Minimize">
                             <Button
-                                className="size-7 m-0 relative"
+                                className="size-7 m-0 relative dark:hover:bg-foreground/30"
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => setMinimize(!minimize)}
@@ -187,7 +214,7 @@ const MessageBox = () => {
                         </TooltipLabel>
                         <TooltipLabel label="Close">
                             <Button
-                                className="size-7 m-0"
+                                className="size-7 m-0 dark:hover:bg-foreground/30"
                                 variant="ghost"
                                 size="icon"
                                 onClick={closeMessageBox}
@@ -244,8 +271,14 @@ const MessageBox = () => {
                 show={showSearchConversation}
                 onClose={setShowSearchConversation}
             />
-            <ExportConversation show={exportConversation} onClose={setExportConversation} />
-            <DeleteConversationConfirmation show={deleteConversation} onClose={setDeleteConversation} />
+            <ExportConversation
+                show={exportConversation}
+                onClose={setExportConversation}
+            />
+            <DeleteConversationConfirmation
+                show={deleteConversation}
+                onClose={setDeleteConversation}
+            />
         </Fragment>
     );
 };

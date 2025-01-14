@@ -56,6 +56,7 @@ const ApplyLeave = () => {
     });
 
     const watchLeaveType = form.watch("type");
+    const watchDateFiledFrom = form.watch("filingfrom");
     const watchDatesFrom = form.watch("from");
     const watchDatesTo = form.watch("to");
 
@@ -149,6 +150,8 @@ const ApplyLeave = () => {
                                 name="filingto"
                                 label="Date of filing to"
                                 required={false}
+                                disabled={!watchDateFiledFrom}
+                                triggerClass="disabled:!opacity-100 disabled:text-foreground/40"
                             />
                             <div className="space-y-1.5">
                                 <TypographySmall>Position</TypographySmall>
