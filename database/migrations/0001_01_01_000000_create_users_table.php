@@ -32,7 +32,7 @@ return new class extends Migration
             $table->integer('splcredits')->nullable();
             $table->boolean('enable_email_notification')->default(false);
             $table->boolean('enable_email_message_notification')->default(false);
-            $table->boolean('enable_email_note_reminder')->default(false);
+            $table->boolean('enable_email_announcement_reminder')->default(false);
             $table->string('employmentstatus')->nullable();
             $table->string('salary')->nullable();
             $table->string('avatar')->nullable();

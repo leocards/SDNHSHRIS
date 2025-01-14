@@ -76,7 +76,7 @@ const NewAnnouncement: React.FC<Props> = ({ announcement, show, onClose }) => {
             form.setValue('title', announcement.title)
             form.setValue('description', announcement.details.description)
             form.setValue('date', announcement.details.date?new Date(announcement.details.date):null)
-            form.setValue('time', announcement.details.time)
+            form.setValue('time', announcement.details.time??"")
         } else if(show) {
             form.reset()
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
+use App\ResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
+    use ResponseTrait;
+
     public function index(Request $request)
     {
         return response()->json(Message::where('sender', $request->user()->id)
@@ -50,20 +53,20 @@ class MessageController extends Controller
                     ->orWhere('lastname', 'LIKE', "%{$search}%")
                     ->orWhere('middlename', 'LIKE', "%{$search}%");
             })
-            ->get(['id', 'firstname', 'lastname', 'middlename', 'avatar'])
-            ->filter(function ($data) use ($auth) {
-                $exists = Message::where(function ($query) use ($data, $auth) {
-                    $query->where('sender', $data->id)
-                        ->where('receiver', $auth)
-                        ->orWhere('sender', $auth)
-                        ->where('receiver', $data->id);
-                })
-                ->has('conversations')
-                ->exists();
+                ->get(['id', 'firstname', 'lastname', 'middlename', 'avatar'])
+                ->filter(function ($data) use ($auth) {
+                    $exists = Message::where(function ($query) use ($data, $auth) {
+                        $query->where('sender', $data->id)
+                            ->where('receiver', $auth)
+                            ->orWhere('sender', $auth)
+                            ->where('receiver', $data->id);
+                    })
+                        ->has('conversations')
+                        ->exists();
 
-                return $exists;
-            })
-            ->values()
+                    return $exists;
+                })
+                ->values()
         );
     }
 
@@ -78,28 +81,28 @@ class MessageController extends Controller
                 ->orWhere('lastname', 'LIKE', "%{$search}%")
                 ->orWhere('middlename', 'LIKE', "%{$search}%");
         })
-        ->whereNot('id', $auth)
-        ->get(['id', 'firstname', 'lastname', 'middlename', 'avatar'])
-        ->filter(function ($data) use ($auth) {
-            $exists = Message::where(function ($query) use ($auth, $data) {
-                $query->where(function ($query) use ($data, $auth) {
-                    $query->where('sender', $data->id)
-                    ->where('receiver', $auth)
-                    ->orWhere('sender', $auth)
-                    ->where('receiver', $data->id);
-                })
-                ->doesntHave('conversations');
-            })->exists();
+            ->whereNot('id', $auth)
+            ->get(['id', 'firstname', 'lastname', 'middlename', 'avatar'])
+            ->filter(function ($data) use ($auth) {
+                $exists = Message::where(function ($query) use ($auth, $data) {
+                    $query->where(function ($query) use ($data, $auth) {
+                        $query->where('sender', $data->id)
+                            ->where('receiver', $auth)
+                            ->orWhere('sender', $auth)
+                            ->where('receiver', $data->id);
+                    })
+                        ->doesntHave('conversations');
+                })->exists();
 
-            $exists2 = Message::where('sender', $auth)
-                ->where('receiver', $data->id)
-                ->orWhere('receiver', $auth)
-                ->where('sender', $data->id)
-                ->exists();
+                $exists2 = Message::where('sender', $auth)
+                    ->where('receiver', $data->id)
+                    ->orWhere('receiver', $auth)
+                    ->where('sender', $data->id)
+                    ->exists();
 
-            return $exists || !$exists2;
-        })
-        ->values();
+                return $exists || !$exists2;
+            })
+            ->values();
 
         return response()->json($users);
     }
@@ -180,5 +183,53 @@ class MessageController extends Controller
         $conversation->save();
 
         return response()->json(true);
+    }
+
+    public function searchConversation(Request $request, $userid)
+    {
+        $search = $request->query('search');
+        $authid = $request->user()->id;
+
+        $message = Message::where(function ($query) use ($userid, $authid) {
+            $query->where(function ($q) use ($userid, $authid) {
+                $q->where('sender', $authid)
+                  ->where('receiver', $userid);
+            })->orWhere(function ($q) use ($userid, $authid) {
+                $q->where('receiver', $authid)
+                  ->where('sender', $userid);
+            });
+        })->first();
+
+        return response()->json(
+            $message
+                ->conversations()
+                ->when($search != '', function ($query) use ($search) {
+                    $query->where('message', 'LIKE', "%{$search}%");
+                })
+                ->latest()
+                ->with('sender')
+                ->get()
+            );
+    }
+
+    public function deleteConversation(Request $request, $userid)
+    {
+        $authid = $request->user()->id;
+
+        $message = Message::where(function ($query) use ($userid, $authid) {
+            $query->where(function ($q) use ($userid, $authid) {
+                $q->where('sender', $authid)
+                  ->where('receiver', $userid);
+            })->orWhere(function ($q) use ($userid, $authid) {
+                $q->where('receiver', $authid)
+                  ->where('sender', $userid);
+            });
+        })->delete();
+
+        if($message) {
+            return $this->returnResponse('Message','Conversation deleted successfully.','success');
+        } else {
+            return $this->returnResponse('Message','Failed to delete conversation.','error');
+        }
     }
 }

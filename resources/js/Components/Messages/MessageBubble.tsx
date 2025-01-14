@@ -1,6 +1,6 @@
 import { User } from "@/Types";
 import { COVERSATIONTYPE, useMessage } from "../Provider/message-provider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/Lib/utils";
 import { usePage } from "@inertiajs/react";
 
@@ -19,9 +19,8 @@ const MessageBubble: React.FC<{
     position: MessagePosition;
 }> = ({ conversation, position }) => {
     const authid = usePage().props.auth.user.id
-    // const { openedUser } = useMessage()
-
-    // const [isSearched, setIsSearched] = useState(false)
+    const { searchedConversation } = useMessage()
+    const [isSearched, setIsSearched] = useState(false)
 
     const messageBubbleVariant = {
         sender: "ml-auto mr-2 bg-blue-600 text-white",
@@ -39,11 +38,13 @@ const MessageBubble: React.FC<{
         receiver: "rounded-[1.25rem]",
     }[position];
 
-    // useEffect(() => {
-    //     if(searchConversation && searchConversation == message.id) {
-    //         setIsSearched(true)
-    //     }
-    // }, [searchConversation])
+    useEffect(() => {
+        if(searchedConversation && conversation.id == searchedConversation) {
+            setIsSearched(true)
+        } else {
+            setIsSearched(false)
+        }
+    }, [searchedConversation])
 
     return (
         <div
@@ -51,9 +52,10 @@ const MessageBubble: React.FC<{
                 "max-w-60 w-fit py-2 px-3",
                 messageBubbleVariant,
                 roundedBox,
-                // isSearched && "!ring-1 !ring-ring !ring-offset-2 !ring-offset-slate-400"
+                "data-[searched=true]:!ring-2 data-[searched=true]:!ring-ring data-[searched=true]:!ring-offset-2 data-[searched=true]:!ring-offset-background"
             )}
-            // id={"conversation_" + message.id?.toString()}
+            data-searched={isSearched}
+            id={"conversation_" + conversation.id?.toString()}
         >
             <div className="whitespace-pre-line break-words">
                 {conversation.message}

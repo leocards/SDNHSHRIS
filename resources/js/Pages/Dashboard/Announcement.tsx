@@ -44,6 +44,12 @@ const Announcement = ({ announcements }: Props) => {
         }
     };
 
+    useEffect(() => {
+        if(announcements) {
+            setAnnounceList(announcements)
+        }
+    }, [announcements])
+
     return (
         <Card className="shadow-sm border border-border rounded-lg grid grid-rows-[auto,1fr]">
             <div className="px-2 py-2 border-b border-border flex items-center gap-2 h-fit">

@@ -238,7 +238,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/search-message', 'searchMessage')->name('messages.search');
             Route::get('/search-new-message', 'searchNewMessage')->name('messages.search.new');
             Route::get('/get-conversations/{user}', 'getUserConversations')->name('messages.conversation');
+            Route::get('/search-conversation/{userid}', 'searchConversation')->name('messages.search.conversation');
 
+            Route::post('/delete/{userid}', 'deleteConversation')->name('messages.delete');
             Route::post('/send-message', 'storeMessageConversation')->name('messages.send');
             Route::post('/seen-message/{conversation}', 'markAsSeen')->name('messages.seen');
         });

@@ -15,7 +15,7 @@ class Conversation extends Model
 
     public function sender()
     {
-        return $this->belongsTo(User::class, 'sender', 'id')->select(['id', 'first_name', 'middle_name', 'last_name', 'avatar']);
+        return $this->belongsTo(User::class, 'sender', 'id')->select(['id', 'firstname', 'middlename', 'lastname', 'avatar']);
     }
 
     public function message()

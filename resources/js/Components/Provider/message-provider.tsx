@@ -56,6 +56,8 @@ type MessageState = {
     messages: MESSAGELIST;
     setMessages: (message: MESSAGELISTTYPE) => void;
 
+    setNewMessagesList: (list: MESSAGELIST) => void;
+
     conversations: CONVERSATIONLIST;
     setConversations: (conversation: COVERSATIONTYPE) => void;
 
@@ -64,6 +66,9 @@ type MessageState = {
     openedUser: USER;
 
     unreadMessages: number;
+
+    searchedConversation: number | null;
+    setSearchedConversation: (convoid: number | null) => void;
 
     form: any;
 };
@@ -80,6 +85,8 @@ const MessageContextProvider = createContext<MessageState>({
     messages: [],
     setMessages: () => {},
 
+    setNewMessagesList: () => {},
+
     conversations: [],
     setConversations: () => null,
 
@@ -88,6 +95,9 @@ const MessageContextProvider = createContext<MessageState>({
     openedUser: null,
 
     unreadMessages: 0,
+
+    searchedConversation: null,
+    setSearchedConversation: () => {},
 
     form: null,
 });
@@ -105,6 +115,7 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
     const [newMessage, setNewMessage] = useState<MESSAGELISTTYPE>();
     const [openedUser, setOpenedUser] = useState<USER>(null); // selected user
     const [unreadMessages, setUnreadMessages] = useState<number>(0);
+    const [searchedConversation, setSearchedConversation] = useState<number|null>(null)
 
     const messageNotificationVolume = localStorage.getItem("message-volume");
 
@@ -252,7 +263,10 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
                     setOpenMessageBox(false);
 
                     if (minimize) setMinimize(false);
+
+                    setOpenedUser(null)
                 },
+                
                 selectConversation: (
                     message: any,
                     fromsearch?: boolean,
@@ -296,9 +310,16 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
 
                 setMessage: onSetMessage,
 
+                setNewMessagesList: (list: MESSAGELIST) => {
+                    setMessages(list)
+                },
+
                 openedUser,
 
                 unreadMessages,
+
+                searchedConversation,
+                setSearchedConversation,
 
                 form,
             }}

@@ -28,11 +28,6 @@ const MessageFloatingList = () => {
 
     useEffect(() => {
         if (search) {
-        }
-    }, [debouncedSearch]);
-
-    useEffect(() => {
-        if (search) {
             setSearch("");
         }
     }, [newMessage]);
