@@ -250,6 +250,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/account', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/account/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/account/profilephoto/upload', [ProfileController::class, 'profilePhotoUpload'])->name('profile.profile.upload');
     Route::post('/account/settings', [ProfileController::class, 'settings'])->name('profile.settings');
     Route::delete('/account/delete', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

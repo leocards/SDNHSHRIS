@@ -6,26 +6,38 @@ import { usePage } from "@inertiajs/react";
 import { Camera, Edit } from "iconsax-react";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import AccountInformationForm, { ACCOUNTSCHEMA, IFormAccount } from "./AccountInformationForm";
+import AccountInformationForm, {
+    ACCOUNTSCHEMA,
+    IFormAccount,
+} from "./AccountInformationForm";
 import { TooltipLabel } from "@/Components/ui/tooltip";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { useToast } from "@/Hooks/use-toast";
+import UploadProfilePhoto from "../UploadProfilePhoto";
+import { ADDRESSTYPE } from "@/Pages/PDS/Types/PersonalInformation";
+import { Departments } from "@/Types/types";
 
 export default function UpdateProfileInformation({
     mustVerifyEmail,
     status,
     className = "",
+    address
 }: {
     mustVerifyEmail: boolean;
     status?: string;
     className?: string;
+    address: {
+        permanent: ADDRESSTYPE,
+        residential: ADDRESSTYPE,
+    }
 }) {
-    const user = usePage().props.auth.user;
-    const [show, setShow] = useState(true);
     const { toast } = useToast();
+    const user = usePage().props.auth.user;
+    const [show, setShow] = useState(false);
+    const [uploadProfile, setUploadProfile] = useState(false)
 
     const form = useFormSubmit<Omit<IFormAccount, "personnel">>({
-        schema: ACCOUNTSCHEMA.omit({personnel: true}),
+        schema: ACCOUNTSCHEMA.omit({ personnel: true }),
         route: route("profile.update"),
         method: "post",
         async: true,
@@ -41,7 +53,7 @@ export default function UpdateProfileInformation({
             contact: {
                 email: user?.email ?? "",
                 mobilenumber: user?.mobilenumber,
-            }
+            },
         },
         callback: {
             onSuccess: (page: any) => {
@@ -52,19 +64,23 @@ export default function UpdateProfileInformation({
                 });
             },
             onError: (error: any) => {
-                if("0" in error)
-                    console.log('error', error[0])
+                if ("0" in error) console.log("error", error[0]);
                 else {
                     for (const key in error) {
-                        form.setError(key as keyof Omit<IFormAccount, "personnel">, {
-                            type: "manual",
-                            message: error[key],
-                        });
+                        form.setError(
+                            key as keyof Omit<IFormAccount, "personnel">,
+                            {
+                                type: "manual",
+                                message: error[key],
+                            }
+                        );
                     }
                 }
-            }
-        }
+            },
+        },
     });
+
+    console.log(address)
 
     return show ? (
         <div className="pt-4">
@@ -76,18 +92,16 @@ export default function UpdateProfileInformation({
                 disableCredentials
                 disablePersonnelForm
                 withClear={false}
+                cancelButton={<Button variant="outline" onClick={() => setShow(false)}>Cancel</Button>}
             />
         </div>
     ) : (
         <div className={cn("max-w-3xl mx-auto", className)}>
             <div className="">
-                <div className="rounded-b-lg h-48 bg-zinc-100 dark:bg-zinc-800 relative overflow-hidden">
-                    <div className="absolute -bottom-0 left-0 w-full h-full bg-gradient-to-t from-black opacity-10 blur-[2px]" />
-                    <div className="absolute bottom-2 right-2">
-                        <Button
-                            className=""
-                            variant="outline"
-                        >
+                <div className="rounded-b-lg h-14 -h-48 -bg-zinc-100 -dark:bg-zinc-800 relative overflow-hidden">
+                    <div className="absolute -bottom-0 left-0 w-full h-full -bg-gradient-to-t from-black opacity-10 blur-[2px]" />
+                    <div className="absolute bottom-2 right-2 hidden">
+                        <Button className="" variant="outline">
                             <Camera className="-mt-px" />
                             <span>Edit cover photo</span>
                         </Button>
@@ -96,13 +110,14 @@ export default function UpdateProfileInformation({
                 <div className="relative grid grid-cols-[188px,1fr,auto]">
                     <div></div>
                     <div className="p-1.5 absolute -top-8 left-10 bg-background rounded-full">
-                        <ProfilePhoto className="size-32" active={false} />
+                        <ProfilePhoto src={user.avatar} className="size-32 object-cover" active={false} fallbackSize={40} />
                         <div className="absolute bottom-2 right-2">
                             <TooltipLabel label="Change profile">
                                 <Button
                                     className="rounded-full ring ring-background hover:bg-zinc-200 dark:hover:bg-white/20"
                                     size="icon"
                                     variant="secondary"
+                                    onClick={() => setUploadProfile(true)}
                                 >
                                     <Camera className="-mt-px" />
                                 </Button>
@@ -212,21 +227,21 @@ export default function UpdateProfileInformation({
                                     children="House/Block/Lot No."
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.residential?.houselotblockno}</div>
                             </div>
                             <div className="">
                                 <Label
                                     children="Street"
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.residential?.street}</div>
                             </div>
                             <div className="">
                                 <Label
                                     children="Subdivision/Village"
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.residential?.subdivision}</div>
                             </div>
 
                             <div className="mt-5">
@@ -234,7 +249,7 @@ export default function UpdateProfileInformation({
                                     children="Barangay"
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.residential?.barangay}</div>
                             </div>
 
                             <div className="mt-5">
@@ -242,7 +257,7 @@ export default function UpdateProfileInformation({
                                     children="City/Municipality"
                                     className="text-foreground/60"
                                 />
-                                <div className="capitalize">{"N/A"}</div>
+                                <div className="capitalize">{address?.residential?.citymunicipality}</div>
                             </div>
 
                             <div className="mt-5">
@@ -250,7 +265,7 @@ export default function UpdateProfileInformation({
                                     children="Province"
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.residential?.province}</div>
                             </div>
 
                             <div className="mt-5">
@@ -258,7 +273,7 @@ export default function UpdateProfileInformation({
                                     children="ZIP Code"
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.residential?.zipcode}</div>
                             </div>
                         </div>
                     </div>
@@ -274,21 +289,21 @@ export default function UpdateProfileInformation({
                                     children="House/Block/Lot No."
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.permanent?.houselotblockno}</div>
                             </div>
                             <div className="">
                                 <Label
                                     children="Street"
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.permanent?.street}</div>
                             </div>
                             <div className="">
                                 <Label
                                     children="Subdivision/Village"
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.permanent?.subdivision}</div>
                             </div>
 
                             <div className="mt-5">
@@ -296,7 +311,7 @@ export default function UpdateProfileInformation({
                                     children="Barangay"
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.permanent?.barangay}</div>
                             </div>
 
                             <div className="mt-5">
@@ -304,7 +319,7 @@ export default function UpdateProfileInformation({
                                     children="City/Municipality"
                                     className="text-foreground/60"
                                 />
-                                <div className="capitalize">{"N/A"}</div>
+                                <div className="capitalize">{address?.permanent?.citymunicipality}</div>
                             </div>
 
                             <div className="mt-5">
@@ -312,7 +327,7 @@ export default function UpdateProfileInformation({
                                     children="Province"
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.permanent?.province}</div>
                             </div>
 
                             <div className="mt-5">
@@ -320,7 +335,7 @@ export default function UpdateProfileInformation({
                                     children="ZIP Code"
                                     className="text-foreground/60"
                                 />
-                                <div>{"N/A"}</div>
+                                <div>{address?.permanent?.zipcode}</div>
                             </div>
                         </div>
                     </div>
@@ -351,7 +366,7 @@ export default function UpdateProfileInformation({
                                 children="User Role"
                                 className="text-foreground/60"
                             />
-                            <div>{user.role ?? "N/A"}</div>
+                            <div className="capitalize">{user.role ?? "N/A"}</div>
                         </div>
 
                         <div className="mt-5">
@@ -359,7 +374,7 @@ export default function UpdateProfileInformation({
                                 children="Department"
                                 className="text-foreground/60"
                             />
-                            <div>{user.department ?? "N/A"}</div>
+                            <div>{Departments[user.department] ?? "N/A"}</div>
                         </div>
 
                         <div className="mt-5">
@@ -374,6 +389,8 @@ export default function UpdateProfileInformation({
                     </div>
                 </div>
             </div>
+
+            <UploadProfilePhoto show={uploadProfile} onClose={setUploadProfile} />
         </div>
     );
 }

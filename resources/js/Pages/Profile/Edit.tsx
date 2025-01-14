@@ -4,17 +4,22 @@ import UpdateProfileInformationForm from "./Partials/ProfileInformation/UpdatePr
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { Head } from "@inertiajs/react";
 import Settings from "./Partials/Settings";
+import { ADDRESSTYPE } from "../PDS/Types/PersonalInformation";
 
 function Edit({
     mustVerifyEmail,
     status,
     tab,
+    address,
 }: PageProps<{
     mustVerifyEmail: boolean;
     status?: string;
     tab?: "account" | "password" | "settings";
+    address: {
+        permanent: ADDRESSTYPE;
+        residential: ADDRESSTYPE;
+    };
 }>) {
-
     return (
         <div className="py-8">
             <Head title="Account" />
@@ -29,6 +34,7 @@ function Edit({
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
+                            address={address}
                         />
                     </TabsContent>
                     <TabsContent value="password" className="pt-4">

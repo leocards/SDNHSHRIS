@@ -55,7 +55,7 @@ const HeaderNavigationBar: React.FC<Props> = ({}) => {
                                 asChild
                                 className="px-1.5 pr-2 py-1 !h-10"
                             >
-                                <ProfilePhoto className="size-7" />
+                                <ProfilePhoto src={user.avatar} className="size-7" />
 
                                 <div className="text-left max-lg:hidden min-w-20">
                                     <div className="line-clamp-1">
@@ -139,7 +139,7 @@ const HeaderNavigationBar: React.FC<Props> = ({}) => {
                         className="min-w-[12rem] max-w-[14rem]"
                     >
                         <div className="flex items-center gap-2 mb-2">
-                            <ProfilePhoto
+                            <ProfilePhoto src={user.avatar}
                                 className="size-7"
                                 fallbackSize={15}
                             />

@@ -64,7 +64,7 @@ const ProfilePhoto: React.FC<{
     return (
         <div className={cn("size-fit relative")}>
             <Avatar className={cn(className)}>
-                <AvatarImage src={src} alt="profile" />
+                <AvatarImage src={src} alt="profile" className="object-cover" />
                 <AvatarFallback>
                     <User size={fallbackSize} />
                 </AvatarFallback>

@@ -115,6 +115,7 @@ interface Props {
     withClear?: boolean;
     hasPrincipal?: boolean;
     onFormSubmit?: () => void;
+    cancelButton?: React.ReactNode;
 }
 
 const AccountInformationForm: React.FC<Props> = ({
@@ -126,6 +127,7 @@ const AccountInformationForm: React.FC<Props> = ({
     onFormSubmit,
     form,
     hasPrincipal,
+    cancelButton,
     ...props
 }) => {
     const watchDepartment = form.watch(
@@ -442,6 +444,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                 Clear form
                             </Button>
                         )}
+                        {cancelButton && cancelButton}
                         <Button className="ml-auto">Save changes</Button>
                     </div>
                 </form>
