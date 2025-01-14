@@ -16,7 +16,7 @@ class Leave extends Model
         "others",
         "daysapplied",
         "from",
-        "fo",
+        "to",
         "commutation",
         "principalstatus",
         "principaldisapprovedmsg",
@@ -24,13 +24,14 @@ class Leave extends Model
         "hrdisapprovedmsg",
         "details",
         "detailsinput",
-        "withpay"
+        // "approvedfor"
     ];
 
     protected function casts(): array
     {
         return [
-            "withpay" => "boolean"
+            "withpay" => "boolean",
+            // "approvedfor" => "json"
         ];
     }
 
