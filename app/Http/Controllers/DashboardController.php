@@ -24,7 +24,6 @@ class DashboardController extends Controller
 
         $lastSevenSchoolYears = SchoolYear::latest()->limit(7)->get()?->pluck('id');
 
-
         return Inertia::render('Dashboard/Dashboard', [
             "isChangePassword" => $isChangePassword,
             "totalpersonnel" => User::whereNot('role', 'hr')->count(),

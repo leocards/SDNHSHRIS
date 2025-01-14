@@ -54,8 +54,10 @@ class LeaveController extends Controller
             })
             ->when($role != "hr" && $role != "principal", function ($query) use ($status) {
                 $query->where('user_id', Auth::id())
-                    ->where('hrstatus', $status)
-                    ->orWhere('principalstatus', $status);
+                    ->where(function ($query) use ($status) {
+                        $query->where('hrstatus', $status)
+                        ->orWhere('principalstatus', $status);
+                    });
             })
             ->latest()
             ->paginate($this->page);
@@ -102,6 +104,7 @@ class LeaveController extends Controller
 
     public function store(LeaveRequest $request)
     {
+
         DB::beginTransaction();
         try {
             $auth = $request->user();
@@ -161,14 +164,20 @@ class LeaveController extends Controller
                     throw new Exception("You are not yet allowed to use this type of leave.", 1);
                 }
             } else {
-                if ($auth->role === "non-teaching" || $auth->role === "principal") {
-                    $servicecredits = $auth->serviceRecord()
+                $servicecredits = $auth->serviceRecord()
                         ->where('status', 'approved')
                         ->get()
                         ->reduce(function ($carry, $sr) {
-                            return $carry + $sr['credits'];
+                            return $carry + $sr->details['remainingcredits'];
                         }, 0);
 
+                if ($auth->role === "non-teaching" || $auth->role === "principal") {
+                    $credits = $auth->credits;
+
+                    if (($servicecredits + $credits) < (int) $request->daysapplied) {
+                        throw new Exception("You don't have enough credits.", 1);
+                    }
+                } else {
                     if ($servicecredits < (int) $request->daysapplied) {
                         throw new Exception("You don't have enough credits.", 1);
                     }
@@ -267,6 +276,9 @@ class LeaveController extends Controller
         DB::beginTransaction();
         try {
             $auth = $request->user();
+            $leaveApplicant = $leave->user;
+
+            // dd($leaveApplicant);
 
             if ($auth->role == 'hr') {
                 $leave->hrstatus = $request->response;
@@ -274,14 +286,14 @@ class LeaveController extends Controller
 
                 // deduct credits for principal that applies leave
                 if ($leave->user->role === "principal") {
-                    $this->processCreditDeduction($auth, $leave);
+                    $this->processCreditDeduction($leaveApplicant, $leave);
                 }
             } else if ($auth->role == 'principal') {
                 $leave->principalstatus = $request->response;
                 $leave->principaldisapprovedmsg = $request->message;
 
                 if ($leave->type !== "maternity" && $request->response == "approved") {
-                    $this->processCreditDeduction($auth, $leave);
+                    $this->processCreditDeduction($leaveApplicant, $leave);
                 }
             }
 
@@ -335,35 +347,39 @@ class LeaveController extends Controller
 
             $credits = $leave->daysapplied;
 
-            foreach ($sr as $key => $value) {
-                $srcredit = $value->details['credits'];
-                $credits = $srcredit + $credits;
+            foreach ($sr as $value) {
+                $details = $value->details;
+
+                $srcredit = $details['remainingcredits'];
+                $credits = $srcredit - $credits;
 
                 if ($credits < 0) {
-                    $value->details['remainingcredits'] = 0;
-                    $value->details['creditstatus'] = "used";
+                    $details['remainingcredits'] = 0;
+                    $details['creditstatus'] = "used";
+                    $value->details = $details;
                     $value->save();
                 } else if ($credits === 0) {
-                    $value->details['remainingcredits'] = 0;
-                    $value->details['creditstatus'] = "used";
+                    $details['remainingcredits'] = 0;
+                    $details['creditstatus'] = "used";
+                    $value->details = $details;
                     $value->save();
 
-                    $user->credit = 0;
+                    $user->credits = 0;
                     $user->save();
 
                     break;
                 } else {
-                    $value->details['remainingcredits'] = $credits;
-                    $value->details['creditstatus'] = "pending";
+                    $details['remainingcredits'] = $credits;
+                    $details['creditstatus'] = "pending";
+                    $value->details = $details;
                     $value->save();
 
-                    $user->credit = 0;
+                    $user->credits = 0;
                     $user->save();
 
                     break;
                 }
             }
-
 
             $user->save();
         } else {
@@ -371,7 +387,7 @@ class LeaveController extends Controller
                 $user->splcredits = $user->splcredits - $leave->daysapplied;
                 $user->save();
             } else {
-                $remaincredit = $user->credit - $leave->daysapplied;
+                $remaincredit = $user->credits - $leave->daysapplied;
 
                 if ($remaincredit < 0) {
                     // use credits
@@ -383,39 +399,45 @@ class LeaveController extends Controller
                     $totalremain = $remaincredit;
 
                     foreach ($sr as $value) {
-                        $srcredit = $value->details['credits'];
+                        $details = $value->details;
+                        $srcredit = $value->details['remainingcredits'];
                         $totalremain = $srcredit + $totalremain;
 
                         if ($totalremain < 0) {
-                            $value->details['remainingcredits'] = 0;
-                            $value->details['creditstatus'] = "used";
+                            $details['remainingcredits'] = 0;
+                            $details['creditstatus'] = "used";
+                            $value->details = $details;
                             $value->save();
                         } else if ($totalremain === 0) {
-                            $value->details['remainingcredits'] = 0;
-                            $value->details['creditstatus'] = "used";
+                            $details['remainingcredits'] = 0;
+                            $details['creditstatus'] = "used";
+                            $value->details = $details;
                             $value->save();
 
-                            $user->credit = 0;
+                            $user->credits = 0;
                             $user->save();
 
                             break;
                         } else {
-                            $value->details['remainingcredits'] = $totalremain;
-                            $value->details['creditstatus'] = "pending";
+                            $details['remainingcredits'] = $totalremain;
+                            $details['creditstatus'] = "pending";
+                            $value->details = $details;
                             $value->save();
 
-                            $user->credit = 0;
+                            $user->credits = 0;
                             $user->save();
 
                             break;
                         }
                     }
                 } else {
-                    $user->credit = $remaincredit;
+                    $user->credits = $remaincredit;
                     $user->save();
                 }
             }
         }
+
+        // dd($user->credits);
     }
 
     function verifyDateFiveDaysAhead($filingfrom, $inputDate)

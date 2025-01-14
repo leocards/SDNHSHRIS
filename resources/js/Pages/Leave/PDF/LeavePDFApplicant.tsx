@@ -2,7 +2,7 @@ import { cn } from "@/Lib/utils";
 import { User } from "@/Types";
 import { format } from "date-fns";
 import { APPLICATIONFORLEAVETYPES } from "./type";
-import { formatDateRange } from "@/Types/types";
+import { Departments, formatDateRange } from "@/Types/types";
 
 const LeavePDFApplicant = ({
     leave,
@@ -19,7 +19,7 @@ const LeavePDFApplicant = ({
                     <div className={cn(isDownload && "print:mt-auto -mt-1.5")}>
                         1. Office/department
                     </div>
-                    <div className="mt-0.5 pl-3">{department??"N/A"}</div>
+                    <div className="mt-0.5 pl-3">{Departments[department]??"N/A"}</div>
                 </div>
                 <div className="flex flex-col">
                     <div className="grid grid-cols-[3.5rem,1fr]">

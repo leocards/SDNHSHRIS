@@ -22,11 +22,9 @@ const ActiveLeave = ({ activeleave }: Props) => {
         if (selectedLeave)
             return getTimeRemains({
                 from: new Date(selectedLeave?.from ?? ""),
-                to: new Date(selectedLeave?.to ?? ""),
+                to: selectedLeave?.to ? new Date(selectedLeave?.to ?? "") : undefined,
             });
     }, [selectedLeave]);
-
-    console.log(selectedLeave)
 
     return (
         <Card className="shadow-sm border border-border rounded-lg relative">
@@ -52,7 +50,7 @@ const ActiveLeave = ({ activeleave }: Props) => {
                             key={index}
                         >
                             <div>
-                                <div className="font-medium">{leave.type}</div>
+                                <div className="font-medium">{LEAVETYPESOBJ[leave.type]}</div>
 
                                 <div className="text-sm">
                                     {leave.user?.name}
@@ -65,12 +63,12 @@ const ActiveLeave = ({ activeleave }: Props) => {
                                 })}
                                 {getTimeRemains({
                                     from: new Date(leave?.from ?? ""),
-                                    to: new Date(leave?.to ?? ""),
+                                    to: leave?.to ? new Date(leave?.to ?? "") : undefined,
                                 }) == "active" ? (
                                     <div className="text-green-600 text-xs capitalize">
                                         {getTimeRemains({
                                             from: new Date(leave?.from ?? ""),
-                                            to: new Date(leave?.to ?? ""),
+                                            to: leave?.to ? new Date(leave?.to ?? "") : undefined,
                                         })}
                                     </div>
                                 ) : (
@@ -78,7 +76,7 @@ const ActiveLeave = ({ activeleave }: Props) => {
                                         Time remaining:{" "}
                                         {getTimeRemains({
                                             from: new Date(leave?.from ?? ""),
-                                            to: new Date(leave?.to ?? ""),
+                                            to: leave?.to ? new Date(leave?.to ?? "") : undefined,
                                         })}
                                     </div>
                                 )}
@@ -131,7 +129,7 @@ const ActiveLeave = ({ activeleave }: Props) => {
                     <CalendarView
                         date={{
                             from: new Date(selectedLeave?.from ?? ""),
-                            to: new Date(selectedLeave?.to ?? ""),
+                            to: selectedLeave?.to ? new Date(selectedLeave?.to ?? "") : undefined,
                         }}
                     />
                 </div>
