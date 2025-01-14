@@ -45,7 +45,7 @@ return new class extends Migration
             $table->text('hrdisapprovedmsg')->nullable();
             $table->enum('details', ['vphilippines', 'vabroad', 'shospital', 'spatient', 'degree', 'examreview', 'monitization', 'terminal']);
             $table->string('detailsinput', 1000)->nullable();
-            $table->boolean('withpay')->default(true);
+            // $table->boolean('withpay')->default(true);
 
             $table->timestamps();
             $table->softDeletes();
