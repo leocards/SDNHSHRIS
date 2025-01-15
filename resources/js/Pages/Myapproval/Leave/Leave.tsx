@@ -235,7 +235,7 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                     style={{ gridTemplateColumns: column }}
                                 >
                                     <div className="gap-2">
-                                        <ProfilePhoto src={leave?.avatar} />
+                                        <ProfilePhoto src={leave?.user.avatar} />
                                         <div className="line-clamp-1 break-words">
                                             {leave?.user?.name}
                                         </div>
