@@ -29,7 +29,7 @@ type Props = ModalProps & {};
 
 const UploadProfilePhoto = ({ show, onClose }: Props) => {
     const { toast } = useToast();
-    const form = useFormSubmit({
+    const form = useFormSubmit<IFormProfilePhoto>({
         route: route("profile.profile.upload"),
         method: "post",
         schema: PROFILEPHOTOSCHEMA,

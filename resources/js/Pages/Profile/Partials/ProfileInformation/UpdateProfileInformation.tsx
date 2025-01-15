@@ -80,8 +80,6 @@ export default function UpdateProfileInformation({
         },
     });
 
-    console.log(address)
-
     return show ? (
         <div className="pt-4">
             <div className="font-semibold text-xl">Update Profile</div>
