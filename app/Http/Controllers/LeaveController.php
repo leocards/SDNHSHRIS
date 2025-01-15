@@ -107,7 +107,6 @@ class LeaveController extends Controller
 
         DB::beginTransaction();
         try {
-            throw new Exception('test');
             $auth = $request->user();
             $sy = SchoolYear::latest()->first();
             $gender = $auth->gender;
