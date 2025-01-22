@@ -39,11 +39,10 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
     {
         $user = User::find($leave->user_id);
 
-        // if the leave applicatioin is not from principal
+        // if the leave application is not from principal
         if($user->role != 'principal') {
             $hr = User::where('role', 'hr')->first();
             $principal = User::where('role', 'principal')->first();
-
 
             // if hr have responded, send notification to personnel
             if($leave->hrstatus != "pending" && $leave->principalstatus == "pending") {
@@ -52,7 +51,7 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
                     'user_id' => $user->id,
                     'type' => 'leave',
                     'details' => collect([
-                        'link' => route('myapproval.leave.view', [$leave->id]),
+                        'link' => route('leave.view', [$leave->id]),
                         'name' =>  "HR",
                         'avatar' => $hr->avatar,
                         'message' => 'has '.$leave->hrstatus.' your application for leave, and it is now pending the principal\'s approval.'
@@ -108,8 +107,6 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
                         ]
                     ));
             }
-
-
         } else {
             // when the principal send leave application
 
