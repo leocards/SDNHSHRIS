@@ -74,6 +74,10 @@
     }
 }
 @layer base {
+    ::-ms-reveal
+    {
+        display: none;
+    }
     * {
         @apply border-border;
 

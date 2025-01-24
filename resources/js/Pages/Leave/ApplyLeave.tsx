@@ -363,17 +363,18 @@ const ApplyLeave = () => {
                                             disabled={!watchDatesFrom}
                                             disableDate={(date) => {
                                                 let toDay = date;
+                                                let from = watchDatesFrom!;
                                                 let now = new Date();
                                                 toDay.setHours(0, 0, 0, 0);
                                                 now.setHours(0, 0, 0, 0);
+                                                from.setHours(0, 0, 0, 0);
+
                                                 if (
                                                     watchLeaveType !==
                                                     "maternity"
                                                 ) {
                                                     return (
-                                                        isWeekend(date) ||
-                                                        toDay.getTime() <
-                                                            now.getTime()
+                                                        isWeekend(date) || toDay.getTime() <= from.getTime()
                                                     );
                                                 } else return false;
                                             }}

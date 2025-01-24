@@ -164,6 +164,7 @@ class LeaveController extends Controller
                     throw new Exception("You are not yet allowed to use this type of leave.", 1);
                 }
             } else {
+                // validation for sick leave
                 $servicecredits = $auth->serviceRecord()
                         ->where('status', 'approved')
                         ->get()
@@ -177,11 +178,11 @@ class LeaveController extends Controller
                     if (($servicecredits + $credits) < (int) $request->daysapplied) {
                         throw new Exception("You don't have enough credits.", 1);
                     }
-                } else {
+                }/*  else {
                     if ($servicecredits < (int) $request->daysapplied) {
                         throw new Exception("You don't have enough credits.", 1);
                     }
-                }
+                } */
             }
 
             $leave = Leave::create([
