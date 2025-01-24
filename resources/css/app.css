@@ -119,6 +119,18 @@
         margin-right: 11.2px !important;
     } */
 
+    /* Hide the spin buttons in WebKit browsers */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Hide spin buttons in Firefox
+    input[type="number"] {
+        -moz-appearance: textfield;
+    } */
+
     .header-nav {
         @apply border-b h-14 w-full px-3 sticky top-0 flex items-center bg-background z-50;
     }
@@ -150,9 +162,6 @@
 
     .filepond--hopper {
         @apply m-0
-    }
-
-    .filepond--panel-root {
     }
 
     .filepond--panel-root {

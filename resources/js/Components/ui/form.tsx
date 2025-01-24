@@ -196,7 +196,6 @@ type CustomFormProps = {
     required?: boolean;
     placeholder?: string;
     disabled?: boolean;
-    password?: boolean;
     labelClass?: string;
 };
 
@@ -208,7 +207,8 @@ const FormInput: React.FC<
         disablePasswordToggle?: boolean;
         inputBlockClass?: string;
         itemClass?: string;
-        type?: string;
+        type?: React.HTMLInputTypeAttribute;
+        maxLength?: number;
     }
 > = ({
     form,
@@ -226,9 +226,7 @@ const FormInput: React.FC<
     ...props
 }) => {
     const inputRef = React.useRef<HTMLInputElement | null>(null);
-    const [inputType, setInputType] = React.useState(
-        props.password ? "password" : type
-    );
+    const [inputType, setInputType] = React.useState(type);
 
     return (
         <FormField
@@ -273,10 +271,11 @@ const FormInput: React.FC<
                                     )}
                                     placeholder={placeholder}
                                     disabled={disabled}
+                                    maxLength={props.maxLength}
                                 />
                             )}
                         </FormControl>
-                        {props.password && !disablePasswordToggle && (
+                        {type === "password" && !disablePasswordToggle && (
                             <Button
                                 type="button"
                                 size="icon"

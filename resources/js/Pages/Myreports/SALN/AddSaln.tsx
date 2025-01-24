@@ -51,6 +51,8 @@ const AddSaln = ({ saln, year, show, onClose }: Props) => {
         schema: SALNSCHEMA,
         defaultValues: {
             year: year,
+            networth: '',
+            spouse: '',
         },
         async: true,
         callback: {
@@ -153,6 +155,7 @@ const AddSaln = ({ saln, year, show, onClose }: Props) => {
                             form={form}
                             name="networth"
                             label="Networth"
+                            type="currency"
                         />
 
                         <FormInput

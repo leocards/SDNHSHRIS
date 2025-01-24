@@ -178,6 +178,7 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({ data }) => {
                                         name={`we.${index}.monthlysalary`}
                                         label="Monthly salary"
                                         inputClass="uppercase"
+                                        type="currency"
                                     />
                                     <FormInput
                                         form={form}

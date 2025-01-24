@@ -32,7 +32,19 @@ const IPCRSCHEMA = z.object({
     schoolyear: z.number({ required_error: requiredError("school year") }),
     personnel: z.number({ required_error: requiredError("personnel") }),
     rating: z.string().min(1, requiredError("performance rating")),
+}).superRefine(({rating}, ctx) => {
+    if(rating) {
+        const num = parseFloat(rating)
+        if(num < 1 || num > 5) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Performance rating must be between 1 and 5.",
+                path: ["rating"]
+            })
+        }
+    }
 });
+
 type IFormIPCR = z.infer<typeof IPCRSCHEMA>;
 
 type Props = ModalProps & {
@@ -134,6 +146,7 @@ const AddIpcr = ({ schoolyears, ipcr, show, onClose }: Props) => {
                             form={form}
                             name="rating"
                             label="Performance rating"
+                            type="number"
                         />
                     </div>
 

@@ -277,7 +277,9 @@ const AccountInformationForm: React.FC<Props> = ({
                                 form={form}
                                 name="contact.mobilenumber"
                                 label="Mobile number"
+                                type="number"
                                 required={false}
+                                maxLength={10}
                                 icon={
                                     <div className="font-medium !opacity-100 text-sm">
                                         +63
@@ -426,7 +428,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                     form={form}
                                     name="password"
                                     label="Password"
-                                    password
+                                    type="password"
                                     icon={<PasswordCheck className="size-5" />}
                                 />
                             </div>

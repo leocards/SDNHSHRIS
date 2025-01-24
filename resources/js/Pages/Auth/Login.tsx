@@ -160,7 +160,7 @@ export default function Login({ status }: Props) {
                                     form={form}
                                     name="password"
                                     label="Password"
-                                    password
+                                    type="password"
                                     icon={<PasswordCheck className="size-5" />}
                                 />
                             </div>

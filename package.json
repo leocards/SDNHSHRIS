@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "build": "tsc && vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "start:all": "concurrently \"php artisan serve\" \"php artisan reverb:start\" \"php artisan queue:work\" \"npm run dev\""
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",

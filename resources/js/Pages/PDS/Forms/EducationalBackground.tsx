@@ -202,6 +202,9 @@ const Education: React.FC<{ form: any; name: string; edLevel: string }> = ({
                                     form={form}
                                     name={`${name}.${index}.yeargraduated`}
                                     label="Year Graduated"
+                                    placeholder="YYYY"
+                                    type="number"
+                                    maxLength={4}
                                 />
                                 <FormInput
                                     form={form}

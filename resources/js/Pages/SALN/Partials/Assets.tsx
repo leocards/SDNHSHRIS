@@ -107,6 +107,9 @@ const Assets = ({ form }: Props) => {
                                 form={form}
                                 name={`assets.real.${index}.acquisition.year`}
                                 label="Acquisition year"
+                                placeholder="YYYY"
+                                type="number"
+                                maxLength={4}
                             />
                             <FormInput
                                 form={form}
@@ -175,6 +178,9 @@ const Assets = ({ form }: Props) => {
                                 form={form}
                                 name={`assets.personal.${index}.yearacquired`}
                                 label="Year acquired"
+                                placeholder="YYYY"
+                                type="number"
+                                maxLength={4}
                             />
                             <FormInput
                                 form={form}

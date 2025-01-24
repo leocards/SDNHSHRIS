@@ -522,6 +522,8 @@ const PersonalInformationForm: React.FC<{
                                 name="mobile"
                                 label="Mobile No."
                                 inputClass="uppercase"
+                                type="number"
+                                maxLength={10}
                                 icon={
                                     <div className="font-medium !opacity-100 text-sm">
                                         +63

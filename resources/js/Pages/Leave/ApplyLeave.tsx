@@ -163,6 +163,7 @@ const ApplyLeave = () => {
                                 form={form}
                                 name="salary"
                                 label="Salary"
+                                type="currency"
                             />
                         </div>
 
