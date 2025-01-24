@@ -92,7 +92,7 @@ class LeaveController extends Controller
         $isWeekday = $currentDateTime->isWeekday();
 
         // temporary bypass
-        return Inertia::render('Leave/ApplyLeave', []);
+        // return Inertia::render('Leave/ApplyLeave', []);
 
         // Final check: Is it during working hours and on a weekday?
         if ($isWithinHours && $isWeekday) {
