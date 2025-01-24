@@ -38,10 +38,10 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
     public function updated(Leave $leave): void
     {
         $user = User::find($leave->user_id);
+        $hr = User::where('role', 'hr')->first();
 
         // if the leave application is not from principal
         if($user->role != 'principal') {
-            $hr = User::where('role', 'hr')->first();
             $principal = User::where('role', 'principal')->first();
 
             // if hr have responded, send notification to personnel
@@ -108,11 +108,17 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
                     ));
             }
         } else {
-            // when the principal send leave application
-
+            Notification::create([
+                'user_id' => $leave->user_id,
+                'type' => 'leave',
+                'details' => collect([
+                    'link' => route('leave.view', [$leave->id]),
+                    'name' =>  "HR",
+                    'avatar' => $hr->avatar,
+                    'message' => 'has '.$leave->hrstatus.' your application for leave.'
+                ])->toArray()
+            ]);
         }
-
-
     }
 
     /**
