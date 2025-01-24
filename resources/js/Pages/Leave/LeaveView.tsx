@@ -20,14 +20,16 @@ import LeavePDF from "./PDF/LeavePDF";
 import SubmitMedical from "./SubmitMedical";
 import { cn } from "@/Lib/utils";
 import LeaveResponse from "../Myapproval/Leave/LeaveResponse";
+import { User } from "@/Types";
 
 export type LeaveViewProps = {
     leave: APPLICATIONFORLEAVETYPES;
     hr: string;
+    applicant: {full_name: string; } & Pick<User, "role">
     principal: PRINCIPAL;
 };
 
-const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal }) => {
+const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal, applicant }) => {
     const role = usePage().props.auth.user.role;
     const [viewDetails, setViewDetails] = useState(false);
     const contentRef = useRef<HTMLDivElement | null>(null);
@@ -178,6 +180,7 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal }) => {
                                 position: "No principal",
                             }
                         }
+                        applicant={applicant}
                     />
                     <LeavePDF
                         ref={download_pdf.targetRef}
@@ -191,6 +194,7 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal }) => {
                                 position: "No principal",
                             }
                         }
+                        applicant={applicant}
                     />
                 </div>
             </div>

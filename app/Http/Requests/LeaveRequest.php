@@ -39,7 +39,7 @@ class LeaveRequest extends FormRequest
                     }
                 }
             ],
-            'salary' => ['required', 'numeric'],
+            'salary' => ['required'],
             'type' => ['required', 'in:vacation,mandatory,sick,maternity,paternity,spl,solo,study,vowc,rehabilitation,slbw,emergency,adoption,others'],
             'others' => ['required_if:type,others'],
             'details' => ['required'],

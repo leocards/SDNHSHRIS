@@ -5,11 +5,12 @@ import LeavePDFDetailsOfApplication from "./LeavePDFDetailsOfApplication";
 import LeavePDFDetailsOfActionOnApplication from "./LeavePDFDetailsOfActionOnApplication";
 import DepEdLogo from "@/Assets/images/DepEd.png";
 import { APPLICATIONFORLEAVETYPES, PRINCIPAL } from "./type";
+import { User } from "@/Types";
 
 const LeavePDF = React.forwardRef<
     HTMLDivElement,
-    { isDownload?: boolean; leave: APPLICATIONFORLEAVETYPES; hr: string; principal: PRINCIPAL }
->(({ isDownload, leave, hr, principal }, ref) => {
+    { isDownload?: boolean; leave: APPLICATIONFORLEAVETYPES; hr: string; principal: PRINCIPAL; applicant: {full_name: string} & Pick<User, "role"> }
+>(({ isDownload, leave, hr, principal, applicant }, ref) => {
 
     return (
         <div ref={ref} className="w-[790px] shrink-0 mx-auto text-[11px]">
@@ -63,12 +64,14 @@ const LeavePDF = React.forwardRef<
                     <LeavePDFDetailsOfApplication
                         isDownload={isDownload}
                         leave={leave}
+                        applicant={applicant}
                     />
 
                     <LeavePDFDetailsOfActionOnApplication
                         isDownload={isDownload}
                         hr={hr}
                         principal={principal}
+                        applicant={applicant}
                     />
                 </div>
             </div>

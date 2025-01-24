@@ -5,10 +5,12 @@ import { Square, SquareCheck } from "lucide-react";
 import React from "react";
 import { APPLICATIONFORLEAVETYPES } from "./type";
 import { LEAVETYPEKEYSARRAY, LEAVETYPESOBJ } from "../Types/leavetypes";
+import { User } from "@/Types";
 
 type Props = {
     isDownload?: boolean;
     leave: APPLICATIONFORLEAVETYPES
+    applicant: {full_name: string} & Pick<User, "role">
 };
 
 const LeavePDFDetailsOfApplication = (
@@ -16,7 +18,8 @@ const LeavePDFDetailsOfApplication = (
 ) => {
     const {
         isDownload,
-        leave: { type, details, detailsinput, from, to, others, commutation, daysapplied }
+        leave: { type, details, detailsinput, from, to, others, commutation, daysapplied },
+        applicant
     } = props;
 
 
@@ -223,7 +226,7 @@ const LeavePDFDetailsOfApplication = (
                 "border-t border-black grid grid-cols-[1.25fr,1fr] divide-x divide-black h-[6.5rem] [&>div]:p-[1pt]",
                 isDownload ? "border-black divide-black" : "dark:border-border dark:divide-border border-black divide-black"
             )}>
-                <div>
+                <div className="uppercase">
                     <div className={cn("uppercase", isDownload && "-mt-1.5")}>
                         6.C Number of working days applied for
                     </div>
@@ -290,7 +293,7 @@ const LeavePDFDetailsOfApplication = (
                                 "h-4 text-center font-bold uppercase"
                             )}
                         >
-                            <div className={cn(isDownload && "-mt-3")}></div>
+                            <div className={cn(isDownload && "-mt-3")}>{applicant.full_name}</div>
                         </div>
                         <div
                             className={cn(

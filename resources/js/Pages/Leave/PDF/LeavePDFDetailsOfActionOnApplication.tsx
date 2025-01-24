@@ -1,14 +1,16 @@
 import { cn } from "@/Lib/utils";
 import { Square, SquareCheck } from "lucide-react";
 import { PRINCIPAL } from "./type";
+import { User } from "@/Types";
 
 type Props = {
     isDownload?: boolean;
     hr: string;
     principal: PRINCIPAL;
+    applicant: {full_name: string} & Pick<User, "role">
 };
 const LeavePDFDetailsOfActionOnApplication = (props: Props) => {
-    const { isDownload, hr, principal } = props;
+    const { isDownload, principal, applicant } = props;
 
     return (
         <>
@@ -280,10 +282,14 @@ const LeavePDFDetailsOfActionOnApplication = (props: Props) => {
                                 )}
                             >
                                 <div className={cn(isDownload && "-mt-5")}>
-                                    <div>{principal?.name}</div>
-                                    <div className="capitalize font-normal">
-                                        {principal?.position}
-                                    </div>
+                                    {applicant.role === "principal" ? <>
+                                        <div>Basilio P. Mana-ay, Jr. Ceso VI</div>
+                                    </> : <>
+                                        <div>{principal?.name}</div>
+                                        <div className="capitalize font-normal">
+                                            {principal?.position}
+                                        </div>
+                                    </> }
                                 </div>
                             </div>
                             <div
@@ -296,7 +302,7 @@ const LeavePDFDetailsOfActionOnApplication = (props: Props) => {
                                 )}
                             >
                                 <div className={cn(isDownload && "-mt-1")}>
-                                    Immediate Supervisor
+                                    {applicant.role === "principal" ? "Assistant Schools Division Superintendent":"Immediate Supervisor"}
                                 </div>
                             </div>
                         </div>
@@ -383,11 +389,12 @@ const LeavePDFDetailsOfActionOnApplication = (props: Props) => {
             <div className="pt-10 mb-2">
                 <div className="w-[50%] mx-auto">
                     <div className="h-4 text-center font-bold uppercase">
-                        Basilio P. Mana-ay, Jr. Ceso VI
+                        {applicant.role === "principal" ? "Jinky B. Filman, CESO VI" : "Basilio P. Mana-ay, Jr. Ceso VI"}
                     </div>
                     <div className={cn("pt-0.5 text-center ")}>
                         <div className={cn(isDownload && "-mt-1 mb-4")}>
-                            Assistant Schools Division Superintendent
+                            {applicant.role === "principal" ? "Schools Division Superintendent" : "Assistant Schools Division Superintendent"}
+
                         </div>
                     </div>
                 </div>

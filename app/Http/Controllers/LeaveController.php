@@ -248,6 +248,7 @@ class LeaveController extends Controller
                 return response()->json(collect([
                     'leave' => $leave,
                     'hr' => User::where('role', 'hr')->first()->name,
+                    'applicant' => $leave->user()->first()->only(['name', 'full_name', 'role']),
                     'principal' => User::where('role', 'principal')->first()?->only(['name', 'full_name', 'position'])
                 ]));
             }
@@ -255,6 +256,7 @@ class LeaveController extends Controller
             return Inertia::render('Myapproval/Leave/LeaveView', [
                 'leave' => $leave,
                 'hr' => User::where('role', 'hr')->first()->name,
+                'applicant' => $leave->user()->first()->only(['name', 'full_name', 'role']),
                 'principal' => User::where('role', 'principal')->first()?->only(['name', 'full_name', 'position'])
             ]);
         }
@@ -262,6 +264,7 @@ class LeaveController extends Controller
         return Inertia::render('Leave/LeaveView', [
             'leave' => $leave,
             'hr' => User::where('role', 'hr')->first()->name,
+            'applicant' => $leave->user()->first()->only(['name', 'full_name', 'role']),
             'principal' => User::where('role', 'principal')->first()?->only(['name', 'full_name', 'position'])
         ]);
     }
