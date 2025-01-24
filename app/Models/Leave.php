@@ -24,14 +24,12 @@ class Leave extends Model
         "hrdisapprovedmsg",
         "details",
         "detailsinput",
-        "approvedfor",
         "notifiedDueMedical"
     ];
 
     protected function casts(): array
     {
         return [
-            "approvedfor" => "json",
             "notifiedDueMedical" => "boolean"
         ];
     }

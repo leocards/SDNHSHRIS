@@ -24,7 +24,6 @@ class LeaveRequest extends FormRequest
         return [
             'filingfrom' => ['required', 'date'],
             'filingto' => [
-                'required',
                 'nullable',
                 'date',
                 'after_or_equal:filingfrom',
