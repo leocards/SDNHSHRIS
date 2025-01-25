@@ -19,7 +19,7 @@ import {
 import { SelectItem } from "@/Components/ui/select";
 import { LEAVETYPEKEYSARRAY, LEAVETYPESOBJ } from "./Types/leavetypes";
 import { Button } from "@/Components/ui/button";
-import { eachDayOfInterval, isWeekend } from "date-fns";
+import { eachDayOfInterval, isToday, isTomorrow, isWeekend, isYesterday } from "date-fns";
 import { countWeekdaysInRange } from "./Types/Methods";
 import FilePondUploader from "@/Components/FilePondUploader";
 import { cn } from "@/Lib/utils";
@@ -350,7 +350,7 @@ const ApplyLeave = () => {
                                                 } else if (
                                                     watchLeaveType == "sick"
                                                 )
-                                                    return isWeekend(date);
+                                                    return isWeekend(date) || !(isYesterday(date) || isToday(date) || isTomorrow(date));
                                                 else return false;
                                             }}
                                         />
