@@ -19,7 +19,6 @@ class GeneralSearchController extends Controller
                     ->orWhere('lastname', 'LIKE', "{$search}%")
                     ->orWhere('extensionname', 'LIKE', "{$search}%")
                     ->orWhere('middlename', 'LIKE', "{$search}%")
-                    ->orWhere('birthplace', 'LIKE', "{$search}%")
                     ->orWhere('mobilenumber', 'LIKE', "{$search}%");
             })->orWhereHas('serviceRecord', function ($query) use ($search) {
                 $query->where('details->name', 'LIKE', "{$search}%");
@@ -83,6 +82,9 @@ class GeneralSearchController extends Controller
                 });
         })
         ->select(['id', 'firstname', 'middlename', 'lastname', 'position', 'department', 'credits'])
+        ->withSum(['serviceRecord as sr' => function ($query) {
+            $query->where('status', 'approved')->where('details->creditstatus', 'pending');
+        }], 'details->remainingcredits')
         ->excludeHr()
         ->orderBy("lastname", "asc")
         ->paginate($this->page);

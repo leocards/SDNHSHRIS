@@ -17,15 +17,15 @@ import { SearchNormal1 } from "iconsax-react";
 import { X } from "lucide-react";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-type GENERALSEARCHTYPE = User;
+type GENERALSEARCHTYPE = User & { sr: number | null};
 
 type Props = {
-    user: PAGINATEDDATA<User>;
+    user: PAGINATEDDATA<GENERALSEARCHTYPE>;
 };
 
 const GeneralSearch = (props: Props) => {
     return (
-        <PaginateProvider<User>
+        <PaginateProvider<GENERALSEARCHTYPE>
             pageValue={props.user}
             url={route("general-search")}
         >
@@ -35,7 +35,7 @@ const GeneralSearch = (props: Props) => {
 };
 
 const Main = () => {
-    const { page, onQuery } = usePagination<User>();
+    const { page, onQuery } = usePagination<GENERALSEARCHTYPE>();
     const { setProcess } = useProcessIndicator();
 
     const searchRef = useRef<HTMLInputElement>(null);
@@ -109,7 +109,7 @@ const Main = () => {
                                             : Departments[data.department]}
                                     </div>
                                     <div className="justify-center">
-                                        {data.credits}
+                                        {data.credits + (data.sr??0)}
                                     </div>
                                     <div className="justify-center">
                                         <Button
