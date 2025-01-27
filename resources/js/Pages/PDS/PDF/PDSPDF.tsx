@@ -63,6 +63,7 @@ type PDSPDFProps = {
     tab: PDSTABSTYPE;
     onStatus?: (status: APPROVALTYPE) => void;
     onLoad?: (load: boolean) => void;
+    onEmpty?: (empty: boolean) => void;
 };
 
 const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
@@ -86,6 +87,7 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
                     setData(response.data);
                 } catch (error) {
                     setEmptyData(true);
+                    props.onEmpty?.(true);
                 } finally {
                     setLoading(false);
                     props.onLoad?.(false);

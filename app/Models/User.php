@@ -80,6 +80,18 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get the role of a user
+     *
+     * @param string $role
+     * @return Boolean
+     */
+
+    public function hasRole($role)
+    {
+        return $this->role == $role;
+    }
+
     public function scopeExcludeHr(Builder $query): void
     {
         $query->whereNot('role', 'hr');

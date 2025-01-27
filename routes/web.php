@@ -47,7 +47,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::prefix('general-search')->group(function () {
+    Route::prefix('general-search')->middleware(['role:hr'])->group(function () {
         Route::controller(GeneralSearchController::class)->group(function () {
             Route::get('/', 'index')->name('general-search');
             Route::get('/view/{user}', 'view')->name('general-search.view');
@@ -61,7 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::prefix('announcement')->group(function () {
+    Route::prefix('announcement')->middleware(['role:hr'])->group(function () {
         Route::controller(AnnouncementController::class)->group(function () {
             Route::get('/', 'index')->name('announcement');
 
@@ -69,19 +69,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::post('/school-year', [SchoolYearController::class, 'store'])->name('school-year.store');
-    Route::put('/school-year-update/{schoolYear}', [SchoolYearController::class, 'update'])->name('school-year.update');
+    Route::post('/school-year', [SchoolYearController::class, 'store'])->middleware(['role:hr'])->name('school-year.store');
+    Route::put('/school-year-update/{schoolYear}', [SchoolYearController::class, 'update'])->middleware(['role:hr'])->name('school-year.update');
 
     Route::prefix('personnel')->group(function () {
         Route::controller(PersonnelController::class)->group(function () {
             Route::get('/r/{pt}', 'index')->name('personnel');
-            Route::get('/create/{pt}/{personnel?}', 'create')->name('personnel.create');
+            Route::get('/create/{pt}/{personnel?}', 'create')->middleware(['role:hr'])->name('personnel.create');
 
-            Route::post('/new/{personnelid?}', 'store')->name('personnel.store');
+            Route::post('/new/{personnelid?}', 'store')->middleware(['role:hr'])->name('personnel.store');
         });
 
-        // Taardiness routes
-        Route::controller(TardinessController::class)->group(function () {
+        // Tardiness routes
+        Route::controller(TardinessController::class)->middleware(['role:hr'])->group(function () {
             Route::get('/tardiness', 'index')->name('personnel.tardiness');
             Route::get('/tardiness/personnel-with-tardiness/{sy}/{month}', 'personnelWithoutTardiness')->name('personnel.tardiness.without');
 
@@ -91,7 +91,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::prefix('myapproval')->group(function () {
-        Route::controller(LeaveController::class)->group(function () {
+        Route::controller(LeaveController::class)->middleware(['role:hr,principal'])->group(function () {
             Route::get('/leave', 'index')->name('myapproval.leave');
             Route::get('/leave/view/{leave}', 'view')->name('myapproval.leave.view');
 
@@ -99,10 +99,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         Route::controller(PersonalDataSheetController::class)->group(function () {
-            Route::get('/pds', 'index')->name('myapproval.pds');
+            Route::get('/pds', 'index')->middleware(['role:hr'])->name('myapproval.pds');
         });
 
-        Route::prefix('saln')->group(function () {
+        Route::prefix('saln')->middleware(['role:hr'])->group(function () {
             Route::controller(SalnController::class)->group(function () {
                 Route::get('/', 'index')->name('myapproval.saln');
 
@@ -110,7 +110,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             });
         });
 
-        Route::controller(ServiceRecordController::class)->group(function () {
+        Route::controller(ServiceRecordController::class)->middleware(['role:hr'])->group(function () {
             Route::get('/service-record', 'index')->name('myapproval.sr');
             Route::get('/service-record/view/{sr}', 'view')->name('myapproval.sr.view');
 
@@ -118,7 +118,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::prefix('myreports')->group(function () {
+    Route::prefix('myreports')->middleware(['role:hr'])->group(function () {
         Route::controller(PersonnelController::class)->group(function () {
             Route::get('/list-of-personnel', 'ListOfPersonnel')->name('myreports.lp');
         });
@@ -147,7 +147,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::prefix('leave')->group(function () {
+    Route::prefix('leave')->middleware(['role:teaching,non-teaching,principal'])->group(function () {
         Route::controller(LeaveController::class)->group(function () {
             Route::get('/', 'index')->name('leave');
             Route::get('/apply', 'apply')->name('leave.apply');
@@ -160,42 +160,44 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('pds')->group(function () {
         Route::controller(PersonalDataSheetController::class)->group(function () {
-            Route::get('/', 'index')->name('pds');
+            Route::get('/', 'index')->middleware(['role:teaching,non-teaching,principal'])->name('pds');
             Route::get('/pds/{user}', 'pds')->name('pds.pds');
 
-            Route::post('/pds/import/{user}', 'import')->name('pds.import');
-            Route::post('/pds/response/{user}', 'response')->name('pds.response');
+            Route::post('/pds/import/{user}', 'import')->middleware(['role:hr'])->name('pds.import');
+            Route::post('/pds/response/{user}', 'response')->middleware(['role:hr'])->name('pds.response');
         });
 
-        Route::post('/personal-information', [PdsPersonalInformationController::class, 'store'])->name('pds.store.pi');
-        Route::post('/personal-information-update', [PdsPersonalInformationController::class, 'update'])->name('pds.update.pi');
+        Route::group(['middleware' => ['role:teaching,non-teaching,principal']], function () {
+            Route::post('/personal-information', [PdsPersonalInformationController::class, 'store'])->name('pds.store.pi');
+            Route::post('/personal-information-update', [PdsPersonalInformationController::class, 'update'])->name('pds.update.pi');
 
-        Route::post('/family-background', [PdsFamilyBackgroundController::class, 'store'])->name('pds.store.fb');
-        Route::post('/family-background-update', [PdsFamilyBackgroundController::class, 'update'])->name('pds.update.fb');
+            Route::post('/family-background', [PdsFamilyBackgroundController::class, 'store'])->name('pds.store.fb');
+            Route::post('/family-background-update', [PdsFamilyBackgroundController::class, 'update'])->name('pds.update.fb');
 
-        Route::post('/educational-background', [PdsEducationalBackgroundController::class, 'store'])->name('pds.store.eb');
-        Route::post('/educational-background-update', [PdsEducationalBackgroundController::class, 'update'])->name('pds.update.eb');
+            Route::post('/educational-background', [PdsEducationalBackgroundController::class, 'store'])->name('pds.store.eb');
+            Route::post('/educational-background-update', [PdsEducationalBackgroundController::class, 'update'])->name('pds.update.eb');
 
-        Route::post('/civil-service-eligibility', [PdsCivilServiceController::class, 'store'])->name('pds.store.cse');
-        Route::post('/civil-service-eligibility-update', [PdsCivilServiceController::class, 'update'])->name('pds.update.cse');
+            Route::post('/civil-service-eligibility', [PdsCivilServiceController::class, 'store'])->name('pds.store.cse');
+            Route::post('/civil-service-eligibility-update', [PdsCivilServiceController::class, 'update'])->name('pds.update.cse');
 
-        Route::post('/work-experience', [PdsWorkExperienceController::class, 'store'])->name('pds.store.we');
-        Route::post('/work-experience-update', [PdsWorkExperienceController::class, 'update'])->name('pds.update.we');
+            Route::post('/work-experience', [PdsWorkExperienceController::class, 'store'])->name('pds.store.we');
+            Route::post('/work-experience-update', [PdsWorkExperienceController::class, 'update'])->name('pds.update.we');
 
-        Route::post('/voluntary-work', [PdsVoluntaryWorkController::class, 'store'])->name('pds.store.vw');
-        Route::post('/voluntary-work-update', [PdsVoluntaryWorkController::class, 'update'])->name('pds.update.vw');
+            Route::post('/voluntary-work', [PdsVoluntaryWorkController::class, 'store'])->name('pds.store.vw');
+            Route::post('/voluntary-work-update', [PdsVoluntaryWorkController::class, 'update'])->name('pds.update.vw');
 
-        Route::post('/learning-and-development', [PdsLearningAndDevelopmentController::class, 'store'])->name('pds.store.landd');
-        Route::post('/learning-and-development-update', [PdsLearningAndDevelopmentController::class, 'update'])->name('pds.update.landd');
+            Route::post('/learning-and-development', [PdsLearningAndDevelopmentController::class, 'store'])->name('pds.store.landd');
+            Route::post('/learning-and-development-update', [PdsLearningAndDevelopmentController::class, 'update'])->name('pds.update.landd');
 
-        Route::post('/other-information', [PdsOtherInformationController::class, 'store'])->name('pds.store.oi');
-        Route::post('/other-information-update', [PdsOtherInformationController::class, 'update'])->name('pds.update.oi');
+            Route::post('/other-information', [PdsOtherInformationController::class, 'store'])->name('pds.store.oi');
+            Route::post('/other-information-update', [PdsOtherInformationController::class, 'update'])->name('pds.update.oi');
 
-        Route::post('/c4', [PdsCs4Controller::class, 'store'])->name('pds.store.c4');
-        Route::post('/c4-update', [PdsCs4Controller::class, 'update'])->name('pds.update.c4');
+            Route::post('/c4', [PdsCs4Controller::class, 'store'])->name('pds.store.c4');
+            Route::post('/c4-update', [PdsCs4Controller::class, 'update'])->name('pds.update.c4');
+        });
     });
 
-    Route::prefix('saln')->group(function () {
+    Route::prefix('saln')->middleware(['role:teaching,non-teaching,principal'])->group(function () {
         Route::controller(SalnController::class)->group(function () {
             Route::get('/', 'index')->name('saln');
             Route::get('/new/{saln?}', 'create')->name('saln.create');
@@ -205,13 +207,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::prefix('tardiness')->group(function () {
+    Route::prefix('tardiness')->middleware(['role:teaching,non-teaching,principal'])->group(function () {
         Route::controller(TardinessController::class)->group(function () {
             Route::get('/', 'index')->name('tardiness');
         });
     });
 
-    Route::prefix('service-record')->group(function () {
+    Route::prefix('service-record')->middleware(['role:teaching,non-teaching,principal'])->group(function () {
         Route::controller(ServiceRecordController::class)->group(function () {
             Route::get('/', 'index')->name('sr');
             Route::get('/view/{sr}', 'view')->name('sr.view');
