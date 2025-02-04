@@ -75,7 +75,7 @@ class ServiceRecordController extends Controller
                 } else {
                     $from = Carbon::parse($sr['from']);
                     $to = $sr['to'] ? Carbon::parse($sr['to']) : null;
-                    $credits = $to ? ($from->diffInDays($to) + 1) : ($request->session == "halfday" ? 0.5 : 1);
+                    $credits = $to ? ($from->diffInDays($to) + 1) : ($sr['session'] == "halfday" ? 0.5 : 1);
 
                     $details = collect([
                         'venue' => $sr['venue'],

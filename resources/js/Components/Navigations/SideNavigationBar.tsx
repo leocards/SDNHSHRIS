@@ -588,10 +588,10 @@ const SideNavigationBar = () => {
                             <SidebarMenuButton
                                 tooltip="Service Record"
                                 isActive={url.startsWith(
-                                    "/myapproval/service-record"
+                                    "/service-record"
                                 )}
                                 onClick={() => {
-                                    navigateTo(route("myapproval.sr"));
+                                    navigateTo(route("sr"));
                                 }}
                             >
                                 <ChartSuccess
