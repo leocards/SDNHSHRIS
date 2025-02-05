@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -32,6 +33,15 @@ class PasswordResetLinkController extends Controller
         $request->validate([
             'email' => 'required|email',
         ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if($user) {
+            if($user->status_updated_at) {
+                $status = $user->status !== 'transferred' ? $user->status : 'transferred to another school';
+                return redirect()->back()->with(["title" => "Restricted Account", "message" => "This account is no longer accessible, as the user with these credentials has ".$status.".", "status" => "error"]);
+            }
+        }
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we

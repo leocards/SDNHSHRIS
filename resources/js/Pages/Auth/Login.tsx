@@ -17,6 +17,7 @@ import { AtSign, Check, Lock } from "lucide-react";
 import { BorderBeam } from "@/Components/ui/border-beam";
 import AnimatedShinyText from "@/Components/ui/animated-shiny-text";
 import { PasswordCheck } from "iconsax-react";
+import { useToast } from "@/Hooks/use-toast";
 
 const LOGINSCHEMA = z.object({
     email: z.string().min(1, requiredError("email")).email().default(""),
@@ -38,6 +39,7 @@ export default function Login({ status }: Props) {
     const [processing, setProcessing] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [redirecting, setRedirecting] = useState(false);
+    const { toast } = useToast()
 
     const { data, setData, onSubmit, errors, ...form } =
         useFormSubmit<IFormLogin>({
@@ -60,6 +62,12 @@ export default function Login({ status }: Props) {
                         setTimeout(() => {
                             setRedirecting(true);
                         }, 1200);
+                    } else {
+                        const { title, message, status } = page.props.flash
+                        toast({
+                            title, description: message, status
+                        })
+                        setProcessing(false);
                     }
                 },
                 onError: (error: any) => {
@@ -110,7 +118,7 @@ export default function Login({ status }: Props) {
                             </div>
                             {!isAuthenticated && (
                                 <AnimatedShinyText className="mt-2">
-                                    <div>Authenticating</div>
+                                    <span>Authenticating</span>
                                 </AnimatedShinyText>
                             )}
                             {isAuthenticated && (

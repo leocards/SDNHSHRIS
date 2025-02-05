@@ -1,6 +1,7 @@
 import InputError from "@/Components/InputError";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
+import { useToast } from "@/Hooks/use-toast";
 import { Head, router, useForm } from "@inertiajs/react";
 import { FormEventHandler } from "react";
 
@@ -8,11 +9,21 @@ export default function ForgotPassword({ status }: { status?: string }) {
     const { data, setData, post, processing, errors } = useForm({
         email: "",
     });
+    const { toast } = useToast()
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route("password.email"));
+        post(route("password.email"), {
+            onSuccess: (page) => {
+                if(page.props.flash.status === "error") {
+                    const { title, message, status } = page.props.flash
+                    toast({
+                        title, description: message, status
+                    })
+                }
+            }
+        });
     };
 
     return (
@@ -25,7 +36,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                 allow you to choose a new one.
             </div>
 
-            {status && (
+            {(status && status != "error") && (
                 <div className="mb-4 text-sm font-medium text-green-600">
                     {status}
                 </div>
@@ -38,7 +49,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     name="email"
                     value={data.email}
                     placeholder="Email address"
-                    className="mt-1 form-input w-full"
+                    className="mt-1 form-input h-10 w-full"
                     onChange={(e) => setData("email", e.target.value)}
                 />
 

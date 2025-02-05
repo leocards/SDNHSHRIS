@@ -49,7 +49,8 @@ class User extends Authenticatable
         'salary',
         'avatar',
         'email_verified_at',
-        'password'
+        'password',
+        'status_updated_at'
     ];
 
     /**
@@ -71,6 +72,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'status_updated_at' => 'datetime',
             'birthday' => 'date',
             'hiredate' => 'date',
             'password' => 'hashed',

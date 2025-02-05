@@ -78,6 +78,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/create/{pt}/{personnel?}', 'create')->middleware(['role:hr'])->name('personnel.create');
 
             Route::post('/new/{personnelid?}', 'store')->middleware(['role:hr'])->name('personnel.store');
+            Route::post('/employment-status/{user}', 'updateEmploymentStatus')->middleware(['role:hr'])->name('personnel.employment.update');
         });
 
         // Tardiness routes

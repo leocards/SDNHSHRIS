@@ -6,6 +6,7 @@ use App\DateParserTrait;
 use App\Http\Requests\PersonnelRequest;
 use App\Models\PersonalDataSheet;
 use App\Models\User;
+use App\ResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ use Inertia\Inertia;
 
 class PersonnelController extends Controller
 {
-    use DateParserTrait;
+    use DateParserTrait, ResponseTrait;
 
     public function index(Request $request, $pt = "teaching")
     {
@@ -111,10 +112,9 @@ class PersonnelController extends Controller
 
     public function listOfPersonnel()
     {
-
-        $jhs = User::excludeHr()->where('department', 'junior')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
-        $shs = User::excludeHr()->where('department', 'senior')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
-        $accounting = User::excludeHr()->where('department', 'accounting')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
+        $jhs = User::excludeHr()->whereNull('status_updated_at')->where('department', 'junior')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
+        $shs = User::excludeHr()->whereNull('status_updated_at')->where('department', 'senior')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
+        $accounting = User::excludeHr()->whereNull('status_updated_at')->where('department', 'accounting')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
 
         return Inertia::render('Myreports/ListOfPersonnel/ListOfPersonnel', [
             "list" => collect([
@@ -124,5 +124,24 @@ class PersonnelController extends Controller
                 "principal" => User::where('role', 'principal')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname', 'position'])
             ]),
         ]);
+    }
+
+    public function updateEmploymentStatus(Request $request, User $user)
+    {
+        $request->validate([
+            'action' => ['required', 'in:retired,resigned,transferred']
+        ]);
+
+        try {
+            DB::transaction(function () use ($user, $request) {
+                $user->status_updated_at = Carbon::now()->timestamp;
+                $user->status = $request->action;
+                $user->saveQuietly();
+            });
+
+            return $this->returnResponse('Update Employment Status', 'You have successfully updated the personnel\'s employment status', 'success');
+        } catch (\Throwable $th) {
+            return $this->returnResponse('Update Employment Status', 'Unable to update employment status', 'error');
+        }
     }
 }

@@ -1,28 +1,20 @@
 import Header, { TableHeader, TableRow } from "@/Components/Header";
 import { Card } from "@/Components/ui/card";
 import { PAGINATEDDATA, User } from "@/Types";
-import { Deferred, router, usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import PersonnelStatistics from "./PersonnelStatistics";
 import { Button } from "@/Components/ui/button";
 import {
     ArrowRight2,
-    ArrowSwapVertical,
     DocumentUpload,
     Edit,
     Eye,
-    Filter,
     Message,
     UserAdd,
+    UserOctagon,
 } from "iconsax-react";
-import { Skeleton } from "@/Components/ui/skeleton";
 import TableDataSkeletonLoader from "@/Components/TableDataSkeletonLoader";
-import {
-    Fragment,
-    HTMLAttributes,
-    PropsWithChildren,
-    useEffect,
-    useState,
-} from "react";
+import { Fragment, HTMLAttributes, useState } from "react";
 import { PaginationData } from "@/Components/ui/pagination";
 import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
 import { cn } from "@/Lib/utils";
@@ -39,9 +31,12 @@ import {
     MenubarLabel,
     SortButton,
     SortItem,
+    MenubarSub,
+    MenubarSubTrigger,
+    MenubarSubContent,
 } from "@/Components/ui/menubar";
 import { TooltipLabel } from "@/Components/ui/tooltip";
-import { EllipsisVertical } from "lucide-react";
+import { ChevronRight, EllipsisVertical } from "lucide-react";
 import { ProfilePhoto } from "@/Components/ui/avatar";
 import { useMessage } from "@/Components/Provider/message-provider";
 import {
@@ -50,6 +45,7 @@ import {
 } from "@/Components/Provider/paginate-provider";
 import ImportExcelPds from "./ImportExcelPds";
 import ViewDetails from "./ViewDetails";
+import EmploymentConfirmation from "./EmploymentConfirmation";
 
 type PersonnelProps = {
     personneltype: "teaching" | "non-teaching";
@@ -91,6 +87,10 @@ const Main: React.FC<PersonnelProps> = ({
     const [importPds, setImportPds] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [viewDetails, setViewDetails] = useState(false);
+    const [showEmploymentConfirmation, setShowEmploymentConfirmation] = useState(false)
+    const [empStatus, setEmpStatus] = useState<
+        "retired" | "resigned" | "transferred" | null
+    >(null);
 
     return (
         <div>
@@ -231,6 +231,12 @@ const Main: React.FC<PersonnelProps> = ({
                                     }
                                     onImportPds={() => setImportPds(true)}
                                     onViewDetails={() => setViewDetails(true)}
+                                    onEmploymentAction={(action) => {
+                                        console.log('test')
+                                        setShowEmploymentConfirmation(true)
+                                        setSelectedUser(personnel);
+                                        setEmpStatus(action);
+                                    }}
                                 />
                             ))}
                         </Fragment>
@@ -251,6 +257,17 @@ const Main: React.FC<PersonnelProps> = ({
                 show={viewDetails}
                 onClose={setViewDetails}
             />
+
+            <EmploymentConfirmation
+                show={showEmploymentConfirmation}
+                action={empStatus}
+                onClose={() => {
+                    setShowEmploymentConfirmation(false)
+                    setSelectedUser(null);
+                    setEmpStatus(null);
+                }}
+                personnel={selectedUser}
+            />
         </div>
     );
 };
@@ -261,6 +278,7 @@ interface ListRowProps extends HTMLAttributes<HTMLDivElement> {
     onImportPds: CallableFunction;
     onPreselect: CallableFunction;
     onViewDetails: CallableFunction;
+    onEmploymentAction: (action: "retired" | "resigned" | "transferred") => void;
 }
 
 const ListRow: React.FC<ListRowProps> = ({
@@ -268,6 +286,7 @@ const ListRow: React.FC<ListRowProps> = ({
     onImportPds,
     onPreselect,
     onViewDetails,
+    onEmploymentAction,
     ...props
 }) => {
     const { selectConversation } = useMessage();
@@ -343,6 +362,62 @@ const ListRow: React.FC<ListRowProps> = ({
                                     </MenubarItem>
 
                                     <MenubarSeparator className="!p-0" />
+
+                                    <MenubarSub>
+                                        <MenubarSubTrigger className="gap-2">
+                                            <UserOctagon className="size-5" />
+                                            <span>Employment status</span>
+                                        </MenubarSubTrigger>
+                                        <MenubarSubContent
+                                            className="min-w-40"
+                                            alignOffset={-20}
+                                        >
+                                            <MenubarItem
+                                                disabled
+                                                className="text-xs"
+                                            >
+                                                Current status
+                                            </MenubarItem>
+                                            <div className="px-2 pb-1 pt-0 text-xs font-medium capitalize">
+                                                {user.status??"Active"}
+                                            </div>
+                                            <MenubarSeparator />
+                                            <MenubarItem
+                                                onClick={() => {
+                                                    user.status == null &&
+                                                    onEmploymentAction(
+                                                        "retired"
+                                                    )
+                                                }}
+                                                disabled={!!user.status}
+                                            >
+                                                Retired
+                                            </MenubarItem>
+                                            <MenubarItem
+                                                onClick={() => {
+                                                    user.status == null &&
+                                                    onEmploymentAction(
+                                                        "resigned"
+                                                    )
+                                                }}
+                                                disabled={!!user.status}
+                                            >
+                                                Resigned
+                                            </MenubarItem>
+                                            <MenubarItem
+                                                onClick={() => {
+                                                    user.status == null &&
+                                                    onEmploymentAction(
+                                                        "transferred"
+                                                    )
+                                                }}
+                                                disabled={!!user.status}
+                                            >
+                                                Transferred
+                                            </MenubarItem>
+                                        </MenubarSubContent>
+                                    </MenubarSub>
+
                                     <MenubarItem
                                         className="pl-2 flex items-center gap-2"
                                         onClick={() => onImportPds()}

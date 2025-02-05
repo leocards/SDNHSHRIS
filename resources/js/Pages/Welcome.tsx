@@ -4,10 +4,13 @@ import Login from "./Auth/Login";
 import sdnhslogo from "@/Assets/images/sdnhs-logo.png";
 import GridPattern from "@/Components/ui/grid-pattern";
 import { cn } from "@/Lib/utils";
+import { Toaster } from "@/Components/ui/toaster";
+import { createPortal } from "react-dom";
+import { Fragment } from "react";
 
 export default function Welcome({ auth }: PageProps) {
     return (
-        <>
+        <Fragment>
             <Head title="Welcome" />
             <div className="bg-fuchsia-700 text-black/50 w-full">
                 <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-fuchsia-700 selection:text-white z-10">
@@ -61,7 +64,7 @@ export default function Welcome({ auth }: PageProps) {
                     )}
                 />
             </div>
-
-        </>
+            {createPortal(<Toaster />, document.body)}
+        </Fragment>
     );
 }
