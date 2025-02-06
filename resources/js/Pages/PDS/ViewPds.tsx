@@ -24,7 +24,6 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [tab, setTab] = useState<PDSTABSTYPE>("C1");
     const [status, setStatus] = useState<APPROVALTYPE>("pending");
-    const [emptyPds, setEmptyPds] = useState(true);
 
     const onRespond = (reponse: APPROVALTYPE) => {
         router.post(
@@ -95,7 +94,6 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
                     tab={tab}
                     onStatus={setStatus}
                     onLoad={setIsLoading}
-                    onEmpty={setEmptyPds}
                 />
             </div>
 
