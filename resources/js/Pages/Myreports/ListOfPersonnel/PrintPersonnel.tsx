@@ -14,8 +14,8 @@ type Props = {
 } & ModalProps;
 
 const PrintPersonnel: React.FC<Props> = ({ show, list, onClose, }) => {
-    const sy = usePage().props.schoolyear
-    const [schoolYear, setSy] = useState(sy ? `${format(sy.start, 'y')}-${format(sy.end, 'y')}` : "")
+    const sy = usePage().props.schoolyear?.schoolyear
+    const [schoolYear, setSy] = useState(sy ? `${sy}` : "")
 
     const contentRef = useRef<HTMLDivElement|null>(null)
     // const download_pdf = usePDF({
@@ -76,7 +76,7 @@ const PrintPersonnel: React.FC<Props> = ({ show, list, onClose, }) => {
                 </style>
 
                 <div className="overflow-y-auto rounded-scrollbar overflow-x-hidden">
-                    <PDFPersonnel summary={list} ref={contentRef} principal={list.principal.length > 0 ? list.principal[0] : {position: "None", full_name: "none"}} />
+                    <PDFPersonnel summary={list} schoolYear={schoolYear} ref={contentRef} principal={list.principal.length > 0 ? list.principal[0] : {position: "None", full_name: "none"}} />
                 </div>
             </div>
         </Modal>

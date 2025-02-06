@@ -99,6 +99,11 @@ class User extends Authenticatable
         $query->whereNot('role', 'hr');
     }
 
+    public function scopeActive($query)
+    {
+        return $query->whereNull('status_updated_at');
+    }
+
     protected $appends = ['name', 'full_name'];
 
     public function getNameAttribute()

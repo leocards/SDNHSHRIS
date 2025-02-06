@@ -8,11 +8,12 @@ import { User } from "@/Types";
 type Props = {
     summary: LIST;
     principal: Pick<User, "position" | "full_name">;
+    schoolYear: string
 };
 
 const PDFPersonnel = forwardRef<HTMLDivElement, Props>(
-    ({ summary, principal }, ref) => {
-        const sy = usePage().props.schoolyear?.schoolyear;
+    ({ summary, principal, schoolYear }, ref) => {
+        const sy = schoolYear ?? usePage().props.schoolyear?.schoolyear;
         const hr = usePage().props.auth.user;
         const filteredList: FilteredListType = useMemo(() => {
             const categories = [
