@@ -53,6 +53,7 @@ class PersonalDataSheetController extends Controller
 
         return Inertia::render('PDS/PersonalDataSheet', [
             'status' => PersonalDataSheet::where('user_id', Auth::id())->first()?->status,
+            'hasImport' => PersonalDataSheet::where('user_id', Auth::id())->first()?->file,
             'personalInformation' => PdsPersonalInformation::with('addresses')->where('user_id', Auth::id())->first(),
             'familyBackground' => PdsFamilyBackground::where('user_id', Auth::id())->get(),
             'educationalBackground' => PdsEducationalBackground::where('user_id', Auth::id())->get(),
@@ -68,10 +69,6 @@ class PersonalDataSheetController extends Controller
     public function pds(User $user)
     {
         $pi = PdsPersonalInformation::where('user_id', $user->id)->first();
-
-        if(!$pi)
-            return response()->json('empty', 400);
-
         $pi->residential = $pi?->addresses->where('type', 'residential')->first();
         $pi->permanent = $pi?->addresses->where('type', 'permanent')->first();
 
@@ -214,16 +211,30 @@ class PersonalDataSheetController extends Controller
             $this->getC3Data($data["C3"], $user);
             $this->getC4Data($data["C4"], $user);
 
-            Notification::create([
-                "user_id" => $user->id,
-                "type" => "pds",
-                "details" => collect([
-                    'link' => route('pds'),
-                    'name' => "HR",
-                    'avatar' => $request->user()->avatar,
-                    'message' => 'has uploaded your Personal Data Sheet.',
-                ])->toArray()
-            ]);
+            if($request->user()->role === "hr")
+                Notification::create([
+                    "user_id" => $user->id,
+                    "type" => "pds",
+                    "details" => collect([
+                        'link' => route('pds'),
+                        'name' => "HR",
+                        'avatar' => $request->user()->avatar,
+                        'message' => 'has uploaded your Personal Data Sheet.',
+                    ])->toArray()
+                ]);
+            else {
+                $hr = User::where('role', 'hr')->value('id');
+                Notification::create([
+                    "user_id" => $hr,
+                    "type" => "pds",
+                    "details" => collect([
+                        'link' => route('myapproval.pds'),
+                        'name' => $user->full_name,
+                        'avatar' => $request->user()->avatar,
+                        'message' => 'has uploaded '.$user->gender == 'male' ? 'his' : 'her'.' Personal Data Sheet.',
+                    ])->toArray()
+                ]);
+            }
 
             DB::commit();
 

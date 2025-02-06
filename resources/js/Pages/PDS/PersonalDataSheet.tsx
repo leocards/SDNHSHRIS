@@ -11,7 +11,6 @@ import LearningAndDevelopment from "./Forms/LearningAndDevelopment";
 import OtherInformation from "./Forms/OtherInformation";
 import C4 from "./Forms/C4";
 import { Button } from "@/Components/ui/button";
-import { Download } from "lucide-react";
 import { PERSONALINFORMATIONTYPE } from "./Types/PersonalInformation";
 import { FAMILYBACKGROUNDTYPE } from "./Types/FamilyBackground";
 import { EDUCATIONALBACKGROUNDTYPE } from "./Types/EducationalBackground";
@@ -23,10 +22,14 @@ import { OTHERINFORMATIONTYPE } from "./Types/OtherInformation";
 import { C4TYPE } from "./Types/C4";
 import { APPROVALTYPE } from "@/Types";
 import { cn } from "@/Lib/utils";
-import { DocumentDownload } from "iconsax-react";
+import { DocumentDownload, Export } from "iconsax-react";
+import { useState } from "react";
+import ImportExcelPds from "../Personnel/ImportExcelPds";
+import { usePage } from "@inertiajs/react";
 
 type PersonalDataSheetProps = {
     status: APPROVALTYPE;
+    hasImport: string | null;
     personalInformation: PERSONALINFORMATIONTYPE | null;
     familyBackground: FAMILYBACKGROUNDTYPE | null;
     educationalBackground: EDUCATIONALBACKGROUNDTYPE | null;
@@ -39,6 +42,9 @@ type PersonalDataSheetProps = {
 };
 
 const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
+    const [showImport, setShowImport] = useState(false)
+    const user = usePage().props.auth.user
+
     return (
         <div>
             <Header title="PDS" children="Personal Data Sheet" />
@@ -48,19 +54,43 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                 className="overflow-hidden grow flex flex-col my-5"
                 onValueChange={(value) => {}}
             >
-                <div className="flex items-center space-x-3 divide-x divide-border">
-                    <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal bg-primary/15 text-primary/60">
-                        <TabsTrigger value="c1">C1</TabsTrigger>
-                        <TabsTrigger value="c2">C2</TabsTrigger>
-                        <TabsTrigger value="c3">C3</TabsTrigger>
-                        <TabsTrigger value="c4">C4</TabsTrigger>
-                    </TabsList>
-                    <div className="pl-3 flex flex-row-reverse items-center gap-3">
-                        <TypographySmall className={cn("capitalize", props.status == "approved" ? "text-green-600" : "text-destructive")}>{props.status}</TypographySmall>
+                <div className="flex">
+                    <div className="flex items-center gap-3 divide-x divide-border">
+                        <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal bg-primary/15 text-primary/60">
+                            <TabsTrigger value="c1">C1</TabsTrigger>
+                            <TabsTrigger value="c2">C2</TabsTrigger>
+                            <TabsTrigger value="c3">C3</TabsTrigger>
+                            <TabsTrigger value="c4">C4</TabsTrigger>
+                        </TabsList>
+                        <div className="pl-3 flex flex-row-reverse items-center gap-3">
+                            <TypographySmall
+                                className={cn(
+                                    "capitalize",
+                                    props.status == "approved"
+                                        ? "text-green-600"
+                                        : "text-destructive"
+                                )}
+                            >
+                                {props.status}
+                            </TypographySmall>
 
-                        <Button className="" variant="outline" disabled={props.status !== "approved"}>
-                            <DocumentDownload />
-                            <span>Download</span>
+                            <Button
+                                className=""
+                                variant="outline"
+                                disabled={props.status !== "approved"}
+                            >
+                                <DocumentDownload />
+                                <span>Download</span>
+                            </Button>
+                        </div>
+                    </div>
+                    <div className="ml-auto w-fit">
+                        <Button onClick={() => {
+                            if(!!props.hasImport)
+                                setShowImport(true)
+                        }} disabled={!!props.hasImport}>
+                            <Export />
+                            <span>Import</span>
                         </Button>
                     </div>
                 </div>
@@ -95,14 +125,18 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                                 Please save changes before navigating to other
                                 tab.
                             </TypographySmall>
-                            <FamilyBackgroundForm data={props.familyBackground} />
+                            <FamilyBackgroundForm
+                                data={props.familyBackground}
+                            />
                         </TabsContent>
                         <TabsContent value="III">
                             <TypographySmall className="text-destructive font-semibold italic">
                                 Please save changes before navigating to other
                                 tab.
                             </TypographySmall>
-                            <EducationalBackground data={props.educationalBackground} />
+                            <EducationalBackground
+                                data={props.educationalBackground}
+                            />
                         </TabsContent>
                     </Tabs>
                 </TabsContent>
@@ -125,7 +159,9 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                                 Please save changes before navigating to other
                                 tab.
                             </TypographySmall>
-                            <CivilServiceEligibility data={props.civilService} />
+                            <CivilServiceEligibility
+                                data={props.civilService}
+                            />
                         </TabsContent>
                         <TabsContent value="V">
                             <TypographySmall className="text-destructive font-semibold italic">
@@ -165,7 +201,9 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                                 Please save changes before navigating to other
                                 tab.
                             </TypographySmall>
-                            <LearningAndDevelopment data={props.learningAndDevelopment} />
+                            <LearningAndDevelopment
+                                data={props.learningAndDevelopment}
+                            />
                         </TabsContent>
                         <TabsContent value="VIII">
                             <TypographySmall className="text-destructive font-semibold italic">
@@ -183,6 +221,13 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                     <C4 data={props.c4} />
                 </TabsContent>
             </Tabs>
+
+            <ImportExcelPds
+                show={showImport}
+                user={{ id: user.id, name: user.full_name }}
+                onClose={setShowImport}
+                personal
+            />
         </div>
     );
 };

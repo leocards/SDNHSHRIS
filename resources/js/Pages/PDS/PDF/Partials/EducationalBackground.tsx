@@ -105,29 +105,37 @@ const EducationalBackground: React.FC<EducationalBackgroundType> = ({
                     </div>
                 </div>
 
-                {props.elementary.map((elementary, index) => (
+                {props.elementary?.map((elementary, index) => (
                     <EducationCard key={index} level="elementary" {...elementary} />
                 ))}
 
-                {props.secondary.map((elementary, index) => (
+                {props.secondary?.map((elementary, index) => (
                     <EducationCard key={index} level="secondary" {...elementary} />
                 ))}
 
-                {props.senior.map((elementary, index) => (
+                {props.senior?.map((elementary, index) => (
                     <EducationCard key={index} level="Senior High" {...elementary} />
                 ))}
 
-                {props.vocational.map((elementary, index) => (
+                {props.vocational?.map((elementary, index) => (
                     <EducationCard key={index} level="VOCATIONAL / TRADE COURSE" {...elementary} />
                 ))}
 
-                {props.college.map((elementary, index) => (
+                {props.college?.map((elementary, index) => (
                     <EducationCard key={index} level="college" {...elementary} />
                 ))}
 
-                {props.graduate.map((elementary, index) => (
+                {props.graduate?.map((elementary, index) => (
                     <EducationCard key={index} level="Graduate studies" {...elementary} />
                 ))}
+
+                {/* default empty */}
+                {!props.elementary && <EmptyEducationCard level="elementary" />}
+                {!props.secondary && <EmptyEducationCard level="secondary" />}
+                {!props.senior && <EmptyEducationCard level="Senior High" />}
+                {!props.vocational && <EmptyEducationCard level="VOCATIONAL / TRADE COURSE" />}
+                {!props.college && <EmptyEducationCard level="college" />}
+                {!props.graduate && <EmptyEducationCard level="Graduate studies" />}
             </div>
         </div>
     );
@@ -150,27 +158,62 @@ const EducationCard: React.FC<EducationCardProps> = ({ ...props }) => {
                 </TextCenter>
             </div>
             <TextCenter className="text-center">
-                <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{props.nameofschool}</div>
+                <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{props?.nameofschool}</div>
             </TextCenter>
             <TextCenter className="text-center">
-                <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{props.basiceddegreecourse}</div>
+                <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{props?.basiceddegreecourse}</div>
             </TextCenter>
             <div className="grid grid-cols-2 divide-x-2 divide-black">
                 <TextCenter>
-                    <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{checkDateFormat(props.period.from)}</div>
+                    <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{checkDateFormat(props?.period?.from)}</div>
                 </TextCenter>
                 <TextCenter>
-                    <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{checkDateFormat(props.period.to)}</div>
+                    <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{checkDateFormat(props?.period?.to)}</div>
                 </TextCenter>
             </div>
             <TextCenter className="">
-                <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{props.highestlvl}</div>
+                <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{props?.highestlvl}</div>
             </TextCenter>
             <TextCenter className="">
-                <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{props.yeargraduated}</div>
+                <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{props?.yeargraduated}</div>
             </TextCenter>
             <TextCenter className="">
-                <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{props.scholarshiphonor}</div>
+                <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{props?.scholarshiphonor}</div>
+            </TextCenter>
+        </div>
+    );
+};
+
+const EmptyEducationCard = ({ level }: { level: string }) => {
+    return (
+        <div className="grid grid-cols-[9.6rem,11.8rem,11.8rem,7rem,5rem,3.5rem,1fr] divide-x-2 divide-black text-[7pt] [&>div]:h-[28px] border-b-2 border-black">
+            <div className="bg-[#eaeaea] flex">
+                <TextCenter className="w-full !justify-start pl-5 uppercase">
+                    {level}
+                </TextCenter>
+            </div>
+            <TextCenter className="text-center">
+                <div className={cn('font-bold')}></div>
+            </TextCenter>
+            <TextCenter className="text-center">
+                <div className={cn('font-bold')}></div>
+            </TextCenter>
+            <div className="grid grid-cols-2 divide-x-2 divide-black">
+                <TextCenter>
+                    <div className={cn('font-bold')}></div>
+                </TextCenter>
+                <TextCenter>
+                    <div className={cn('font-bold')}></div>
+                </TextCenter>
+            </div>
+            <TextCenter className="">
+                <div className={cn('font-bold')}></div>
+            </TextCenter>
+            <TextCenter className="">
+                <div className={cn('font-bold')}></div>
+            </TextCenter>
+            <TextCenter className="">
+                <div className={cn('font-bold')}></div>
             </TextCenter>
         </div>
     );

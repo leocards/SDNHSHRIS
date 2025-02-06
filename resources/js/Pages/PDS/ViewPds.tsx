@@ -100,7 +100,7 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
             </div>
 
             <div className="flex mt-5 justify-end">
-                {!isLoading && !emptyPds ? (
+                {!isLoading ? (
                     status == "pending" ? (
                         <Fragment>
                             <Button

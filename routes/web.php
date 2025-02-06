@@ -164,7 +164,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', 'index')->middleware(['role:teaching,non-teaching,principal'])->name('pds');
             Route::get('/pds/{user}', 'pds')->name('pds.pds');
 
-            Route::post('/pds/import/{user}', 'import')->middleware(['role:hr'])->name('pds.import');
+            Route::post('/pds/import/{user}', 'import')->name('pds.import');
             Route::post('/pds/response/{user}', 'response')->middleware(['role:hr'])->name('pds.response');
         });
 

@@ -2,14 +2,8 @@ import React from "react";
 import Modal from "@/Components/Modal";
 import {
     Form,
-    FormControl,
-    FormField,
-    FormInput,
     FormInputFile,
-    FormItem,
-    FormMessage,
 } from "@/Components/ui/form";
-import { Input } from "@/Components/ui/input";
 import { z } from "zod";
 import { Button } from "@/Components/ui/button";
 import { useToast } from "@/Hooks/use-toast";
@@ -40,7 +34,8 @@ const ImportExcelPds: React.FC<{
     show: boolean;
     onClose: (close: false) => void;
     user: { id: number; name: string } | null;
-}> = ({ user, show, onClose }) => {
+    personal?: boolean;
+}> = ({ user, show, onClose, personal }) => {
     const { toast } = useToast();
 
     const form = useFormSubmit<IFormImportExcelPds>({
@@ -55,7 +50,7 @@ const ImportExcelPds: React.FC<{
                     description: page.props.flash.message,
                     status: page.props.flash.status,
                 });
-                
+
                 if(page.props.flash.status === "success")
                     onClose(false)
             },
@@ -80,7 +75,7 @@ const ImportExcelPds: React.FC<{
             dialogStyle="mt-[20vh]"
             maxWidth="lg"
         >
-            <TypographyLarge className="font-bold text-xl mb-6 px-1">Import PDS for {user?.name}</TypographyLarge>
+            <TypographyLarge className="font-bold text-xl mb-6 px-1">Import PDS {!personal && `for ${user?.name}`}</TypographyLarge>
 
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
