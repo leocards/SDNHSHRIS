@@ -11,6 +11,8 @@ class Tardiness extends Model
         "school_year_id",
         "present",
         "absent",
+        "timetardy",
+        "undertime",
         "month",
     ];
 

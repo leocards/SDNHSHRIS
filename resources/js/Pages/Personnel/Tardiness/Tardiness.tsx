@@ -26,6 +26,8 @@ export type TARDINESSTYPE = {
     };
     present: number;
     absent: number;
+    timetardy: number;
+    undertime: number;
     schoolyear: {
         id: number;
         schoolyear: string;
@@ -49,7 +51,7 @@ const Tardiness: React.FC<TardinessProps> = ({ ...props }) => {
     );
 };
 
-const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
+const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
     const { page, onQuery } = usePagination<TARDINESSTYPE>();
     const { props } = usePage();
 
@@ -166,7 +168,7 @@ const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
                     columns={[
                         "minmax(6rem,1fr)",
                         ...Array.from({ length: 4 }).map(
-                            () => "minmax(7.5rem,10rem)"
+                            () => "minmax(7.5rem,12rem)"
                         ),
                         "5rem",
                     ]}
@@ -177,10 +179,10 @@ const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Name</div>
-                                <div>Days Present</div>
-                                <div>Days Absent</div>
-                                <div>SY</div>
-                                <div>Month</div>
+                                <div>No. of Days Present</div>
+                                <div>No. of Days Absent</div>
+                                <div>No. of Time Tardy</div>
+                                <div>No. of Undertime</div>
                                 <div className="justify-center">Edit</div>
                             </TableHeader>
                             {page?.data.length === 0 && (
@@ -189,8 +191,8 @@ const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
                                         className="size-24 opacity-40 dark:opacity-65"
                                         src={empty}
                                     />
-                                    <div className="text-sm font-medium text-foreground/50 mt-1">
-                                        No recorded personnel tardiness.
+                                    <div className="text-sm font-medium text-foreground/50 mt-1 text-center">
+                                        No recorded personnel tardiness <br /> for the month of {filterMonth.toLowerCase()}.
                                     </div>
                                 </div>
                             )}
@@ -211,9 +213,9 @@ const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
                                     <div>{tardiness?.present}</div>
                                     <div>{tardiness?.absent}</div>
                                     <div>
-                                        {tardiness?.schoolyear?.schoolyear}
+                                        {tardiness?.timetardy}
                                     </div>
-                                    <div>{tardiness?.month}</div>
+                                    <div>{tardiness?.undertime}</div>
                                     <div className="justify-center">
                                         <Button
                                             className="size-8"
@@ -248,6 +250,7 @@ const Main: React.FC<TardinessProps> = ({ tardinesses, schoolyears }) => {
                         setAttendance(null);
                     }, 500);
                 }}
+                onSuccess={() => onQuery({ sy: filterSy.id, month: filterMonth })}
             />
         </div>
     );

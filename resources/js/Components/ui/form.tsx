@@ -411,7 +411,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
         <FormField
             control={form.control}
             name={name}
-            render={({ field, formState }) => (
+            render={({ field }) => (
                 <FormItem>
                     <FormLabel
                         children={label}

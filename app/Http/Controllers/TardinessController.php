@@ -33,7 +33,9 @@ class TardinessController extends Controller
             })
             ->with('schoolyear:id,start,end,resume')
             ->where("school_year_id", $sy)
-            ->where("month", $month)
+            ->when($auth->role == 'hr', function ($query) use ($month) {
+                $query->where("month", $month);
+            })
             ->when($auth->role == "hr", function ($query) {
                 $query->orderBy(
                     User::select('lastname')
@@ -44,6 +46,9 @@ class TardinessController extends Controller
             })
             ->when($auth->role != "hr", function ($query) use ($request) {
                 $query->where('user_id', $request->user()->id)->latest();
+            })
+            ->when($auth->role != 'hr', function ($query) use ($month) {
+                $query->orderBy('month');
             })
             ->paginate($this->page);
 
@@ -68,16 +73,26 @@ class TardinessController extends Controller
     {
         if ($request->expectsJson()) {
             return response()->json(
-                User::whereNotIn('id', function ($query) use ($sy, $month) {
-                    $query->select('user_id')
-                        ->from('tardinesses')
-                        ->where('school_year_id', $sy)
-                        ->where('month', $month);
+                User::whereDoesntHave('tardiness', function ($query) use ($sy, $month) {
+                    $query->where('school_year_id', $sy)->where('month', $month);
                 })
                 ->excludeHr()
+                ->orderByRaw("CONCAT(lastname, ' ', firstname) ASC")
                 ->get(['id', 'firstname', 'lastname', 'middlename', 'extensionname', 'avatar'])
+                ->map(fn ($user) => collect([
+                    "user" => [
+                        "id" => $user->id,
+                        "name" => $user->name
+                    ],
+                    "present" => "",
+                    "absent" => "",
+                    "timetardy" => "",
+                    "undertime" => "",
+                ]))
             );
         }
+
+        return null;
     }
 
     public function store(TardinessRequest $request, $sy, $month)
@@ -91,6 +106,8 @@ class TardinessController extends Controller
                     "school_year_id" => $sy,
                     "present" => $attendance['present'],
                     "absent" => $attendance['absent'],
+                    "timetardy" => $attendance['timetardy'],
+                    "undertime" => $attendance['undertime'],
                     "month" => $month,
                 ]);
 
@@ -132,6 +149,8 @@ class TardinessController extends Controller
             DB::transaction(function () use ($request, $tardiness) {
                 $tardiness->present = $request->attendances[0]['present'];
                 $tardiness->absent = $request->attendances[0]['absent'];
+                $tardiness->timetardy = $request->attendances[0]['timetardy'];
+                $tardiness->undertime = $request->attendances[0]['undertime'];
                 $tardiness->save();
             });
 

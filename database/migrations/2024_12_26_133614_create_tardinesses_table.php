@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('school_year_id')->constrained();
             $table->string('present');
             $table->string('absent');
+            $table->string('timetardy');
+            $table->string('undertime');
             $table->string('month');
             $table->timestamps();
         });

@@ -82,12 +82,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // Tardiness routes
-        Route::controller(TardinessController::class)->middleware(['role:hr'])->group(function () {
+        Route::controller(TardinessController::class)->group(function () {
             Route::get('/tardiness', 'index')->name('personnel.tardiness');
-            Route::get('/tardiness/personnel-with-tardiness/{sy}/{month}', 'personnelWithoutTardiness')->name('personnel.tardiness.without');
+            Route::get('/tardiness/personnel-with-tardiness/{sy}/{month}', 'personnelWithoutTardiness')->middleware(['role:hr'])->name('personnel.tardiness.without');
 
-            Route::post('/tardiness/store/{sy}/{month}', 'store')->name('personnel.tardiness.store');
-            Route::post('/tardiness/update/{tardiness}', 'update')->name('personnel.tardiness.update');
+            Route::post('/tardiness/store/{sy}/{month}', 'store')->middleware(['role:hr'])->name('personnel.tardiness.store');
+            Route::post('/tardiness/update/{tardiness}', 'update')->middleware(['role:hr'])->name('personnel.tardiness.update');
         });
     });
 
