@@ -86,7 +86,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                     </div>
                     <div className="ml-auto w-fit">
                         <Button onClick={() => {
-                            if(!!props.hasImport)
+                            if(!!!props.hasImport)
                                 setShowImport(true)
                         }} disabled={!!props.hasImport}>
                             <Export />
