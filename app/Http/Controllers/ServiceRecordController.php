@@ -139,7 +139,7 @@ class ServiceRecordController extends Controller
             Storage::move($dtrfile->path, $dtrfilepath);
 
             $from = Carbon::parse($request->from);
-            $to = $request->from ? Carbon::parse($request->to) : null;
+            $to = $request->to ? Carbon::parse($request->to) : null;
             $credits = $request->session == "halfday" ? 0.5 : ($to ? ($from->diffInDays($to) + 1) : 1);
 
             ServiceRecord::create([
@@ -227,7 +227,7 @@ class ServiceRecordController extends Controller
 
                 if($personnel->status_updated_at)
                     $sr->saveQuietly();
-                
+
                 $sr->save();
             });
 
