@@ -37,7 +37,9 @@ class PersonalDataSheetController extends Controller
         if ($role === "hr") {
             $status = $request->query('status') ?? "pending";
 
-            $pds = PersonalDataSheet::with('user')
+            $pds = PersonalDataSheet::with(['user' => function ($query) {
+                    $query->withoutGlobalScopes();
+                }])
                 ->where('status', $status)
                 ->latest()
                 ->paginate($this->page);
@@ -66,8 +68,10 @@ class PersonalDataSheetController extends Controller
         ]);
     }
 
-    public function pds(User $user)
+    public function pds($userId)
     {
+        $user = User::withoutGlobalScopes()->find($userId);
+
         $pi = PdsPersonalInformation::where('user_id', $user->id)->first();
         $pi->residential = $pi?->addresses->where('type', 'residential')->first();
         $pi->permanent = $pi?->addresses->where('type', 'permanent')->first();
@@ -159,9 +163,11 @@ class PersonalDataSheetController extends Controller
         ]);
     }
 
-    public function response(Request $request, User $user)
+    public function response(Request $request, $userId)
     {
         try {
+            $user = User::withoutGlobalScopes()->find($userId);
+
             $pds = $user->personalDataSheet;
             $pds->status = $request->reponse;
             $pds->save();
@@ -445,15 +451,17 @@ class PersonalDataSheetController extends Controller
 
     function getChildren($data): Collection
     {
-        return $data->map(function ($value) {
+        $childrens = collect($data)->map(function ($value) {
             if ((!$value[8] && !$value[12])) return null;
             if ($value[8] == "(Continue on separate sheet if necessary)") return null;
 
             return collect([
                 'name' => $value[8],
-                'dateofbirth' => $value[12],
+                'dateofbirth' => preg_match('/^N\/?A$/i', $value[12]) ? null : $value[12],
             ]);
-        })->filter(fn($filter) => $filter);
+        })->filter()->values();
+
+        return $childrens;
     }
 
     function getEducation($data): Collection
@@ -589,94 +597,106 @@ class PersonalDataSheetController extends Controller
         ]);
         $lastIndex = 0;
 
-        foreach ($c3Data as $key => $value) {
-            if ($value[0] == "(Continue on separate sheet if necessary)") {
-                if ($c3Data[$key + 2][0] == "(Start from the most recent L&D/training program and include only the relevant L&D/training taken for the last five (5) years for Division Chief/Executive/Managerial positions)") {
-                    $lastIndex = $key + 1;
-                } else {
-                    $lastIndex = $key;
+        if(!$user->pdsVoluntaryWork()->exists())
+            foreach ($c3Data as $key => $value) {
+                if ($value[0] == "(Continue on separate sheet if necessary)") {
+                    if ($c3Data[$key + 2][0] == "(Start from the most recent L&D/training program and include only the relevant L&D/training taken for the last five (5) years for Division Chief/Executive/Managerial positions)") {
+                        $lastIndex = $key + 1;
+                    } else {
+                        $lastIndex = $key;
+                    }
+                    break;
                 }
-                break;
+
+                $result['voluntary']->push(collect([
+                    'user_id' => $user->id,
+                    'organization' => $value[0],
+                    'inclusivedates' => collect([
+                        'from' => !is_string($value[4]) ? ((!preg_match('/^\d{4}$/', $value[4]) && !empty($value[4])) ? Date::excelToDateTimeObject($value[4])->format('Y-m-d') : $value[4]) : $value[4],
+                        'to' => !is_string($value[5]) ? ((!preg_match('/^\d{4}$/', $value[5]) && !empty($value[5])) ? Date::excelToDateTimeObject($value[5])->format('Y-m-d') : $value[5]) : $value[5],
+                    ])->toJson(),
+                    'numberofhours' => $value[6],
+                    'position' => $value[7],
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]));
             }
 
-            $result['voluntary']->push(collect([
-                'user_id' => $user->id,
-                'organization' => $value[0],
-                'inclusivedates' => collect([
-                    'from' => !is_string($value[4]) ? ((!preg_match('/^\d{4}$/', $value[4]) && !empty($value[4])) ? Date::excelToDateTimeObject($value[4])->format('Y-m-d') : $value[4]) : $value[4],
-                    'to' => !is_string($value[5]) ? ((!preg_match('/^\d{4}$/', $value[5]) && !empty($value[5])) ? Date::excelToDateTimeObject($value[5])->format('Y-m-d') : $value[5]) : $value[5],
-                ])->toJson(),
-                'numberofhours' => $value[6],
-                'position' => $value[7],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]));
-        }
+        if(!$user->pdsLearningAndDevelopment()->exists())
+            foreach ($c3Data->slice($lastIndex + 4) as $key => $value) {
+                if ($value[0] == "(Continue on separate sheet if necessary)") {
+                    $lastIndex = $key;
+                    break;
+                }
 
-        foreach ($c3Data->slice($lastIndex + 4) as $key => $value) {
-            if ($value[0] == "(Continue on separate sheet if necessary)") {
-                $lastIndex = $key;
-                break;
+                $result['landd']->push(collect([
+                    'user_id' => $user->id,
+                    'title' => $value->only([0, 1, 2, 3])->filter()->implode('') == 'N/A' ? null : ($value->only([0, 1, 2, 3]))->filter()->implode(''),
+                    'inclusivedates' => collect([
+                        'from' => !is_string($value[4]) ? ((!preg_match('/^\d{4}$/', $value[4]) && !empty($value[4])) ? Date::excelToDateTimeObject($value[4])->format('Y-m-d') : $value[4]) : $value[4],
+                        'to' => !is_string($value[5]) ? ((!preg_match('/^\d{4}$/', $value[5]) && !empty($value[5])) ? Date::excelToDateTimeObject($value[5])->format('Y-m-d') : $value[5]) : $value[5],
+                    ])->toJson(),
+                    'numofhours' => $value[6],
+                    'type' => $value[7],
+                    'conductedby' => $value->only([8, 9, 10])->filter()->implode(''),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]));
             }
 
-            $result['landd']->push(collect([
-                'user_id' => $user->id,
-                'title' => $value->only([0, 1, 2, 3])->filter()->implode('') == 'N/A' ? null : ($value->only([0, 1, 2, 3]))->filter()->implode(''),
-                'inclusivedates' => collect([
-                    'from' => !is_string($value[4]) ? ((!preg_match('/^\d{4}$/', $value[4]) && !empty($value[4])) ? Date::excelToDateTimeObject($value[4])->format('Y-m-d') : $value[4]) : $value[4],
-                    'to' => !is_string($value[5]) ? ((!preg_match('/^\d{4}$/', $value[5]) && !empty($value[5])) ? Date::excelToDateTimeObject($value[5])->format('Y-m-d') : $value[5]) : $value[5],
-                ])->toJson(),
-                'numofhours' => $value[6],
-                'type' => $value[7],
-                'conductedby' => $value->only([8, 9, 10])->filter()->implode(''),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]));
+        if(!$user->pdsOtherInformation()->exists()) {
+            $oi = collect([
+                "skills" => collect(["user_id" => $user->id, "type" => "skills",  "details" => collect([])]),
+                "recognition" => collect(["user_id" => $user->id, "type" => "recognition",  "details" => collect([])]),
+                "association" => collect(["user_id" => $user->id, "type" => "association",  "details" => collect([])])
+            ]);
+
+            foreach ((($c3Data->slice($lastIndex + 3))->values()) as $key => $value) {
+                if ($value[0] == "(Continue on separate sheet if necessary)")
+                    break;
+
+                if ($value[0] && $value[0] != 'N/A')
+                    $oi['skills']['details']->push(collect(['detail' => $value[0]]));
+
+                if ($value[2] && $value[2] != 'N/A')
+                    $oi['recognition']['details']->push(collect(['detail' => $value[2]]));
+
+                if ($value[8] && $value[8] != 'N/A')
+                    $oi['association']['details']->push(collect(['detail' => $value[8]]));
+            }
         }
 
-        $oi = collect([
-            "skills" => collect(["user_id" => $user->id, "type" => "skills",  "details" => collect([])]),
-            "recognition" => collect(["user_id" => $user->id, "type" => "recognition",  "details" => collect([])]),
-            "association" => collect(["user_id" => $user->id, "type" => "association",  "details" => collect([])])
-        ]);
+        if(!$user->pdsVoluntaryWork()->exists())
+            PdsVoluntaryWork::insert($result['voluntary']->toArray());
 
-        foreach ((($c3Data->slice($lastIndex + 3))->values()) as $key => $value) {
-            if ($value[0] == "(Continue on separate sheet if necessary)")
-                break;
+        if(!$user->pdsLearningAndDevelopment()->exists())
+            PdsLearningDevelopment::insert($result['landd']->toArray());
 
-            if ($value[0] && $value[0] != 'N/A')
-                $oi['skills']['details']->push(collect(['detail' => $value[0]]));
+        if(!$user->pdsOtherInformation()->exists()) {
+            PdsOtherInformation::create([
+                'user_id' => $oi['skills']['user_id'],
+                'type' => $oi['skills']['type'],
+                'details' => $oi['skills']['details']->toArray(),
+            ]);
 
-            if ($value[2] && $value[2] != 'N/A')
-                $oi['recognition']['details']->push(collect(['detail' => $value[2]]));
+            PdsOtherInformation::create([
+                'user_id' => $oi['recognition']['user_id'],
+                'type' => $oi['recognition']['type'],
+                'details' => $oi['recognition']['details']->toArray(),
+            ]);
 
-            if ($value[8] && $value[8] != 'N/A')
-                $oi['association']['details']->push(collect(['detail' => $value[8]]));
+            PdsOtherInformation::create([
+                'user_id' => $oi['association']['user_id'],
+                'type' => $oi['association']['type'],
+                'details' => $oi['association']['details']->toArray(),
+            ]);
         }
-
-        PdsVoluntaryWork::insert($result['voluntary']->toArray());
-        PdsLearningDevelopment::insert($result['landd']->toArray());
-        PdsOtherInformation::create([
-            'user_id' => $oi['skills']['user_id'],
-            'type' => $oi['skills']['type'],
-            'details' => $oi['skills']['details']->toArray(),
-        ]);
-
-        PdsOtherInformation::create([
-            'user_id' => $oi['recognition']['user_id'],
-            'type' => $oi['recognition']['type'],
-            'details' => $oi['recognition']['details']->toArray(),
-        ]);
-
-        PdsOtherInformation::create([
-            'user_id' => $oi['association']['user_id'],
-            'type' => $oi['association']['type'],
-            'details' => $oi['association']['details']->toArray(),
-        ]);
     }
 
     function getC4Data($data, User $user)
     {
+        if($user->pdsC4()->exists()) return null;
+
         $c4 = collect([
             "34b" => $data[0]->only([6, 7, 8])->filter()->implode(''),
             "35a" => $data[4]->only([6, 7, 8])->filter()->implode(''),

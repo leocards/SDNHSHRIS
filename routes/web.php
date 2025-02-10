@@ -162,10 +162,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('pds')->group(function () {
         Route::controller(PersonalDataSheetController::class)->group(function () {
             Route::get('/', 'index')->middleware(['role:teaching,non-teaching,principal'])->name('pds');
-            Route::get('/pds/{user}', 'pds')->name('pds.pds');
+            Route::get('/pds/{userId}', 'pds')->name('pds.pds');
 
             Route::post('/pds/import/{user}', 'import')->name('pds.import');
-            Route::post('/pds/response/{user}', 'response')->middleware(['role:hr'])->name('pds.response');
+            Route::post('/pds/response/{userId}', 'response')->middleware(['role:hr'])->name('pds.response');
         });
 
         Route::group(['middleware' => ['role:teaching,non-teaching,principal']], function () {
@@ -203,6 +203,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', 'index')->name('saln');
             Route::get('/new/{saln?}', 'create')->name('saln.create');
             Route::get('/view/{saln?}', 'view')->name('saln.view');
+            // Route::get('/spouse', 'getSalnSpouse')->name('saln.spouse');
 
             Route::post('/save/{saln?}', 'store')->name('saln.store');
         });

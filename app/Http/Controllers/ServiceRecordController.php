@@ -29,7 +29,9 @@ class ServiceRecordController extends Controller
         $sr = null;
 
         $sr = ServiceRecord::when($role == "hr", function ($query) {
-                $query->with('user');
+                $query->with(['user' => function($query) {
+                    $query->withoutGlobalScopes();
+                }]);
             })
             ->when($role !== "hr", function ($query) use ($request) {
                 $query->where('user_id', $request->user()->id);
@@ -199,7 +201,7 @@ class ServiceRecordController extends Controller
     public function view(ServiceRecord $sr)
     {
         try {
-            $sr->load(['user']);
+            $sr->load(['user' => fn ($query) => $query->withoutGlobalScopes()]);
 
             return response()->json($sr);
         } catch (\Throwable $th) {
@@ -213,7 +215,7 @@ class ServiceRecordController extends Controller
             DB::transaction(function () use ($request, $sr) {
                 $sr->status = $request->response;
 
-                $personnel = User::find($sr->user_id);
+                $personnel = User::withoutGlobalScopes()->find($sr->user_id);
 
                 if($personnel->role === "teaching" && $request->response === "approved") {
                     $personnel->credits = floatval($sr->details['credits']) + $personnel->credits;
@@ -223,6 +225,9 @@ class ServiceRecordController extends Controller
                     $personnel->save();
                 }
 
+                if($personnel->status_updated_at)
+                    $sr->saveQuietly();
+                
                 $sr->save();
             });
 

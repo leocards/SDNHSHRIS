@@ -39,6 +39,11 @@ class Leave extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function userWithoutScopes()
+    {
+        return $this->user()->withoutGlobalScopes();
+    }
+
     public function schoolYear()
     {
         return $this->belongsTo(SchoolYear::class, 'schoolyearid', 'id');

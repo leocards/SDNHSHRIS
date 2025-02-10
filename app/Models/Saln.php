@@ -9,6 +9,7 @@ class Saln extends Model
     protected $fillable = [
         'user_id',
         'asof',
+        'spouseid',
         'spouse',
         'children',
         'assets',

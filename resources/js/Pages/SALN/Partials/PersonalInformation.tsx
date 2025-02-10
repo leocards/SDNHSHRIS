@@ -5,15 +5,34 @@ import {
     FormRadioGroup,
     FormRadioItem,
 } from "@/Components/ui/form";
+import { SPOUSETYPE } from "@/Pages/PDS/Types/FamilyBackground";
 import { usePage } from "@inertiajs/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
     form: any;
+    spouse: SPOUSETYPE|null
 };
 
-const PersonalInformation: React.FC<Props> = ({ form }) => {
+const PersonalInformation: React.FC<Props> = ({ form, spouse }) => {
     const user = usePage().props.auth.user;
+
+    const onJointFiling = () => {
+        console.log('test', spouse)
+        if(spouse) {
+            form.setValue('spouse', {
+                familyname: spouse.familyname,
+                firstname: spouse.firstname,
+                middleinitial: spouse.middlename?.[0]??"",
+                position: spouse.occupation,
+                office: spouse.employerbusiness,
+                officeaddress: spouse.businessaddress,
+            })
+
+            form.setValue('spouse.familyname', spouse.familyname)
+        }
+    }
+
     return (
         <div>
             <div className="flex flex-col items-center gap-2 mt-4">
@@ -31,6 +50,12 @@ const PersonalInformation: React.FC<Props> = ({ form }) => {
                             name="isjoint"
                             labelClass="text-center"
                             className="justify-center"
+                            onValueChange={(value) => {
+                                console.log(value)
+                                if(value == "joint") {
+                                    onJointFiling()
+                                }
+                            }}
                         >
                             <FormRadioItem value="joint" label="Joint Filing" />
                             <FormRadioItem

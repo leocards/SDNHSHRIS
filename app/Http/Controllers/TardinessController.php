@@ -29,7 +29,10 @@ class TardinessController extends Controller
         $month = $request->query('month') ?? Carbon::now()->isoFormat('MMMM');
 
         $tardiness = Tardiness::when($auth->role == "hr", function ($query) {
-                $query->with('user:id,firstname,lastname,middlename,extensionname,avatar');
+                $query->with(['user' => function ($query) {
+                    $query->withoutGlobalScopes()
+                        ->select('id', 'firstname', 'lastname', 'middlename', 'extensionname', 'avatar');
+                }]);
             })
             ->with('schoolyear:id,start,end,resume')
             ->where("school_year_id", $sy)

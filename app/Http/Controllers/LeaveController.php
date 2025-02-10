@@ -32,17 +32,26 @@ class LeaveController extends Controller
         $approvalLeave = $request->is('myapproval*');
 
         $leaves = Leave::when($role == "hr", function ($query) use ($status, $search) {
-                $query->with('user')->where('hrstatus', $status)
-                    ->whereHas('user', function ($query) use ($search) {
+                $query->with(['user' => function ($query) {
+                    $query->withoutGlobalScopes();
+                }])
+                ->where('hrstatus', $status)
+                ->whereHas('user', function ($query) use ($search) {
+                    $query->withoutGlobalScopes()
+                    ->where(function ($query) use ($search) {
                         $query->where('firstname', 'LIKE', "%$search%")
                             ->orWhere('lastname', 'LIKE', "%$search%")
                             ->orWhere('middlename', 'LIKE', "%$search%");
                     });
+                });
             })
             ->when($role == "principal" && $approvalLeave, function ($query) use ($status, $search) {
-                $query->with('user')
+                $query->with(['user' => function ($query) {
+                        $query->withoutGlobalScopes();
+                    }])
                     ->whereHas('user', function ($query) use ($search) {
-                        $query->where('firstname', 'LIKE', "%$search%")
+                        $query->withoutGlobalScopes()
+                            ->where('firstname', 'LIKE', "%$search%")
                             ->orWhere('lastname', 'LIKE', "%$search%")
                             ->orWhere('middlename', 'LIKE', "%$search%");
                     })
@@ -233,7 +242,7 @@ class LeaveController extends Controller
 
     public function view(Request $request, Leave $leave)
     {
-        $user = $leave->user()->first();
+        $user = $leave->userWithoutScopes()->first();
         $medical = $leave->medical()->latest()->first();
 
         $leave->firstname = $user->firstname;
@@ -249,7 +258,7 @@ class LeaveController extends Controller
                 return response()->json(collect([
                     'leave' => $leave,
                     'hr' => User::where('role', 'hr')->first()->name,
-                    'applicant' => $leave->user()->first()->only(['name', 'full_name', 'role']),
+                    'applicant' => $leave->userWithoutScopes()->first()->only(['name', 'full_name', 'role']),
                     'principal' => User::where('role', 'principal')->first()?->only(['name', 'full_name', 'position'])
                 ]));
             }
@@ -257,7 +266,7 @@ class LeaveController extends Controller
             return Inertia::render('Myapproval/Leave/LeaveView', [
                 'leave' => $leave,
                 'hr' => User::where('role', 'hr')->first()->name,
-                'applicant' => $leave->user()->first()->only(['name', 'full_name', 'role']),
+                'applicant' => $leave->userWithoutScopes()->first()->only(['name', 'full_name', 'role']),
                 'principal' => User::where('role', 'principal')->first()?->only(['name', 'full_name', 'position'])
             ]);
         }
@@ -265,7 +274,7 @@ class LeaveController extends Controller
         return Inertia::render('Leave/LeaveView', [
             'leave' => $leave,
             'hr' => User::where('role', 'hr')->first()->name,
-            'applicant' => $leave->user()->first()->only(['name', 'full_name', 'role']),
+            'applicant' => $leave->userWithoutScopes()->first()->only(['name', 'full_name', 'role']),
             'principal' => User::where('role', 'principal')->first()?->only(['name', 'full_name', 'position'])
         ]);
     }

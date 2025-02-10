@@ -23,7 +23,10 @@ class SalnReportController extends Controller
         $filter = $request->query('filter') ?? $year?->first();
 
         if ($request->expectsJson()) {
-            return response()->json(SalnReport::with('user.pdsPersonalInformation')->where('year', $filter)->get());
+            return response()->json(SalnReport::with(['user' => function ($query) {
+                $query->withoutGlobalScopes()
+                    ->with('pdsPersonalInformation');
+            }])->where('year', $filter)->get());
         }
 
         return Inertia::render('Myreports/SALN/SALN', [
@@ -45,6 +48,9 @@ class SalnReportController extends Controller
 
             if (SalnReport::where('user_id', $request->personnel)->where('year', $request->year)->exists() && !$saln)
                 throw new Exception('Personnel already have saln of year ' . $request->year);
+
+            if($saln && !$saln->user())
+                throw new Exception('Cannot update the SALN; the personnel is no longer working at the school.');
 
             SalnReport::updateOrCreate([
                 'id' => $saln?->id
@@ -102,7 +108,7 @@ class SalnReportController extends Controller
                                         'details' => collect([
                                             "networth" => $value[6],
                                             "spouse" => $value[7],
-                                            "filing" => $value[8] === "/" ? ($value[7] ?'joint' : 'separate') : ($value[7] ?'separate' : 'not')
+                                            "filing" => $value[8] === "/" ? ($value[7] ? 'joint' : 'separate') : ($value[7] ? 'separate' : 'not')
                                         ])->toArray(),
                                         "year" => $request->year
                                     ]);
@@ -121,11 +127,11 @@ class SalnReportController extends Controller
 
             DB::commit();
 
-            return $this->returnResponse('SALN Import','SALN Imported successfully','success');
+            return $this->returnResponse('SALN Import', 'SALN Imported successfully', 'success');
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            return $this->returnResponse('SALN Import','SALN failed import','error');
+            return $this->returnResponse('SALN Import', 'SALN failed import', 'error');
         }
     }
 

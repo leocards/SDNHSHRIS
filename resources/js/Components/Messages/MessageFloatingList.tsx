@@ -7,8 +7,7 @@ import {
     CardTitle,
 } from "@/Components/ui/card";
 import { Button } from "../ui/button";
-import { Check, Plus, X } from "lucide-react";
-import { ScrollArea } from "../ui/scroll-area";
+import { Check, X } from "lucide-react";
 import MessageList from "./MessageList";
 import { TooltipLabel } from "../ui/tooltip";
 import { MessageAdd1, SearchNormal1 } from "iconsax-react";
@@ -39,9 +38,9 @@ const MessageFloatingList = () => {
                     <CardTitle className="text-lg leading-4">
                         Messages
                     </CardTitle>
-                    <CardDescription>
-                        You have 3 unread messages
-                    </CardDescription>
+                    {unreadMessages ? <CardDescription>
+                        You have {unreadMessages} unread messages
+                    </CardDescription> : ''}
                 </div>
                 <TooltipLabel label="New Message" className="!mt-0">
                     <Button

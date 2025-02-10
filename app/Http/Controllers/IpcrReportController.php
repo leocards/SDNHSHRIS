@@ -21,7 +21,12 @@ class IpcrReportController extends Controller
 
         $filter = $request->query('filter')??$sy[0]->id;
 
-        $ipcr = IpcrReport::with('user')->with('schoolyear')->where('syid', $filter)->get();
+        $ipcr = IpcrReport::with([
+            'user' => function ($query) {
+                $query->withoutGlobalScopes();
+            },
+            'schoolyear'
+        ])->where('syid', $filter)->get();
 
         if($request->expectsJson()) {
             return response()->json($ipcr);

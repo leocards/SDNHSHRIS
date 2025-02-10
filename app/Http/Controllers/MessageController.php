@@ -49,10 +49,10 @@ class MessageController extends Controller
 
         return response()->json(
             User::where(function ($query) use ($search) {
-                $query->where('firstname', 'LIKE', "%{$search}%")
-                    ->orWhere('lastname', 'LIKE', "%{$search}%")
-                    ->orWhere('middlename', 'LIKE', "%{$search}%");
-            })
+                    $query->where('firstname', 'LIKE', "%{$search}%")
+                        ->orWhere('lastname', 'LIKE', "%{$search}%")
+                        ->orWhere('middlename', 'LIKE', "%{$search}%");
+                })
                 ->get(['id', 'firstname', 'lastname', 'middlename', 'avatar'])
                 ->filter(function ($data) use ($auth) {
                     $exists = Message::where(function ($query) use ($data, $auth) {

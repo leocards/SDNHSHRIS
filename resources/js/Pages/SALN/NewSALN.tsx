@@ -13,9 +13,12 @@ import BusinessInterectFinancialConnections from "./Partials/BusinessInterectFin
 import RelativeInGovernment from "./Partials/RelativeInGovernment";
 import { Button } from "@/Components/ui/button";
 import { useToast } from "@/Hooks/use-toast";
+import { SPOUSETYPE } from "../PDS/Types/FamilyBackground";
 
 type Props = {
     saln: SALNTYPE;
+    spouse: SPOUSETYPE|null
+
 };
 
 const getChildren = (data: SALNTYPE["children"]) => {
@@ -41,7 +44,7 @@ const getChildren = (data: SALNTYPE["children"]) => {
     return childrens;
 };
 
-const NewSALN: React.FC<Props> = ({ saln }) => {
+const NewSALN: React.FC<Props> = ({ saln, spouse }) => {
     const { toast } = useToast();
     const form = useFormSubmit<IFormSaln>({
         route: !saln ? route("saln.store") : route("saln.store", [saln?.id]),
@@ -165,7 +168,7 @@ const NewSALN: React.FC<Props> = ({ saln }) => {
                         />
                     </div>
 
-                    <PersonalInformation form={form} />
+                    <PersonalInformation form={form} spouse={spouse} />
 
                     <Children form={form} />
 

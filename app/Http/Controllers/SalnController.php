@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DateParserTrait;
 use App\Models\Notification;
 use App\Models\Saln;
+use App\Models\User;
 use App\ResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -46,10 +47,20 @@ class SalnController extends Controller
         ]);
     }
 
-    public function create(Saln $saln = null)
+    public function create(Request $request, Saln $saln = null)
     {
+        $spouse = collect([
+            "spousename" => $request->user()->pdsFamilyBackground()->where('type', 'spouse')->value('details'),
+            "govid" => null
+        ]);
+
+        if($spouse['spousename']) {
+            $spouse['govid'] = User::where('lastname')->where('firstname')->first()?->pdsC4()->where('type', 'governmentId')?->value('details');
+        }
+
         return Inertia::render('SALN/NewSALN', [
-            'saln' => $saln
+            'saln' => $saln,
+            'spouse' => $spouse['spousename']
         ]);
     }
 
@@ -115,7 +126,9 @@ class SalnController extends Controller
 
     public function view(Saln $saln)
     {
-        $saln->load(['user']);
+        $saln->load(['user' => function ($query) {
+            $query->withoutGlobalScopes();
+        }]);
 
         $pages = collect([]);
 
@@ -126,7 +139,6 @@ class SalnController extends Controller
         $bifc = collect($saln->biandfc['bifc'])->chunk(4);
         $relative = collect($saln->relativesingovernment['relatives'])->chunk(4);
         $spouse = collect($saln->spouse);
-
 
         $morePages = true;
         while ($morePages) {
