@@ -23,15 +23,21 @@ class SalnReportController extends Controller
         $filter = $request->query('filter') ?? $year?->first();
 
         if ($request->expectsJson()) {
-            return response()->json(SalnReport::with(['user' => function ($query) {
-                $query->withoutGlobalScopes()
-                    ->with('pdsPersonalInformation');
-            }])->where('year', $filter)->get());
+            return response()->json(
+                SalnReport::with(['user' => function ($query) {
+                    $query->withoutGlobalScopes()
+                        ->with('pdsPersonalInformation');
+                }])
+                ->where('year', $filter)->get()
+            );
         }
 
         return Inertia::render('Myreports/SALN/SALN', [
             'principal' => User::where('role', 'principal')->first(),
-            'saln' => Inertia::defer(fn() => SalnReport::with('user.pdsPersonalInformation')->where('year', $year?->first())->get()),
+            'saln' => Inertia::defer(fn() => SalnReport::with(['user' => function ($query) {
+                $query->withoutGlobalScopes()
+                    ->with('pdsPersonalInformation');
+            }])->where('year', $year?->first())->get()),
             'years' => $year
         ]);
     }
@@ -49,7 +55,7 @@ class SalnReportController extends Controller
             if (SalnReport::where('user_id', $request->personnel)->where('year', $request->year)->exists() && !$saln)
                 throw new Exception('Personnel already have saln of year ' . $request->year);
 
-            if($saln && !$saln->user())
+            if ($saln && !$saln->user())
                 throw new Exception('Cannot update the SALN; the personnel is no longer working at the school.');
 
             SalnReport::updateOrCreate([
