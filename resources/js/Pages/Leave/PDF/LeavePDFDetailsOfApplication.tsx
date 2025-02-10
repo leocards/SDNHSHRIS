@@ -293,7 +293,7 @@ const LeavePDFDetailsOfApplication = (
                                 "h-4 text-center font-bold uppercase"
                             )}
                         >
-                            <div className={cn(isDownload && "-mt-3")}>{applicant.full_name}</div>
+                            <div className={cn(isDownload && "-mt-3")}>{applicant?.full_name}</div>
                         </div>
                         <div
                             className={cn(

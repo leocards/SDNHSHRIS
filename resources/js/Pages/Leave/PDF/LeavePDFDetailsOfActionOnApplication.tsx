@@ -282,7 +282,7 @@ const LeavePDFDetailsOfActionOnApplication = (props: Props) => {
                                 )}
                             >
                                 <div className={cn(isDownload && "-mt-5")}>
-                                    {applicant.role === "principal" ? <>
+                                    {applicant?.role === "principal" ? <>
                                         <div>Basilio P. Mana-ay, Jr. Ceso VI</div>
                                     </> : <>
                                         <div>{principal?.name}</div>
@@ -302,7 +302,7 @@ const LeavePDFDetailsOfActionOnApplication = (props: Props) => {
                                 )}
                             >
                                 <div className={cn(isDownload && "-mt-1")}>
-                                    {applicant.role === "principal" ? "Assistant Schools Division Superintendent":"Immediate Supervisor"}
+                                    {applicant?.role === "principal" ? "Assistant Schools Division Superintendent":"Immediate Supervisor"}
                                 </div>
                             </div>
                         </div>
@@ -389,11 +389,11 @@ const LeavePDFDetailsOfActionOnApplication = (props: Props) => {
             <div className="pt-10 mb-2">
                 <div className="w-[50%] mx-auto">
                     <div className="h-4 text-center font-bold uppercase">
-                        {applicant.role === "principal" ? "Jinky B. Filman, CESO VI" : "Basilio P. Mana-ay, Jr. Ceso VI"}
+                        {applicant?.role === "principal" ? "Jinky B. Filman, CESO VI" : "Basilio P. Mana-ay, Jr. Ceso VI"}
                     </div>
                     <div className={cn("pt-0.5 text-center ")}>
                         <div className={cn(isDownload && "-mt-1 mb-4")}>
-                            {applicant.role === "principal" ? "Schools Division Superintendent" : "Assistant Schools Division Superintendent"}
+                            {applicant?.role === "principal" ? "Schools Division Superintendent" : "Assistant Schools Division Superintendent"}
 
                         </div>
                     </div>
