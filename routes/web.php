@@ -47,7 +47,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::prefix('general-search')->middleware(['role:hr'])->group(function () {
+    Route::prefix('general-search')->middleware(['role:hr,principal'])->group(function () {
         Route::controller(GeneralSearchController::class)->group(function () {
             Route::get('/', 'index')->name('general-search');
             Route::get('/view/{user}', 'view')->name('general-search.view');

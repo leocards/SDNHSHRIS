@@ -45,7 +45,7 @@ class SalnReportController extends Controller
     public function store(Request $request, SalnReport $saln = null)
     {
         $request->validate([
-            'networth' => 'required|numeric',
+            'networth' => ['required', 'regex:/^\d{1,3}(,\d{3})*(\.\d{1,2})?$/'],
             'filing' => 'required|in:joint,separate,not'
         ]);
 

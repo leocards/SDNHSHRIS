@@ -33,18 +33,28 @@ const ViewSearched: React.FC<Props> = ({
 }) => {
     const [selectedCertificate, setSelectedCertificate] = useState(0);
     const [viewCertificate, setViewCertificate] = useState(false);
-    const [pdsTab, setPdsTab] = useState<PDSTABSTYPE>("C1")
-    const { setProcess } = useProcessIndicator()
-    const { selectConversation } = useMessage()
+    const [pdsTab, setPdsTab] = useState<PDSTABSTYPE>("C1");
+    const { setProcess } = useProcessIndicator();
+    const { selectConversation } = useMessage();
 
     return (
         <div>
             <Header title="General Search" />
 
-            <Button className="" variant="outline" onClick={() => router.get(route('general-search'), {}, {
-                onBefore: () => setProcess(true)
-            })}>
-                <ChevronLeft/> Back
+            <Button
+                className=""
+                variant="outline"
+                onClick={() =>
+                    router.get(
+                        route("general-search"),
+                        {},
+                        {
+                            onBefore: () => setProcess(true),
+                        }
+                    )
+                }
+            >
+                <ChevronLeft /> Back
             </Button>
 
             <Tabs
@@ -57,7 +67,6 @@ const ViewSearched: React.FC<Props> = ({
                     <TabsTrigger value="sr">Certificates</TabsTrigger>
                     <TabsTrigger value="pds">PDS</TabsTrigger>
                 </TabsList>
-
 
                 <TabsContent
                     value="details"
@@ -81,7 +90,13 @@ const ViewSearched: React.FC<Props> = ({
                             </div>
 
                             <div className="mt-4">
-                                <Button className="" variant="secondary" onClick={() => selectConversation(user, true)}>
+                                <Button
+                                    className=""
+                                    variant="secondary"
+                                    onClick={() =>
+                                        selectConversation(user, true)
+                                    }
+                                >
                                     <Messages2 />
                                     Message
                                 </Button>
@@ -183,19 +198,23 @@ const ViewSearched: React.FC<Props> = ({
 
                 <TabsContent
                     value="tardiness"
-                    className="max-w-4xl mx-auto w-full p-4"
+                    className="max-w-5xl mx-auto w-full p-4"
                 >
                     <Card className="min-h-[28rem] relative">
-                        <TableHeader className="grid grid-cols-3">
+                        <TableHeader className="grid grid-cols-5">
                             <div>School Year</div>
-                            <div>Days Present</div>
-                            <div>Days Absent</div>
+                            <div>No. of Days Present</div>
+                            <div>No. of Days Absent</div>
+                            <div>No. of Time Tardy</div>
+                            <div>No. of Undertime</div>
                         </TableHeader>
                         {attendances.map((att, index) => (
-                            <TableRow key={index} className="grid grid-cols-3">
+                            <TableRow key={index} className="grid grid-cols-5">
                                 <div>{att?.schoolyear?.schoolyear}</div>
                                 <div>{att?.present}</div>
                                 <div>{att?.absent}</div>
+                                <div>{att?.timetardy}</div>
+                                <div>{att?.undertime}</div>
                             </TableRow>
                         ))}
                         {attendances.length === 0 && (
@@ -260,7 +279,9 @@ const ViewSearched: React.FC<Props> = ({
                     <Tabs
                         defaultValue={pdsTab}
                         className="overflow-hidden rounded-md grow flex flex-col my-4 mb-2 mx-auto w-fit"
-                        onValueChange={(value) => setPdsTab(value as PDSTABSTYPE)}
+                        onValueChange={(value) =>
+                            setPdsTab(value as PDSTABSTYPE)
+                        }
                     >
                         <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal bg-primary/15 text-primary/60">
                             <TabsTrigger value="C1">C1</TabsTrigger>
@@ -270,10 +291,7 @@ const ViewSearched: React.FC<Props> = ({
                         </TabsList>
                     </Tabs>
 
-                    <PDSPDF
-                        userid={user?.id}
-                        tab={pdsTab}
-                    />
+                    <PDSPDF userid={user?.id} tab={pdsTab} />
                 </TabsContent>
             </Tabs>
         </div>

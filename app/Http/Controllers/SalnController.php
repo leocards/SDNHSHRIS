@@ -23,10 +23,10 @@ class SalnController extends Controller
         $status = $request->query('status') ?? "pending";
 
         $saln = Saln::when($role == "hr", function ($query) {
-            $query->with('user');
-        })->when($role != "hr", function ($query) use ($request) {
-            $query->where('user_id', $request->user()->id);
-        })
+                $query->with(['user' => fn ($query) => $query->withoutGlobalScopes()]);
+            })->when($role != "hr", function ($query) use ($request) {
+                $query->where('user_id', $request->user()->id);
+            })
             ->where('status', $status)
             ->paginate($this->page);
 
@@ -36,7 +36,6 @@ class SalnController extends Controller
         }
 
         if ($role === "hr") {
-
             return Inertia::render('Myapproval/SALN/SALN', [
                 'saln' => Inertia::defer(fn() => $saln)
             ]);
