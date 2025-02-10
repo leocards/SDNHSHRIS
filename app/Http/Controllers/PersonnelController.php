@@ -27,8 +27,8 @@ class PersonnelController extends Controller
         $sortDataBy = $sort === "name" ? "lastname" : $sort;
 
         $personnel = User::excludeHr()
-            ->when($pt === 'teaching', fn ($query) => $query->where('role', $pt))
-            ->when($pt === 'non-teaching', fn ($query) => $query->where('role', $pt)->when(Auth::user()->role != "principal", fn ($query) => $query->orWhere('role', 'principal')))
+            ->when($pt === 'teaching', fn($query) => $query->where('role', $pt))
+            ->when($pt === 'non-teaching', fn($query) => $query->where('role', $pt)->when(Auth::user()->role != "principal", fn($query) => $query->orWhere('role', 'principal')))
             ->when($filter, function ($query) use ($filter) {
                 $query->where('department', $filter);
             })
@@ -40,7 +40,7 @@ class PersonnelController extends Controller
         }
 
         return Inertia::render('Personnel/Personnel', [
-            "personnels" => Inertia::defer(fn () => $personnel),
+            "personnels" => Inertia::defer(fn() => $personnel),
             "personneltype" => $pt,
             "jhs" => User::excludeHr()->where('department', 'junior')->count(),
             "shs" => User::excludeHr()->where('department', 'senior')->count(),
@@ -80,13 +80,17 @@ class PersonnelController extends Controller
                     'role' => $request->personnel['role'],
                     'position' => $request->personnel['position'],
                     'hiredate' => $this->parseDate($request->personnel['datehired']),
-                    'credits' => $request->personnel['role'] != "teaching" ? 45 : 0,
+                    'credits' => $request->personnel['credits'] != '0' && $request->personnel['credits'] ?
+                        $request->personnel['credits'] : ($request->personnel['role'] != "teaching" ? 30 : 0),
+                    'splcredits' => $request->personnel['role'] != "teaching" ?
+                        ($request->personnel['splcredits'] != '0' && $request->personnel['splcredits'] ? $request->personnel['splcredits'] : 15)
+                        : 0,
                     'enable_email_notification' => true,
                     'password' => Hash::make($request->password)
                 ]
             );
 
-            if(!$personnelid)
+            if (!$personnelid)
                 PersonalDataSheet::create([
                     'user_id' => $personnel->id
                 ]);
@@ -94,17 +98,16 @@ class PersonnelController extends Controller
             DB::commit();
 
             return redirect()->route('personnel', [$request->query('pt')])->with([
-                'title' => 'New personnel '.(!$personnelid?'added!':'updated!'),
-                'message' => 'New personnel successfully '.(!$personnelid?'added.':'updated.'),
+                'title' => 'New personnel ' . (!$personnelid ? 'added!' : 'updated!'),
+                'message' => 'New personnel successfully ' . (!$personnelid ? 'added.' : 'updated.'),
                 'status' => 'success'
             ]);
-
         } catch (\Throwable $th) {
             DB::rollBack();
 
             return back()->with([
                 'title' => 'Process failed!',
-                'message' => 'Unable to '.(!$personnelid?'add':'update').' personnel.',
+                'message' => 'Unable to ' . (!$personnelid ? 'add' : 'update') . ' personnel.',
                 'status' => 'error'
             ]);
         }

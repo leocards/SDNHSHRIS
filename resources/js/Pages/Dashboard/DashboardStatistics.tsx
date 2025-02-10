@@ -16,7 +16,7 @@ type Props = {
 }
 
 const DashboardStatistics = ({ totalpersonnel, leave, servicecredits }: Props) => {
-    const { role, credits } = usePage().props.auth.user;
+    const { role, credits, splcredits } = usePage().props.auth.user;
     return (
         <div className={cn("grid gap-4 mt-4", role === "hr" || role === "teaching" ? "grid-cols-4" : "grid-cols-5")}>
             {role === "hr" ? (
@@ -41,7 +41,7 @@ const DashboardStatistics = ({ totalpersonnel, leave, servicecredits }: Props) =
                             <div className="text-base font-semibold">
                                 Credits
                             </div>
-                            <div className="text-xl font-medium">{credits}</div>
+                            <div className="text-xl font-medium">{credits + splcredits}</div>
                         </div>
                     </StatisticsCard>}
                     <StatisticsCard className="from-blue-600 via-blue-600 to-cyan-500 dark:from-blue-800/75 dark:via-blue-800/75 dark:to-cyan-700/75">

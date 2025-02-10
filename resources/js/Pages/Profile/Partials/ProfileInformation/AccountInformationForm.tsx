@@ -15,9 +15,9 @@ import {
     PersonnelPosition,
     requiredError,
 } from "@/Types/types";
-import { Eye, PasswordCheck } from "iconsax-react";
+import { PasswordCheck } from "iconsax-react";
 import { AtSign } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { z } from "zod";
 
 export const ACCOUNTSCHEMA = z.object({
@@ -97,6 +97,8 @@ export const ACCOUNTSCHEMA = z.object({
 
                 return true;
             }, requiredError("position")),
+        credits: z.string().optional().default('0'),
+        splcredits: z.string().optional().default('0'),
     }),
     password: z
         .string()
@@ -151,6 +153,15 @@ const AccountInformationForm: React.FC<Props> = ({
 
         if (watchRole == "teaching") {
             setPositions([...PersonnelPosition].slice(0, 7));
+        }
+
+        if(!isProfile) {
+            if(watchRole !== "teaching"){
+                form.setValue("personnel.credits", 45);
+            } else {
+
+            }
+
         }
     }, [watchRole]);
 
@@ -296,7 +307,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                 className="text-base bg-background pr-3 before:absolute before:w-full before:h-px before:bg-border before:top-3 before:-z-10"
                             />
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            <div className={cn("grid grid-cols-1 sm:grid-cols-2 gap-4", (!user || !isProfile || watchRole === "teaching") ? 'md:grid-cols-3' : watchRole != "teaching" && 'md:grid-cols-4')}>
                                 <FormSelect
                                     form={form}
                                     name="personnel.role"
@@ -308,10 +319,6 @@ const AccountInformationForm: React.FC<Props> = ({
                                     )}
                                     items={
                                         <>
-                                            {/* <SelectItem
-                                                value="hr"
-                                                children="HR"
-                                            /> */}
                                             {!hasPrincipal && (
                                                 <SelectItem
                                                     value="principal"
@@ -405,6 +412,24 @@ const AccountInformationForm: React.FC<Props> = ({
                                     ))}
                                     disabled={!watchRole}
                                 />
+                                {(!isProfile && !user) && (
+                                    <Fragment>
+                                        <FormInput
+                                            form={form}
+                                            name="personnel.credits"
+                                            label="Credits"
+                                            type="number"
+                                            required={false}
+                                        />
+                                        {watchRole != "teaching" && <FormInput
+                                            form={form}
+                                            name="personnel.splcredits"
+                                            label="SPL Credits"
+                                            type="number"
+                                            required={false}
+                                        />}
+                                    </Fragment>
+                                )}
                             </div>
                         </div>
                     )}

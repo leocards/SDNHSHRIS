@@ -20,6 +20,7 @@ export interface User {
     position: PERSONNELPOSITIONS | null;
     hiredate: string;
     credits: number;
+    splcredits: number;
     avatar: string;
     enable_email_notification: boolean;
     enable_email_message_notification: boolean;
