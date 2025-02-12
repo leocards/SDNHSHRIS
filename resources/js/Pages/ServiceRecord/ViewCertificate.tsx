@@ -20,11 +20,13 @@ import { User } from "@/Types";
 
 type ViewCertificateProps = ModalProps & {
     srid: number | null;
+    isInactive?: boolean;
 };
 
 const ViewCertificate: React.FC<ViewCertificateProps> = ({
     srid,
     show,
+    isInactive,
     onClose,
 }) => {
     const role = usePage().props.auth.user.role;
@@ -197,7 +199,7 @@ const ViewCertificate: React.FC<ViewCertificateProps> = ({
                             </Fragment>
                         )}
 
-                        {role == "hr" && data?.status === "pending" && (
+                        {(role == "hr" && data?.status === "pending" && !isInactive) && (
                             <div className="flex items-center justify-end gap-2 mt-5">
                                 <Button
                                     className="bg-green-600 hover:bg-green-500"

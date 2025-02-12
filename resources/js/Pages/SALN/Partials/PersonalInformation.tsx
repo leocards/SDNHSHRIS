@@ -5,21 +5,23 @@ import {
     FormRadioGroup,
     FormRadioItem,
 } from "@/Components/ui/form";
+import { IFormC4 } from "@/Pages/PDS/Types/C4";
 import { SPOUSETYPE } from "@/Pages/PDS/Types/FamilyBackground";
 import { usePage } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
+import { SALNTYPE } from "../Types/type";
 
 type Props = {
     form: any;
-    spouse: SPOUSETYPE|null
+    spouse: SPOUSETYPE|null;
+    spousegoveid: IFormC4['governmentids'] | null
 };
 
-const PersonalInformation: React.FC<Props> = ({ form, spouse }) => {
+const PersonalInformation: React.FC<Props> = ({ form, spouse, spousegoveid }) => {
     const user = usePage().props.auth.user;
 
-    const onJointFiling = () => {
-        console.log('test', spouse)
-        if(spouse) {
+    const onJointFiling = (filing: SALNTYPE['isjoint']) => {
+        if(spouse && filing != 'joint') {
             form.setValue('spouse', {
                 familyname: spouse.familyname,
                 firstname: spouse.firstname,
@@ -27,9 +29,22 @@ const PersonalInformation: React.FC<Props> = ({ form, spouse }) => {
                 position: spouse.occupation,
                 office: spouse.employerbusiness,
                 officeaddress: spouse.businessaddress,
+                governmentissuedid: spousegoveid ? spousegoveid.governmentissuedid : "",
+                idno: spousegoveid ? spousegoveid.licensepassportid : "",
+                dateissued: spousegoveid ? new Date(spousegoveid.issued) : null,
             })
-
-            form.setValue('spouse.familyname', spouse.familyname)
+        } else if(filing === 'not') {
+            form.setValue('spouse', {
+                familyname: '',
+                firstname: '',
+                middleinitial: '',
+                position: '',
+                office: '',
+                officeaddress: '',
+                governmentissuedid: '',
+                idno: '',
+                dateissued: null,
+            })
         }
     }
 
@@ -50,12 +65,7 @@ const PersonalInformation: React.FC<Props> = ({ form, spouse }) => {
                             name="isjoint"
                             labelClass="text-center"
                             className="justify-center"
-                            onValueChange={(value) => {
-                                console.log(value)
-                                if(value == "joint") {
-                                    onJointFiling()
-                                }
-                            }}
+                            onValueChange={(value) => onJointFiling(value as SALNTYPE['isjoint'])}
                         >
                             <FormRadioItem value="joint" label="Joint Filing" />
                             <FormRadioItem

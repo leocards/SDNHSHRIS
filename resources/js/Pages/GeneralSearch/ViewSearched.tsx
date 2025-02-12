@@ -261,7 +261,7 @@ const ViewSearched: React.FC<Props> = ({
                                 <div className="line-clamp-1">
                                     {data?.details?.name}
                                 </div>
-                                <Button className="" variant={"link"}>
+                                <Button className="ml-auto" variant={"link"}>
                                     <Eye />
                                 </Button>
                             </div>

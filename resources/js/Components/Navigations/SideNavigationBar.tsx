@@ -15,6 +15,7 @@ import {
 import sdnhslogo from "@/Assets/images/sdnhs-logo.png";
 import { cn } from "@/Lib/utils";
 import {
+    ArchiveBox,
     ArrowDown2,
     Chart2,
     ChartSuccess,
@@ -268,6 +269,34 @@ const SideNavigationBar = () => {
                                                     }
                                                 />
                                                 <span>Tardiness</span>
+                                            </SidebarMenuSubButton>
+                                        </SidebarMenuSubItem>
+                                    </AuthTabs>
+                                    <AuthTabs tab="personnel.archive">
+                                        <SidebarMenuSubItem>
+                                            <SidebarMenuSubButton
+                                                isActive={
+                                                    url.startsWith(
+                                                        "/personnel/personnel-archive"
+                                                    )
+                                                }
+                                                className="cursor-pointer"
+                                                onClick={() =>
+                                                    navigateTo(
+                                                        route("personnel.archive")
+                                                    )
+                                                }
+                                            >
+                                                <ArchiveBox
+                                                    variant={
+                                                        url.startsWith(
+                                                            "/personnel/personnel-archive"
+                                                        )
+                                                            ? "Bulk"
+                                                            : "Linear"
+                                                    }
+                                                />
+                                                <span>Personnel Archive</span>
                                             </SidebarMenuSubButton>
                                         </SidebarMenuSubItem>
                                     </AuthTabs>
@@ -755,6 +784,7 @@ const tabs = [
     "sr",
     "tardiness",
     "pds",
+    "personnel.archive"
 ] as const;
 
 const AuthTabs: React.FC<{
@@ -764,7 +794,7 @@ const AuthTabs: React.FC<{
     const role = usePage().props.auth.user.role;
     const isAuthorized = useMemo(() => {
         const allowedtabs = {
-            hr: [...tabs.slice(0, 17)],
+            hr: [...tabs.slice(0, 17), tabs[22]],
             principal: [
                 ...tabs.slice(0, 5),
                 tabs[6],

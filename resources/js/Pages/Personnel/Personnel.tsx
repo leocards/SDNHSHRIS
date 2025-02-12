@@ -36,7 +36,7 @@ import {
     MenubarSubContent,
 } from "@/Components/ui/menubar";
 import { TooltipLabel } from "@/Components/ui/tooltip";
-import { ChevronRight, EllipsisVertical } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { ProfilePhoto } from "@/Components/ui/avatar";
 import { useMessage } from "@/Components/Provider/message-provider";
 import {
@@ -45,7 +45,7 @@ import {
 } from "@/Components/Provider/paginate-provider";
 import ImportExcelPds from "./ImportExcelPds";
 import ViewDetails from "./ViewDetails";
-import EmploymentConfirmation from "./EmploymentConfirmation";
+import PersonnelConfirmation from "./PersonnelConfirmation";
 
 type PersonnelProps = {
     personneltype: "teaching" | "non-teaching";
@@ -87,8 +87,8 @@ const Main: React.FC<PersonnelProps> = ({
     const [importPds, setImportPds] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [viewDetails, setViewDetails] = useState(false);
-    const [showEmploymentConfirmation, setShowEmploymentConfirmation] = useState(false)
-    const [empStatus, setEmpStatus] = useState<
+    const [showPersonnelConfirmation, setShowPersonnelConfirmation] = useState(false)
+    const [personnelStatus, setPersonnelStatus] = useState<
         "retired" | "resigned" | "transferred" | null
     >(null);
 
@@ -231,11 +231,10 @@ const Main: React.FC<PersonnelProps> = ({
                                     }
                                     onImportPds={() => setImportPds(true)}
                                     onViewDetails={() => setViewDetails(true)}
-                                    onEmploymentAction={(action) => {
-                                        console.log('test')
-                                        setShowEmploymentConfirmation(true)
+                                    onPersonnelAction={(action) => {
+                                        setShowPersonnelConfirmation(true)
                                         setSelectedUser(personnel);
-                                        setEmpStatus(action);
+                                        setPersonnelStatus(action);
                                     }}
                                 />
                             ))}
@@ -258,13 +257,13 @@ const Main: React.FC<PersonnelProps> = ({
                 onClose={setViewDetails}
             />
 
-            <EmploymentConfirmation
-                show={showEmploymentConfirmation}
-                action={empStatus}
+            <PersonnelConfirmation
+                show={showPersonnelConfirmation}
+                action={personnelStatus}
                 onClose={() => {
-                    setShowEmploymentConfirmation(false)
+                    setShowPersonnelConfirmation(false)
                     setSelectedUser(null);
-                    setEmpStatus(null);
+                    setPersonnelStatus(null);
                 }}
                 personnel={selectedUser}
             />
@@ -278,7 +277,7 @@ interface ListRowProps extends HTMLAttributes<HTMLDivElement> {
     onImportPds: CallableFunction;
     onPreselect: CallableFunction;
     onViewDetails: CallableFunction;
-    onEmploymentAction: (action: "retired" | "resigned" | "transferred") => void;
+    onPersonnelAction: (action: "retired" | "resigned" | "transferred") => void;
 }
 
 const ListRow: React.FC<ListRowProps> = ({
@@ -286,7 +285,7 @@ const ListRow: React.FC<ListRowProps> = ({
     onImportPds,
     onPreselect,
     onViewDetails,
-    onEmploymentAction,
+    onPersonnelAction,
     ...props
 }) => {
     const { selectConversation } = useMessage();
@@ -366,7 +365,7 @@ const ListRow: React.FC<ListRowProps> = ({
                                     <MenubarSub>
                                         <MenubarSubTrigger className="gap-2">
                                             <UserOctagon className="size-5" />
-                                            <span>Employment status</span>
+                                            <span>Personnel status</span>
                                         </MenubarSubTrigger>
                                         <MenubarSubContent
                                             className="min-w-40"
@@ -385,7 +384,7 @@ const ListRow: React.FC<ListRowProps> = ({
                                             <MenubarItem
                                                 onClick={() => {
                                                     user.status == null &&
-                                                    onEmploymentAction(
+                                                    onPersonnelAction(
                                                         "retired"
                                                     )
                                                 }}
@@ -396,7 +395,7 @@ const ListRow: React.FC<ListRowProps> = ({
                                             <MenubarItem
                                                 onClick={() => {
                                                     user.status == null &&
-                                                    onEmploymentAction(
+                                                    onPersonnelAction(
                                                         "resigned"
                                                     )
                                                 }}
@@ -407,7 +406,7 @@ const ListRow: React.FC<ListRowProps> = ({
                                             <MenubarItem
                                                 onClick={() => {
                                                     user.status == null &&
-                                                    onEmploymentAction(
+                                                    onPersonnelAction(
                                                         "transferred"
                                                     )
                                                 }}

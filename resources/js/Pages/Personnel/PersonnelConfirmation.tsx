@@ -11,7 +11,7 @@ type Props = ModalProps & {
     personnel: User | null;
 };
 
-const EmploymentConfirmation: React.FC<Props> = ({
+const PersonnelConfirmation: React.FC<Props> = ({
     show,
     onClose,
     action,
@@ -27,7 +27,7 @@ const EmploymentConfirmation: React.FC<Props> = ({
     const onConfirm = () => {
         setProcess(true)
         router.post(
-            route("personnel.employment.update", [personnel?.id]),
+            route("personnel.status.update", [personnel?.id]),
             {
                 action: action,
             },
@@ -61,7 +61,7 @@ const EmploymentConfirmation: React.FC<Props> = ({
         <Modal
             show={show}
             onClose={onClose}
-            title="Employment Confirmation"
+            title="Personnel Status Confirmation"
             maxWidth="md"
         >
             <div className="text-center px-10 py-7">
@@ -81,4 +81,4 @@ const EmploymentConfirmation: React.FC<Props> = ({
     );
 };
 
-export default EmploymentConfirmation;
+export default PersonnelConfirmation;

@@ -76,9 +76,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::controller(PersonnelController::class)->group(function () {
             Route::get('/r/{pt}', 'index')->name('personnel');
             Route::get('/create/{pt}/{personnel?}', 'create')->middleware(['role:hr'])->name('personnel.create');
+            Route::get('/personnel-archive', 'personnelArchive')->middleware(['role:hr'])->name('personnel.archive');
+            Route::get('/personnel-archive/view/{userId}', 'personnelArchiveView')->middleware(['role:hr'])->name('personnel.archive.view');
+            Route::get('/personnel-archive/leave/view/{leave}', 'personnelArchiveViewLeaveApplication')->middleware(['role:hr'])->name('personnel.archive.leave.view');
 
             Route::post('/new/{personnelid?}', 'store')->middleware(['role:hr'])->name('personnel.store');
-            Route::post('/employment-status/{user}', 'updateEmploymentStatus')->middleware(['role:hr'])->name('personnel.employment.update');
+            Route::post('/personnel-status/{user}', 'updatePersonnelStatus')->middleware(['role:hr'])->name('personnel.status.update');
         });
 
         // Tardiness routes

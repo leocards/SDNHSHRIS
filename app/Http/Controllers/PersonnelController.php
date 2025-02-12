@@ -4,7 +4,19 @@ namespace App\Http\Controllers;
 
 use App\DateParserTrait;
 use App\Http\Requests\PersonnelRequest;
+use App\Models\Leave;
+use App\Models\PdsCivilService;
+use App\Models\PdsCs4;
+use App\Models\PdsEducationalBackground;
+use App\Models\PdsFamilyBackground;
+use App\Models\PdsLearningDevelopment;
+use App\Models\PdsOtherInformation;
+use App\Models\PdsPersonalInformation;
+use App\Models\PdsVoluntaryWork;
+use App\Models\PdsWorkExperience;
 use App\Models\PersonalDataSheet;
+use App\Models\ServiceRecord;
+use App\Models\Tardiness;
 use App\Models\User;
 use App\ResponseTrait;
 use Carbon\Carbon;
@@ -129,7 +141,7 @@ class PersonnelController extends Controller
         ]);
     }
 
-    public function updateEmploymentStatus(Request $request, User $user)
+    public function updatePersonnelStatus(Request $request, User $user)
     {
         $request->validate([
             'action' => ['required', 'in:retired,resigned,transferred']
@@ -146,5 +158,77 @@ class PersonnelController extends Controller
         } catch (\Throwable $th) {
             return $this->returnResponse('Update Employment Status', 'Unable to update employment status', 'error');
         }
+    }
+
+    public function personnelArchive(Request $request)
+    {
+        $status = $request->status;
+
+        $personnels = User::withoutGlobalScopes()
+            ->whereNotNull('status_updated_at')
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->paginate($this->page);
+
+        if ($request->expectsJson()) {
+            return response()->json($personnels);
+        }
+
+        return Inertia::render('Personnel/PersonnelArchive/PersonnelArchive', [
+            'personnels' => Inertia::defer(fn() => $personnels)
+        ]);
+    }
+
+    public function personnelArchiveView(Request $request, $userId)
+    {
+        $user = User::withoutGlobalScopes()->find($userId);
+
+        if (!$user->status_updated_at)
+            return $this->returnResponse('Info', 'The personnel is still active in the school.', 'info');
+        else if (!$user)
+            return $this->returnResponse('Info', 'The personnel with the given details does not exist.', 'info');
+
+        return Inertia::render('Personnel/PersonnelArchive/View', [
+            'user' => $user->load(['pdsPersonalInformation' => function ($query) {
+                $query->select('id', 'user_id', 'tin'); // Ensure foreign key is included
+            }]),
+            'tardinesses' => Inertia::defer(fn() =>
+                Tardiness::with('schoolyear:id,start,end,resume')
+                    ->where('user_id', $user->id)
+                    ->latest()
+                    ->get()
+                    ->groupBy('school_year_id')
+                    ->mapWithKeys(function ($tardiness) {
+                        $schoolYear = $tardiness[0]->schoolyear->schoolyear;
+
+                        return [$schoolYear => $tardiness];
+                    })
+                ),
+            'certificates' => Inertia::defer(fn() => $user->serviceRecord),
+            'leaves' => Inertia::defer(fn() => $user->leave()->get(['id','user_id','type'])),
+            'saln' => Inertia::defer(fn() => $user->salnreport),
+        ]);
+    }
+
+    public function personnelArchiveViewLeaveApplication(Leave $leave)
+    {
+        $user = $leave->userWithoutScopes()->first();
+        $medical = $leave->medical()->latest()->first();
+
+        $leave->firstname = $user->firstname;
+        $leave->lastname = $user->lastname;
+        $leave->middlename = $user->middlename;
+        $leave->department = $user->department;
+        $leave->position = $user->position;
+        $leave->avatar = $user->avatar;
+        $leave->medical = $medical?->path ?? null;
+
+        return response()->json(collect([
+            'leave' => $leave,
+            'hr' => User::where('role', 'hr')->first()->name,
+            'applicant' => $leave->userWithoutScopes()->first()->only(['name', 'full_name', 'role']),
+            'principal' => User::where('role', 'principal')->first()?->only(['name', 'full_name', 'position'])
+        ]));
     }
 }

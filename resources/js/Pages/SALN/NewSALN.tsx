@@ -2,7 +2,7 @@ import Header from "@/Components/Header";
 import { TypographyLarge } from "@/Components/Typography";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { ArrowRight2 } from "iconsax-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { getBifc, getRelatives, IFormSaln, SALNSCHEMA, SALNTYPE } from "./Types/type";
 import { Form, FormCalendar } from "@/Components/ui/form";
 import PersonalInformation from "./Partials/PersonalInformation";
@@ -14,11 +14,12 @@ import RelativeInGovernment from "./Partials/RelativeInGovernment";
 import { Button } from "@/Components/ui/button";
 import { useToast } from "@/Hooks/use-toast";
 import { SPOUSETYPE } from "../PDS/Types/FamilyBackground";
+import { IFormC4 } from "../PDS/Types/C4";
 
 type Props = {
     saln: SALNTYPE;
     spouse: SPOUSETYPE|null
-
+    spousegoveid: IFormC4['governmentids'] | null
 };
 
 const getChildren = (data: SALNTYPE["children"]) => {
@@ -44,7 +45,7 @@ const getChildren = (data: SALNTYPE["children"]) => {
     return childrens;
 };
 
-const NewSALN: React.FC<Props> = ({ saln, spouse }) => {
+const NewSALN: React.FC<Props> = ({ saln, spouse, spousegoveid }) => {
     const { toast } = useToast();
     const form = useFormSubmit<IFormSaln>({
         route: !saln ? route("saln.store") : route("saln.store", [saln?.id]),
@@ -98,25 +99,29 @@ const NewSALN: React.FC<Props> = ({ saln, spouse }) => {
             ],
             biandfc: {
                 nobiandfc: saln?.biandfc?.nobiandfc ?? false,
-                bifc: saln ? getBifc(saln.biandfc.bifc) : [
-                    {
-                        name: "",
-                        address: "",
-                        nature: "",
-                        date: null,
-                    },
-                ],
+                bifc: saln
+                    ? getBifc(saln.biandfc.bifc)
+                    : [
+                          {
+                              name: "",
+                              address: "",
+                              nature: "",
+                              date: null,
+                          },
+                      ],
             },
             relativesingovernment: {
                 norelative: saln?.relativesingovernment?.norelative ?? false,
-                relatives: saln ? getRelatives(saln.relativesingovernment.relatives) : [
-                    {
-                        name: "",
-                        relationship: "",
-                        position: "",
-                        agencyandaddress: "",
-                    },
-                ],
+                relatives: saln
+                    ? getRelatives(saln.relativesingovernment.relatives)
+                    : [
+                          {
+                              name: "",
+                              relationship: "",
+                              position: "",
+                              agencyandaddress: "",
+                          },
+                      ],
             },
         },
         async: true,
@@ -168,7 +173,7 @@ const NewSALN: React.FC<Props> = ({ saln, spouse }) => {
                         />
                     </div>
 
-                    <PersonalInformation form={form} spouse={spouse} />
+                    <PersonalInformation form={form} spouse={spouse} spousegoveid={spousegoveid} />
 
                     <Children form={form} />
 

@@ -27,6 +27,7 @@ export interface User {
     enable_email_announcement_reminder: boolean;
     employmentstatus: string | null;
     email_verified_at?: string;
+    status_updated_at: string | null;
 }
 
 export type DepartmentsType = "junior"|"senior"|"accounting"|"N/A"

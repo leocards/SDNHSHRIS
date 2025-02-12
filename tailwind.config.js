@@ -15,17 +15,31 @@ export default {
     	extend: {
     		fontFamily: {
     			sans: [
-    				'Figtree',
+    				'Inter',
                     ...defaultTheme.fontFamily.sans
                 ],
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
-    			open: ['Open Sans', ...defaultTheme.fontFamily.sans],
-    			calibri: ['calibri'],
-    			arial: ['arial'],
-    			'arial-narrow': ['arial-narrow'],
-    			'arial-black': ['arial-black'],
-    			'arial-narrow-italic': ['arial-narrow-italic'],
-    			bookman: ['bookman']
+    			open: [
+    				'Open Sans',
+                    ...defaultTheme.fontFamily.sans
+                ],
+    			calibri: [
+    				'calibri'
+    			],
+    			arial: [
+    				'arial'
+    			],
+    			'arial-narrow': [
+    				'arial-narrow'
+    			],
+    			'arial-black': [
+    				'arial-black'
+    			],
+    			'arial-narrow-italic': [
+    				'arial-narrow-italic'
+    			],
+    			bookman: [
+    				'bookman'
+    			]
     		},
     		borderRadius: {
     			lg: 'var(--radius)',
@@ -86,7 +100,9 @@ export default {
     		},
     		animation: {
     			'border-beam': 'border-beam calc(var(--duration)*1s) infinite linear',
-    			'shiny-text': 'shiny-text 8s infinite'
+    			'shiny-text': 'shiny-text 8s infinite',
+    			'accordion-down': 'accordion-down 0.2s ease-out',
+    			'accordion-up': 'accordion-up 0.2s ease-out'
     		},
     		keyframes: {
     			rippling: {
@@ -109,6 +125,22 @@ export default {
     				},
     				'30%, 60%': {
     					'background-position': 'calc(100% + var(--shiny-width)) 0'
+    				}
+    			},
+    			'accordion-down': {
+    				from: {
+    					height: '0'
+    				},
+    				to: {
+    					height: 'var(--radix-accordion-content-height)'
+    				}
+    			},
+    			'accordion-up': {
+    				from: {
+    					height: 'var(--radix-accordion-content-height)'
+    				},
+    				to: {
+    					height: '0'
     				}
     			}
     		}

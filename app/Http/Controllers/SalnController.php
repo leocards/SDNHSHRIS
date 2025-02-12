@@ -59,7 +59,8 @@ class SalnController extends Controller
 
         return Inertia::render('SALN/NewSALN', [
             'saln' => $saln,
-            'spouse' => $spouse['spousename']
+            'spouse' => $spouse['spousename'],
+            'spousegoveid' => $spouse['govid']
         ]);
     }
 
@@ -75,6 +76,40 @@ class SalnController extends Controller
 
         DB::beginTransaction();
         try {
+
+            if($request->isjoint === 'joint' && !$saln) {
+                $spouse = User::where('lastname', $request->spouse['familyname'])
+                    ->where('firstname', $request->spouse['firstname'])
+                    ->value('id');
+
+                $user = $request->user();
+                $goveid = $user->pdsC4()->where('type', 'governmentId')?->value('details');
+
+                if($spouse)
+                    Saln::create([
+                        'user_id' => $spouse,
+                        'asof' => $this->parseDate($request->asof),
+                        'spouse' => [
+                            'familyname' => $user->lastname,
+                            'firstname' => $user->firstname,
+                            'middleinitial' => $user->middlename?$user->middlename[0]:'',
+                            'position' => $user->position,
+                            'office' => $request->spouse['office'],
+                            'officeaddress' => $request->spouse['officeaddress'],
+                            'governmentissuedid' => $goveid['governmentissuedid'],
+                            'idno' => $goveid['idno'],
+                            'dateissued' => $goveid['dateissued']
+                        ],
+                        'children' => $request->children,
+                        'assets' => $request->assets,
+                        'liabilities' => $request->liabilities,
+                        'biandfc' => $request->biandfc,
+                        'relativesingovernment' => $request->relativesingovernment,
+                        'date' => Carbon::now()->format('Y-m-d'),
+                        'isjoint' => $request->isjoint,
+                        'status' => 'pending'
+                    ]);
+            }
 
             Saln::updateOrCreate([
                 'id' => $saln?->id

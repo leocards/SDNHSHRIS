@@ -155,7 +155,7 @@ const SALN = ({ principal, saln, years }: Props) => {
                                     src={empty}
                                 />
                                 <div className="text-sm font-medium text-foreground/50 mt-1">
-                                    No recorded ratings.
+                                    No recorded SALN.
                                 </div>
                             </div>
                         )}

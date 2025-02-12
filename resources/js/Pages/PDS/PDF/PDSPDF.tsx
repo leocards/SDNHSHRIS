@@ -32,7 +32,7 @@ import C4 from "./C4";
 import TypographySmall from "@/Components/Typography";
 import { PDSTABSTYPE } from "@/Types/types";
 
-type PDSPDFDATATYPES = {
+export type PDSPDFDATATYPES = {
     status: APPROVALTYPE;
     user: Pick<
         User,

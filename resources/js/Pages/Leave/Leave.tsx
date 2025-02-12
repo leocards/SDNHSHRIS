@@ -6,14 +6,9 @@ import {
     PaginateProvider,
     usePagination,
 } from "@/Components/Provider/paginate-provider";
-import { APPROVALTYPE, PAGINATEDDATA, User } from "@/Types";
+import { PAGINATEDDATA } from "@/Types";
 import { PaginationData } from "@/Components/ui/pagination";
 import {
-    Menubar,
-    MenubarContent,
-    MenubarMenu,
-    MenubarTrigger,
-    MenubarItem,
     FilterButton,
     FilterItem,
     MenubarLabel,
@@ -21,13 +16,11 @@ import {
     SortItem,
 } from "@/Components/ui/menubar";
 import {
-    LEAVETYPEKEYS,
     LEAVETYPES,
     LEAVETYPESOBJ,
 } from "@/Pages/Leave/Types/leavetypes";
 import { Eye } from "iconsax-react";
 import { Button } from "@/Components/ui/button";
-import { EllipsisVertical } from "lucide-react";
 import TableDataSkeletonLoader from "@/Components/TableDataSkeletonLoader";
 import empty from "@/Assets/empty-file.svg";
 import { TooltipLabel } from "@/Components/ui/tooltip";

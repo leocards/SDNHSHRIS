@@ -27,6 +27,12 @@ export default function Authenticated({ children }: PropsWithChildren) {
                 description: page.props.flash.message,
                 status: page.props.flash.status
             })
+        } else if(page.props.flash.status === "info") {
+            toast({
+                title: page.props.flash.title,
+                description: page.props.flash.message,
+                status: page.props.flash.status
+            })
         }
     }, [page.props.flash])
 
