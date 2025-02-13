@@ -65,7 +65,7 @@ const Main = () => {
                 <TableDataSkeletonLoader
                     data="personnels"
                     columns={["minmax(5rem,1fr)", "7rem", "10rem", "5rem"]}
-                    length={7}
+                    length={9}
                 >
                     {(column) => (
                         <Fragment>

@@ -85,6 +85,7 @@ class SalnController extends Controller
                 $user = $request->user();
                 $goveid = $user->pdsC4()->where('type', 'governmentId')?->value('details');
 
+
                 if($spouse)
                     Saln::create([
                         'user_id' => $spouse,
@@ -96,9 +97,9 @@ class SalnController extends Controller
                             'position' => $user->position,
                             'office' => $request->spouse['office'],
                             'officeaddress' => $request->spouse['officeaddress'],
-                            'governmentissuedid' => $goveid['governmentissuedid'],
-                            'idno' => $goveid['idno'],
-                            'dateissued' => $goveid['dateissued']
+                            'governmentissuedid' => $goveid?$goveid['governmentissuedid']:'',
+                            'idno' => $goveid?$goveid['idno']:'',
+                            'dateissued' => $goveid?$goveid['dateissued']:''
                         ],
                         'children' => $request->children,
                         'assets' => $request->assets,

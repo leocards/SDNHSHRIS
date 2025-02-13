@@ -162,7 +162,7 @@ class PersonnelController extends Controller
 
     public function personnelArchive(Request $request)
     {
-        $status = $request->status;
+        $status = $request->status??"retired";
 
         $personnels = User::withoutGlobalScopes()
             ->whereNotNull('status_updated_at')

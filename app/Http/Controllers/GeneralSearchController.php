@@ -81,7 +81,7 @@ class GeneralSearchController extends Controller
                         ->orWhere('details->issued', 'LIKE', "{$search}%");
                 });
         })
-        ->select(['id', 'firstname', 'middlename', 'lastname', 'position', 'department', 'credits'])
+        ->select(['id', 'firstname', 'middlename', 'lastname', 'position', 'department', 'credits', 'role'])
         ->withSum(['serviceRecord as sr' => function ($query) {
             $query->where('status', 'approved')->where('details->creditstatus', 'pending');
         }], 'details->remainingcredits')

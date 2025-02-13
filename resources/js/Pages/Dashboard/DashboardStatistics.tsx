@@ -52,7 +52,7 @@ const DashboardStatistics = ({ totalpersonnel, leave, servicecredits }: Props) =
                             <div className="text-base font-semibold">
                                 Service Credits
                             </div>
-                            <div className="text-xl font-medium">{servicecredits??"0"}</div>
+                            <div className="text-xl font-medium">{(role === "teaching" ? credits : servicecredits)??"0"}</div>
                         </div>
                     </StatisticsCard>
                 </Fragment>

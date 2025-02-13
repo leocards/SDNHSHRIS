@@ -412,7 +412,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                     ))}
                                     disabled={!watchRole}
                                 />
-                                {(!isProfile && !user) && (
+                                {(!isProfile && !user && watchRole != "teaching") && (
                                     <Fragment>
                                         <FormInput
                                             form={form}
@@ -421,13 +421,13 @@ const AccountInformationForm: React.FC<Props> = ({
                                             type="number"
                                             required={false}
                                         />
-                                        {watchRole != "teaching" && <FormInput
+                                        <FormInput
                                             form={form}
                                             name="personnel.splcredits"
                                             label="SPL Credits"
                                             type="number"
                                             required={false}
-                                        />}
+                                        />
                                     </Fragment>
                                 )}
                             </div>

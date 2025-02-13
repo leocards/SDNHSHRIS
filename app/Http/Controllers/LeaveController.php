@@ -387,7 +387,7 @@ class LeaveController extends Controller
                     $value->details = $details;
                     $value->save();
 
-                    $user->credits = 0;
+                    $user->credits = $user->credits - $leave->daysapplied;
                     $user->save();
 
                     break;

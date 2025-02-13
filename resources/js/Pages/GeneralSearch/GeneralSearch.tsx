@@ -109,7 +109,7 @@ const Main = () => {
                                             : Departments[data.department]}
                                     </div>
                                     <div className="justify-center">
-                                        {data.credits + (data.sr??0)}
+                                        {data.credits + (data.role != 'teaching' ? (data.sr??0) : 0)}
                                     </div>
                                     <div className="justify-center">
                                         <Button

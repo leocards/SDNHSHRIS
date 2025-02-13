@@ -21,7 +21,7 @@ const PersonalInformation: React.FC<Props> = ({ form, spouse, spousegoveid }) =>
     const user = usePage().props.auth.user;
 
     const onJointFiling = (filing: SALNTYPE['isjoint']) => {
-        if(spouse && filing != 'joint') {
+        if(spouse && ['joint', 'separate'].includes(filing) && !/^(na|n\/a)$/i.test(spouse.familyname)) {
             form.setValue('spouse', {
                 familyname: spouse.familyname,
                 firstname: spouse.firstname,

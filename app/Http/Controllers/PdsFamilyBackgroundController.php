@@ -32,7 +32,7 @@ class PdsFamilyBackgroundController extends Controller
             "chldren.*.name" => "required",
             "chldren.*.dateofbirth" => "required|date",
         ], [
-            "spouse.lastname.required" => "The surname field is required.",
+            "spouse.familyname.required" => "The surname field is required.",
             "spouse.extensionname.required" => "The extension name field is required.",
             "spouse.employerbusiness.required" => "The employer/business name field is required.",
             "spouse.businessaddress.required" => "The business address field is required.",
@@ -96,7 +96,7 @@ class PdsFamilyBackgroundController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            "spouse.lastname" => "required",
+            "spouse.familyname" => "required",
             "spouse.firstname" => "required",
             "spouse.middlename" => "required",
             "spouse.extensionname" => "required",
@@ -104,17 +104,17 @@ class PdsFamilyBackgroundController extends Controller
             "spouse.employerbusiness" => "required",
             "spouse.businessaddress" => "required",
             "spouse.telephone" => "required",
-            "father.lastname" => "required",
+            "father.familyname" => "required",
             "father.firstname" => "required",
             "father.middlename" => "required",
             "father.extensionname" => "required",
-            "mother.lastname" => "required",
+            "mother.familyname" => "required",
             "mother.firstname" => "required",
             "mother.middlename" => "required",
             "chldren.*.name" => "required",
             "chldren.*.dateofbirth" => "required|date",
         ], [
-            "spouse.lastname.required" => "The surname field is required.",
+            "spouse.familyname.required" => "The surname field is required.",
             "spouse.extensionname.required" => "The extension name field is required.",
             "spouse.employerbusiness.required" => "The employer/business name field is required.",
             "spouse.businessaddress.required" => "The business address field is required.",
