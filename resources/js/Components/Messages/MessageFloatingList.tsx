@@ -17,6 +17,7 @@ import useDebounce from "@/Hooks/useDebounce";
 import NewMessageSearchList from "./NewMessageSearchList";
 import { useMessage } from "../Provider/message-provider";
 import MessageSearchList from "./MessageSearchList";
+import DeleteConversationConfirmation from "./DeleteConversationConfirmation";
 
 const MessageFloatingList = () => {
     const { unreadMessages, setAllMessageAsSeen } = useMessage();
@@ -24,6 +25,8 @@ const MessageFloatingList = () => {
     const [newMessage, setNewMessage] = useState(false);
     const [search, setSearch] = useState("");
     const debouncedSearch = useDebounce(search, 700);
+    const [showDeleteMessage, setShowDeleteMessage] = useState(false)
+    const [userMessageSelectToDelete, setUserMessageSelectToDelete] = useState<{id:number;name:string}|null>(null)
 
     useEffect(() => {
         if (search) {
@@ -100,7 +103,10 @@ const MessageFloatingList = () => {
                 {!newMessage && search && (
                     <MessageSearchList search={debouncedSearch} />
                 )}
-                {!newMessage && !search && <MessageList />}
+                {!newMessage && !search && <MessageList onDeleteMessage={(user)=> {
+                    setUserMessageSelectToDelete(user)
+                    setShowDeleteMessage(true)
+                } } />}
             </CardContent>
             {!newMessage && !search && (
                 <CardFooter className="mt-5 h-[56px]">
@@ -109,6 +115,15 @@ const MessageFloatingList = () => {
                     </Button>
                 </CardFooter>
             )}
+
+            <DeleteConversationConfirmation
+                show={showDeleteMessage}
+                usermessage={userMessageSelectToDelete}
+                onClose={() => {
+                    setUserMessageSelectToDelete(null)
+                    setShowDeleteMessage(false)
+                }}
+            />
         </Card>
     );
 };

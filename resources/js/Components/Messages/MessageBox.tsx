@@ -275,9 +275,11 @@ const MessageBox = () => {
                 show={exportConversation}
                 onClose={setExportConversation}
             />
+
             <DeleteConversationConfirmation
                 show={deleteConversation}
                 onClose={setDeleteConversation}
+                usermessage={null}
             />
         </Fragment>
     );
