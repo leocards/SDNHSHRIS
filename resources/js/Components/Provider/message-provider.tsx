@@ -13,6 +13,7 @@ import { formatISO } from "date-fns";
 import messageNotification from "@/Assets/sounds/message.mp3";
 import newNotificationSound from "@/Assets/sounds/notification.mp3";
 import { useToast } from "@/Hooks/use-toast";
+import { formatDateToCustomISO } from "@/Types/types";
 
 const MESSAGESCHEMA = z.object({
     userid: z.number(),
@@ -70,6 +71,9 @@ type MessageState = {
     searchedConversation: number | null;
     setSearchedConversation: (convoid: number | null) => void;
 
+    setMessageAsSeen: (convoid: number, messageid: number) => void;
+    setAllMessageAsSeen: () => void;
+
     form: any;
 };
 
@@ -99,6 +103,9 @@ const MessageContextProvider = createContext<MessageState>({
     searchedConversation: null,
     setSearchedConversation: () => {},
 
+    setMessageAsSeen: () => {},
+    setAllMessageAsSeen: () => {},
+
     form: null,
 });
 
@@ -107,7 +114,7 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
     ...props
 }) => {
     const { auth } = useAccount();
-    const { toast } = useToast()
+    const { toast } = useToast();
     const [openMessageBox, setOpenMessageBox] = useState(false);
     const [minimize, setMinimize] = useState(false);
     const [messages, setMessages] = useState<MESSAGELIST>([]);
@@ -115,7 +122,9 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
     const [newMessage, setNewMessage] = useState<MESSAGELISTTYPE>();
     const [openedUser, setOpenedUser] = useState<USER>(null); // selected user
     const [unreadMessages, setUnreadMessages] = useState<number>(0);
-    const [searchedConversation, setSearchedConversation] = useState<number|null>(null)
+    const [searchedConversation, setSearchedConversation] = useState<
+        number | null
+    >(null);
 
     const messageNotificationVolume = localStorage.getItem("message-volume");
 
@@ -177,12 +186,16 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
 
                 element.conversations.message =
                     newMessage.conversations.message;
-                element.conversations.seen_at = new Date().toISOString();
                 element.conversations.created_at = new Date().toISOString();
+
+                if(!openMessageBox || (openedUser && openedUser.id !== newMessage.user.id))
+                    element.conversations.seen_at = null
 
                 // check if the user is on chatbox
                 if (openMessageBox) {
                     if (openedUser?.id === newMessage.user.id) {
+                        element.conversations.seen_at = new Date().toISOString();
+
                         // mark message as seen on the server
                         window.axios
                             .post(
@@ -194,17 +207,18 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
                                 // console.log('message seen')
                             });
 
-                        pushNewSentMessage(newMessage.conversations)
+                        pushNewSentMessage(newMessage.conversations);
                     }
                 }
 
-                if(!openedUser /* && openedUser.id === newMessage.user.id */) {
+                if (!openedUser) {
                     toast({
                         title: "New message",
-                        description: newMessage.user.full_name+" sent you a message.",
-                        status: "message"
-                    })
-                    setUnreadMessages(u => u + 1)
+                        description:
+                            newMessage.user.full_name + " sent you a message.",
+                        status: "message",
+                    });
+                    setUnreadMessages((u) => u + 1);
                 }
 
                 // append the remove element
@@ -213,7 +227,11 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
                 setMessages(messagesList);
             }
 
-            if (!document.hasFocus() || !openedUser || (openedUser && openedUser.id !== newMessage.user.id)) {
+            if (
+                !document.hasFocus() ||
+                !openedUser ||
+                (openedUser && openedUser.id !== newMessage.user.id)
+            ) {
                 const sound = new Audio(messageNotification);
                 sound.volume = messageNotificationVolume
                     ? parseFloat(messageNotificationVolume)
@@ -233,7 +251,11 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
                     .get<MESSAGELIST>(route("messages"))
                     .then((response) => {
                         let messages = response.data;
-                        const unread = messages.filter(n => !n.conversations.seen_at && n.conversations.sender != auth.id)
+                        const unread = messages.filter(
+                            (n) =>
+                                !n.conversations.seen_at &&
+                                n.conversations.sender != auth.id
+                        );
 
                         setUnreadMessages(unread.length);
                         setMessages(messages);
@@ -267,7 +289,7 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
 
                     if (minimize) setMinimize(false);
 
-                    setOpenedUser(null)
+                    setOpenedUser(null);
                 },
 
                 selectConversation: (
@@ -314,7 +336,7 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
                 setMessage: onSetMessage,
 
                 setNewMessagesList: (list: MESSAGELIST) => {
-                    setMessages(list)
+                    setMessages(list);
                 },
 
                 openedUser,
@@ -323,6 +345,44 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
 
                 searchedConversation,
                 setSearchedConversation,
+
+                setMessageAsSeen: (convoid: number, messageid: number) => {
+                    window.axios
+                        .post(route("messages.seen", [convoid]))
+                        .then((response) => {
+                            let mess = [...messages]
+
+                            let updateMessageIndex = mess.findIndex(({ id }) => id === messageid)
+
+                            if(updateMessageIndex >= 0) {
+                                mess[updateMessageIndex].conversations.seen_at = formatDateToCustomISO(new Date)
+                            }
+
+                            setMessages(mess)
+
+                            if(unreadMessages > 0)
+                                setUnreadMessages(unreadMessages - 1)
+                        });
+                },
+
+                setAllMessageAsSeen: () => {
+                    window.axios
+                        .post(route("messages.seen.all"))
+                        .then((response) => {
+                            let mess = [...messages]
+
+                            mess = mess.map((m) => {
+                                if(!m.conversations.seen_at)
+                                    m.conversations.seen_at = new Date().toISOString()
+
+                                return m
+                            })
+
+                            setMessages(mess)
+
+                            setUnreadMessages(0)
+                        });
+                },
 
                 form,
             }}

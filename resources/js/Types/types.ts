@@ -144,3 +144,9 @@ export const getTimeFromNow = (date: string | number | Date): string => {
     else if (minutes > 0) return minutes + 'm';
     else return 'Just now';
 }
+
+export function formatDateToCustomISO(date: Date) {
+    const isoString = date.toISOString(); // Example: "2025-02-17T11:39:44.123Z"
+    const microseconds = "000000"; // JS only provides milliseconds, so manually add microseconds
+    return isoString.replace(/\.\d+Z$/, `.${microseconds}Z`);
+}

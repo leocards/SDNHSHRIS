@@ -185,6 +185,20 @@ class MessageController extends Controller
         return response()->json(true);
     }
 
+    public function markAllAsSeen(Request $request)
+    {
+        try {
+            Conversation::whereHas('message', function ($query) use ($request) {
+                $query->where('sender', $request->user()->id)
+                      ->orWhere('receiver', $request->user()->id);
+            })->update(['seen_at' => Carbon::now()]);
+
+            return response()->json(true);
+        } catch (\Throwable $th) {
+            return response()->json($th->getMessage(), 500);
+        }
+    }
+
     public function searchConversation(Request $request, $userid)
     {
         $search = $request->query('search');

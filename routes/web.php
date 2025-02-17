@@ -252,6 +252,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/delete/{userid}', 'deleteConversation')->name('messages.delete');
             Route::post('/send-message', 'storeMessageConversation')->name('messages.send');
             Route::post('/seen-message/{conversation}', 'markAsSeen')->name('messages.seen');
+            Route::post('/seen-all-message', 'markAllAsSeen')->name('messages.seen.all');
         });
     });
 });

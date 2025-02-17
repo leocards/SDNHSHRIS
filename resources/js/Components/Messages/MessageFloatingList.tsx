@@ -19,7 +19,7 @@ import { useMessage } from "../Provider/message-provider";
 import MessageSearchList from "./MessageSearchList";
 
 const MessageFloatingList = () => {
-    const { unreadMessages } = useMessage();
+    const { unreadMessages, setAllMessageAsSeen } = useMessage();
     const searchRef = useRef<HTMLInputElement>(null);
     const [newMessage, setNewMessage] = useState(false);
     const [search, setSearch] = useState("");
@@ -104,7 +104,7 @@ const MessageFloatingList = () => {
             </CardContent>
             {!newMessage && !search && (
                 <CardFooter className="mt-5 h-[56px]">
-                    <Button className="w-full" disabled={!unreadMessages}>
+                    <Button className="w-full" disabled={!unreadMessages} onClick={setAllMessageAsSeen}>
                         <Check /> Mark all as read
                     </Button>
                 </CardFooter>

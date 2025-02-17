@@ -17,6 +17,7 @@ import { ChevronLeft } from "lucide-react";
 import { router } from "@inertiajs/react";
 import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
 import { useMessage } from "@/Components/Provider/message-provider";
+import { cn } from "@/Lib/utils";
 
 type Props = {
     user: User;
@@ -36,6 +37,8 @@ const ViewSearched: React.FC<Props> = ({
     const [pdsTab, setPdsTab] = useState<PDSTABSTYPE>("C1");
     const { setProcess } = useProcessIndicator();
     const { selectConversation } = useMessage();
+
+    const columns = ["1fr", "10rem", "10rem", "4rem"].join(" ");
 
     return (
         <div>
@@ -169,7 +172,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
 
                                 <TypographySmall className="font-normal">
-                                    {format(user?.hiredate, 'MMMM, d y')}
+                                    {format(user?.hiredate, "MMMM, d y")}
                                 </TypographySmall>
                             </div>
 
@@ -233,9 +236,15 @@ const ViewSearched: React.FC<Props> = ({
 
                 <TabsContent
                     value="sr"
-                    className="max-w-3xl mx-auto w-full p-4"
+                    className="max-w-4xl mx-auto w-full p-4"
                 >
                     <Card className="min-h-[28rem] relative p-2 space-y-1">
+                        <TableHeader style={{ gridTemplateColumns: columns }}>
+                            <div>Certificate Name</div>
+                            <div>Type</div>
+                            <div>Date modified</div>
+                            <div></div>
+                        </TableHeader>
                         {certificates.length === 0 && (
                             <div className="flex flex-col items-center absolute inset-0 justify-center pointer-events-none">
                                 <img
@@ -249,22 +258,34 @@ const ViewSearched: React.FC<Props> = ({
                         )}
 
                         {certificates?.map((data, index) => (
-                            <div
+                            <TableRow
+                                style={{ gridTemplateColumns: columns }}
                                 key={index}
-                                className="hover:bg-secondary p-4 py-2 border border-border rounded-md flex items-center shadow-sm"
-                                role="button"
+                                className="hover:bg-secondary border border-border rounded-md shadow-sm cursor-pointer"
                                 onClick={() => {
                                     setSelectedCertificate(data.id);
                                     setViewCertificate(true);
                                 }}
                             >
                                 <div className="line-clamp-1">
-                                    {data?.details?.name}
+                                    {data?.details?.name ?? "N/A"}
+                                </div>
+                                <div
+                                    className={cn(
+                                        data?.type === "coc"
+                                            ? "uppercase"
+                                            : "capitalize"
+                                    )}
+                                >
+                                    {data?.type}
+                                </div>
+                                <div>
+                                    {format(data?.updated_at, "MMMM dd, y")}
                                 </div>
                                 <Button className="ml-auto" variant={"link"}>
                                     <Eye />
                                 </Button>
-                            </div>
+                            </TableRow>
                         ))}
 
                         <ViewCertificate
