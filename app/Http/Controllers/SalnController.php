@@ -98,7 +98,7 @@ class SalnController extends Controller
                             'office' => $request->spouse['office'],
                             'officeaddress' => $request->spouse['officeaddress'],
                             'governmentissuedid' => $goveid?$goveid['governmentissuedid']:'',
-                            'idno' => $goveid?$goveid['idno']:'',
+                            'idno' => $goveid?$goveid['licensepassportid']:'',
                             'dateissued' => $goveid?$goveid['dateissued']:''
                         ],
                         'children' => $request->children,
