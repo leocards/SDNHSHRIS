@@ -162,7 +162,7 @@ class PersonnelController extends Controller
 
     public function personnelArchive(Request $request)
     {
-        $status = $request->status??"retired";
+        $status = $request->status ?? "retired";
 
         $personnels = User::withoutGlobalScopes()
             ->whereNotNull('status_updated_at')
@@ -193,7 +193,14 @@ class PersonnelController extends Controller
             'user' => $user->load(['pdsPersonalInformation' => function ($query) {
                 $query->select('id', 'user_id', 'tin'); // Ensure foreign key is included
             }]),
-            'tardinesses' => Inertia::defer(fn() =>
+            "servicecredits" => $user->serviceRecord()->where('status', 'approved')
+                    ->where('details->creditstatus', 'pending')
+                    ->get()
+                    ->reduce(function ($carry, $item) {
+                        return $carry + $item->details['remainingcredits'];
+                    }, 0),
+            'tardinesses' => Inertia::defer(
+                fn() =>
                 Tardiness::with('schoolyear:id,start,end,resume')
                     ->where('user_id', $user->id)
                     ->latest()
@@ -204,9 +211,9 @@ class PersonnelController extends Controller
 
                         return [$schoolYear => $tardiness];
                     })
-                ),
+            ),
             'certificates' => Inertia::defer(fn() => $user->serviceRecord),
-            'leaves' => Inertia::defer(fn() => $user->leave()->get(['id','user_id','type'])),
+            'leaves' => Inertia::defer(fn() => $user->leave()->get(['id', 'user_id', 'type'])),
             'saln' => Inertia::defer(fn() => $user->salnreport),
         ]);
     }

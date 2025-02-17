@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('schoolyearid')->constrained('school_years')->onDelete('cascade');
+            // $table->foreignId('hr_id')->constrained('users')->onDelete('cascade');
+            // $table->foreignId('principal_id')->constrained('users')->onDelete('cascade');
             $table->date('filingfrom');
             $table->date('filingto')->nullable();
             $table->string('salary', 20)->nullable();

@@ -6,7 +6,7 @@ import { Departments } from "@/Types/types";
 import { format } from "date-fns";
 import { TabsContent } from "@/Components/ui/tabs";
 
-const PersonnelDetails = ({ user }: { user: User }) => {
+const PersonnelDetails = ({ user, servicecredits }: { user: User; servicecredits: number }) => {
     return (
         <TabsContent value="details" className="p-4 max-w-3xl mx-auto w-full">
             <Card className="p-4 flex gap-5 max-w-[37rem]">
@@ -102,7 +102,7 @@ const PersonnelDetails = ({ user }: { user: User }) => {
                         </TypographySmall>
 
                         <TypographySmall className="font-normal">
-                            {user?.hiredate}
+                            {format(user?.hiredate, 'MMMM, d y')}
                         </TypographySmall>
                     </div>
 
@@ -125,6 +125,28 @@ const PersonnelDetails = ({ user }: { user: User }) => {
                             {user?.status}
                         </TypographySmall>
                     </div>
+
+                    <div className="flex gap-3 items-start">
+                        <TypographySmall className="w-24">
+                            Credits:
+                        </TypographySmall>
+
+                        <TypographySmall className="font-normal capitalize">
+                            {user && user.role != "teaching" ? (user.credits + servicecredits) : user.credits}
+                        </TypographySmall>
+                    </div>
+
+                    {user?.role != "teaching" && (
+                        <div className="flex gap-3 items-start">
+                            <TypographySmall className="w-24">
+                                SPL Credits:
+                            </TypographySmall>
+
+                            <TypographySmall className="font-normal capitalize">
+                                {user?.splcredits??"0"}
+                            </TypographySmall>
+                        </div>
+                    )}
                 </div>
             </Card>
         </TabsContent>

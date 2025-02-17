@@ -8,6 +8,8 @@ class Leave extends Model
 {
     protected $fillable = [
         "user_id",
+        // "hr_id",
+        // "principal_id",
         "schoolyearid",
         "filingfrom",
         "filingto",

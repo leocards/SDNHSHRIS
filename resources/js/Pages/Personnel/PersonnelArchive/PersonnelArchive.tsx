@@ -3,6 +3,7 @@ import {
     PaginateProvider,
     usePagination,
 } from "@/Components/Provider/paginate-provider";
+import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
 import TableDataSkeletonLoader from "@/Components/TableDataSkeletonLoader";
 import { ProfilePhoto } from "@/Components/ui/avatar";
 import { Button } from "@/Components/ui/button";
@@ -33,6 +34,7 @@ const Personnel: React.FC<
 
 const Main = () => {
     const { page, onQuery } = usePagination<User>();
+    const { setProcess } = useProcessIndicator()
 
     return (
         <div className="max-w-4xl mx-auto">
@@ -81,6 +83,7 @@ const Main = () => {
                             {page?.data.map((personnel, index) => (
                                 <TableRow
                                     style={{ gridTemplateColumns: column }}
+                                    key={index}
                                 >
                                     <div className="gap-2">
                                         <ProfilePhoto src={personnel.avatar} />
@@ -100,7 +103,7 @@ const Main = () => {
                                     <div className="justify-center">
                                         <TooltipLabel label="View">
                                             <Button size="icon" variant={"outline"} onClick={() => {
-                                                router.get(route('personnel.archive.view', [personnel.id]))
+                                                router.get(route('personnel.archive.view', [personnel.id]), {}, { onBefore: () => setProcess(true)})
                                             }}>
                                                 <Eye />
                                             </Button>

@@ -23,18 +23,27 @@ import PersonnelSALN from "./PersonnelSALN";
 
 type Props = {
     user: User & {
-        pds_personal_information: {tin:string}
+        pds_personal_information: { tin: string };
     };
-    tardinesses: {[key: string]: Array<TARDINESSTYPE>}
-    certificates: any[],
+    servicecredits: number;
+    tardinesses: { [key: string]: Array<TARDINESSTYPE> };
+    certificates: any[];
     leaves: Array<{
-        id: number, user_id: number, type: typeof LEAVETYPEKEYSARRAY[number]
-    }>,
-    saln: SALNREPORTTYPE[]
+        id: number;
+        user_id: number;
+        type: (typeof LEAVETYPEKEYSARRAY)[number];
+    }>;
+    saln: SALNREPORTTYPE[];
 };
 
-const View: React.FC<Props> = ({ user, tardinesses, certificates, leaves, saln }) => {
-    console.log(leaves)
+const View: React.FC<Props> = ({
+    user,
+    tardinesses,
+    certificates,
+    leaves,
+    saln,
+    servicecredits
+}) => {
 
     return (
         <div>
@@ -57,7 +66,7 @@ const View: React.FC<Props> = ({ user, tardinesses, certificates, leaves, saln }
                     <TabsTrigger value="saln">SALN</TabsTrigger>
                 </TabsList>
 
-                <PersonnelDetails user={user} />
+                <PersonnelDetails user={user} servicecredits={servicecredits} />
 
                 <PersonnelPDS userId={user.id} />
 
@@ -67,10 +76,13 @@ const View: React.FC<Props> = ({ user, tardinesses, certificates, leaves, saln }
 
                 <PersonnelLeave leaves={leaves} />
 
-                <PersonnelSALN saln={saln} user={{
-                    position: user?.position,
-                    tin: user?.pds_personal_information?.tin
-                }} />
+                <PersonnelSALN
+                    saln={saln}
+                    user={{
+                        position: user?.position,
+                        tin: user?.pds_personal_information?.tin,
+                    }}
+                />
             </Tabs>
         </div>
     );
