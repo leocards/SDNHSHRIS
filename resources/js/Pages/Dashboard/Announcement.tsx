@@ -1,14 +1,15 @@
 import { Button } from "@/Components/ui/button";
-import { AddSquare, Edit, Refresh2 } from "iconsax-react";
+import { AddSquare, Edit, Refresh2, Trash } from "iconsax-react";
 import empty from "@/Assets/empty-announcement.svg";
 import { Card } from "@/Components/ui/card";
 import { usePage } from "@inertiajs/react";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { cn } from "@/Lib/utils";
 import NewAnnouncement from "./NewAnnouncement";
 import TypographySmall from "@/Components/Typography";
 import { format } from "date-fns";
 import ViewAnnouncements from "./ViewAnnouncements";
+import AnnouncementDeleteConfirmation from "./AnnouncementDeleteConfirmation";
 
 export type ANNOUNCEMENT = {
     id: number;
@@ -30,6 +31,8 @@ const Announcement = ({ announcements }: Props) => {
     const [view, setView] = useState(false);
     const [announceList, setAnnounceList] =
         useState<ANNOUNCEMENT[]>(announcements);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+
 
     const onRefresh = () => {
         if (!refresh) {
@@ -98,17 +101,30 @@ const Announcement = ({ announcements }: Props) => {
                 {announceList.map((announce, index) => (
                     <div key={index} className="relative">
                         {role === "hr" && (
-                            <Button
-                                className="size-7 absolute top-1 right-1"
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => {
-                                    setSelected(announce);
-                                    setNewAnnounemcent(true);
-                                }}
-                            >
-                                <Edit className="!size-4" />
-                            </Button>
+                            <Fragment>
+                                <Button
+                                    className="size-7 absolute top-1 right-9"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                        setSelected(announce);
+                                        setNewAnnounemcent(true);
+                                    }}
+                                >
+                                    <Edit className="!size-4" />
+                                </Button>
+                                <Button
+                                    className="size-7 absolute top-1 right-1 !text-destructive"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                        setSelected(announce);
+                                        setShowDeleteConfirmation(true);
+                                    }}
+                                >
+                                    <Trash className="!size-4" />
+                                </Button>
+                            </Fragment>
                         )}
                         <Card
                             className="p-3"
@@ -160,6 +176,17 @@ const Announcement = ({ announcements }: Props) => {
                 announcement={selected}
                 show={view}
                 onClose={setView}
+            />
+
+            <AnnouncementDeleteConfirmation
+                show={showDeleteConfirmation}
+                onClose={() => {
+                    setShowDeleteConfirmation(false)
+                    setTimeout(() => {
+                        setSelected(null);
+                    }, 300);
+                }}
+                announcement={selected}
             />
         </Card>
     );

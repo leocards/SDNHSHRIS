@@ -66,6 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', 'index')->name('announcement');
 
             Route::post('/store/{user?}', 'store')->name('announcement.store');
+            Route::post('/delete/{announcement}', 'destroy')->name('announcement.delete');
         });
     });
 

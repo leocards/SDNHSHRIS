@@ -41,6 +41,15 @@ class PersonalDataSheetController extends Controller
                     $query->withoutGlobalScopes();
                 }])
                 ->where('status', $status)
+                ->whereHas('user.pdsPersonalInformation')
+                ->orWhereHas('user.pdsFamilyBackground')
+                ->orWhereHas('user.pdsEducationalBackground')
+                ->orWhereHas('user.pdsCivilService')
+                ->orWhereHas('user.pdsWorkExperience')
+                ->orWhereHas('user.pdsVoluntaryWork')
+                ->orWhereHas('user.pdsLearningAndDevelopment')
+                ->orWhereHas('user.pdsOtherInformation')
+                ->orWhereHas('user.pdsC4')
                 ->latest()
                 ->paginate($this->page);
 

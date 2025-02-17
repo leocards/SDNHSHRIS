@@ -49,4 +49,11 @@ class AnnouncementController extends Controller
             return $this->returnResponse('New Announcement','Announcement failed to '.(!$id?'create':'update').'', 'error');
         }
     }
+
+    public function destroy(Announcement $announcement)
+    {
+        $announcement->delete();
+
+        return $this->returnResponse('Delete Announcement', $announcement->title.' has been deleted.', 'success');
+    }
 }
