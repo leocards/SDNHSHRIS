@@ -39,7 +39,7 @@ class SALNObserver implements ShouldHandleEventsAfterCommit
         if($saln->status === "approved") {
             // add personnel SALN to SALN report
 
-            $year = Carbon::parse($saln->asof)->format('Y');
+            $year = Carbon::parse($saln['asof'])->format('Y');
 
             if (!SalnReport::where('year', $year)->where('user_id', $saln->user_id)->exists())
             {
