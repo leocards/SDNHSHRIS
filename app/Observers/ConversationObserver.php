@@ -33,7 +33,7 @@ class ConversationObserver implements ShouldHandleEventsAfterCommit
                     [
                         "user" => $userSender,
                         "message" => $conversation->message,
-                        "time" => Carbon::parse($conversation->created_at)->parse('F d Y h:i A')
+                        "time" => Carbon::parse($conversation->created_at)->format('F d Y h:i A')
                     ]
                 ));
         }

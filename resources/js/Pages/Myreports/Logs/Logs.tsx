@@ -20,6 +20,7 @@ import { TypographyStatus } from "@/Components/Typography";
 import ViewPdsLogs from "./ViewPdsLogs";
 import ViewLeaveLogs from "./ViewLeaveLogs";
 import ViewCOCLogs from "./ViewCOCLogs";
+import ViewCertificateLogs from "./ViewCertificateLogs";
 
 type LOGSTYPE = {
     id: number;
@@ -51,7 +52,7 @@ const Main: React.FC<Props> = ({ years, principal }) => {
 
     const { setProcess } = useProcessIndicator();
     const [yearList, setYearList] = useState(years);
-    const [type, setType] = useState<"leave" | "pds" | "coc">("leave");
+    const [type, setType] = useState<"leave" | "pds" | "coc" | "certificate">("leave");
     const [filterYear, setFilterYear] = useState(
         yearList.length > 0 ? yearList[0].toString() : ""
     );
@@ -117,6 +118,7 @@ const Main: React.FC<Props> = ({ years, principal }) => {
                     <TabsTrigger value="leave">Leave</TabsTrigger>
                     <TabsTrigger value="pds">PDS</TabsTrigger>
                     <TabsTrigger value="coc">COC</TabsTrigger>
+                    <TabsTrigger value="certificate">Certificate</TabsTrigger>
                 </TabsList>
             </Tabs>
 
@@ -219,6 +221,7 @@ const Main: React.FC<Props> = ({ years, principal }) => {
                             {type === "pds" && <PDSData column={column} onView={setSelected} />}
                             {type === "leave" && <LeaveData column={column} onView={setSelected} />}
                             {type === "coc" && <COCData column={column} onView={setSelected} />}
+                            {type === "certificate" && <CertificateData column={column} onView={setSelected} />}
                         </Fragment>
                     )}
                 </TableDataSkeletonLoader>
@@ -239,9 +242,13 @@ const Main: React.FC<Props> = ({ years, principal }) => {
                 <div>
                     <ViewPdsLogs userid={selected} show={!!selected} onClose={() => setSelected(null)} />
                 </div>
-            ) : (
+            ) : type === "coc" ? (
                 <div>
                     <ViewCOCLogs cocid={selected} show={!!selected} onClose={() => setSelected(null)} />
+                </div>
+            ) : (
+                <div>
+                    <ViewCertificateLogs certificate={selected} show={!!selected} onClose={() => setSelected(null)} />
                 </div>
             )}
         </div>
@@ -312,7 +319,7 @@ const LeaveData = ({ column, onView }: { column: string; onView?: CallableFuncti
                 {format(log.created_at, "MMM dd, y hh:ii aaa")}
             </div>
             <div className="justify-center">
-                <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.userid)}>
+                <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.leaveid)}>
                     <Eye />
                 </Button>
             </div>
@@ -349,6 +356,42 @@ const COCData = ({ column, onView }: { column: string; onView?: CallableFunction
             </div>
             <div className="justify-center">
                 <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.cocid)}>
+                    <Eye />
+                </Button>
+            </div>
+        </TableRow>
+    ));
+};
+
+const CertificateData = ({ column, onView }: { column: string; onView?: CallableFunction }) => {
+    const { page } = usePagination<LOGSTYPE>();
+
+    return page?.data?.map((log, index) => (
+        <TableRow
+            key={index}
+            style={{ gridTemplateColumns: column }}
+            className="hover:bg-background"
+        >
+            <div className="justify-center">{index + 1}</div>
+            <div>{log.details.username}</div>
+            <div className="capitalize">
+                <TypographyStatus
+                    status={
+                        log.status as
+                            | "approved"
+                            | "disapproved"
+                            | "invalid"
+                            | "pending"
+                    }
+                >
+                    {log.status}
+                </TypographyStatus>
+            </div>
+            <div className="justify-center">
+                {format(log.created_at, "MMM dd, y hh:ii aaa")}
+            </div>
+            <div className="justify-center">
+                <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.certificateid)}>
                     <Eye />
                 </Button>
             </div>

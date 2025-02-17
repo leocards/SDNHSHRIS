@@ -8,8 +8,11 @@ import { TooltipLabel } from "../ui/tooltip";
 import { Button } from "../ui/button";
 import { Messages2 } from "iconsax-react";
 import MessageFloatingList from "./MessageFloatingList";
+import { useMessage } from "../Provider/message-provider";
 
 const MessagesTrigger = () => {
+    const { unreadMessages } = useMessage()
+
     return (
         <PopoverProvider>
             <PopoverContainer>
@@ -27,6 +30,13 @@ const MessagesTrigger = () => {
                                         color="currentColor"
                                         variant={open ? "Bold" : "Outline"}
                                     />
+
+                                    {unreadMessages !== 0 && (
+                                        <span className="flex h-3 w-3 absolute top-1 right-1">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-fuchsia-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-fuchsia-500"></span>
+                                        </span>
+                                    )}
                                 </Button>
                             </PopoverTrigger>
                         </TooltipLabel>

@@ -304,7 +304,7 @@ function getFileType(filename: string): string | null {
     return parts.length > 1 ? parts.pop()?.toLowerCase() || null : null;
 }
 
-const ImageViewer = ({
+export const ImageViewer = ({
     name,
     path,
     user,

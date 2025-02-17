@@ -74,4 +74,10 @@ class LogsReportController extends Controller
         $coc->load(['user']);
         return response()->json($coc);
     }
+
+    public function getCertificateLogs(ServiceRecord $certificate)
+    {
+        $certificate->load(['user']);
+        return response()->json($certificate);
+    }
 }

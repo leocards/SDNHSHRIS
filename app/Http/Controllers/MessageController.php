@@ -151,7 +151,7 @@ class MessageController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            return response()->json(['message' => 'error'], 400);
+            return response()->json(['message' => $th->getMessage()], 400);
         }
     }
 

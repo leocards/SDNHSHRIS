@@ -149,6 +149,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/retrieve-all-logs', 'getAllLogs')->name('myreports.logs.all');
             Route::get('/get-all-years/{type}', 'getYearsOnLogsType')->name('myreports.logs.years');
             Route::get('/get-coc-logs/{coc}', 'getCOCLogs')->name('myreports.logs.coc');
+            Route::get('/get-certificate-logs/{certificate}', 'getCertificateLogs')->name('myreports.logs.certificate');
         });
     });
 

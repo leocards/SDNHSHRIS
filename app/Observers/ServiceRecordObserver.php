@@ -41,17 +41,23 @@ class ServiceRecordObserver implements ShouldHandleEventsAfterCommit
 
         $type = $serviceRecord->type === 'coc' ? strtoupper($serviceRecord->type) : $serviceRecord->type;
 
-        if($serviceRecord->type === 'coc' && $serviceRecord->status !== "pending") {
+        if($serviceRecord->status !== "pending") {
             $user = User::find($serviceRecord->user_id);
 
+            $details = $serviceRecord->type === 'coc' ? collect([
+                'cocid' => $serviceRecord->id,
+                'username' => $user->full_name,
+                'useravatar' => $user->avatar,
+            ]) : collect([
+                'certificateid' => $serviceRecord->id,
+                'username' => $user->full_name,
+                'useravatar' => $user->avatar,
+            ]);
+
             LogsReport::create([
-                'type' => 'coc',
+                'type' => $serviceRecord->type,
                 'status' => $serviceRecord->status,
-                'details' => collect([
-                    'cocid' => $serviceRecord->id,
-                    'username' => $user->full_name,
-                    'useravatar' => $user->avatar,
-                ])->toArray()
+                'details' => $details->toArray()
             ]);
         }
 

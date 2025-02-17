@@ -58,6 +58,7 @@ const ViewLeaveLogs = ({ leaveid, show, onClose }: Props) => {
                                             position: "No principal.",
                                         }
                                     }
+                                    applicant={leave?.applicant}
                                 />
                             </div>
                         </div>

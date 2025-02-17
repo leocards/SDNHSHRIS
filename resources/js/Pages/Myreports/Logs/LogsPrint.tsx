@@ -14,7 +14,7 @@ import { usePage } from "@inertiajs/react";
 import { usePagination } from "@/Components/Provider/paginate-provider";
 
 type Props = ModalProps & {
-    type: "coc" | "leave" | "pds";
+    type: "coc" | "leave" | "pds" | "certificate";
     principal: User;
     status: "all" | "approved" | "disapproved" | "invalid";
     year: string;
@@ -145,7 +145,7 @@ const LogsPrint: React.FC<Props> = ({
                                         <th className="w-28 text-center">
                                             Status
                                         </th>
-                                        <th className="w-52 text-center">
+                                        <th className="w-[13.5rem] text-center">
                                             Date
                                         </th>
                                     </tr>

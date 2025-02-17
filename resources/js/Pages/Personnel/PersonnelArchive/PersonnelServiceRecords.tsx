@@ -7,6 +7,9 @@ import { Eye } from "iconsax-react";
 import ViewCertificate from "@/Pages/ServiceRecord/ViewCertificate";
 import { Deferred } from "@inertiajs/react";
 import TypographySmall from "@/Components/Typography";
+import { TableHeader, TableRow } from "@/Components/Header";
+import { cn } from "@/Lib/utils";
+import { format } from "date-fns";
 
 type Props = {
     certificates: any[];
@@ -16,8 +19,13 @@ const PersonnelServiceRecords: React.FC<Props> = ({ certificates }) => {
     const [selectedCertificate, setSelectedCertificate] = useState(0);
     const [viewCertificate, setViewCertificate] = useState(false);
 
+    const columns = ["1fr", "10rem", "10rem", "4rem"].join(" ");
+
     return (
-        <TabsContent value="sr" className="max-w-4xl min-w-[35rem] mx-auto">
+        <TabsContent
+            value="sr"
+            className="max-w-4xl min-w-[35rem] w-full mx-auto"
+        >
             <Card className="min-h-[28rem] relative p-2 space-y-1 mt-5">
                 <Deferred
                     data="certificates"
@@ -43,23 +51,40 @@ const PersonnelServiceRecords: React.FC<Props> = ({ certificates }) => {
                             </div>
                         )}
 
+                        <TableHeader style={{ gridTemplateColumns: columns }}>
+                            <div>Certificate Name</div>
+                            <div>Type</div>
+                            <div>Date modified</div>
+                            <div></div>
+                        </TableHeader>
+
                         {certificates?.map((data, index) => (
-                            <div
+                            <TableRow
+                                style={{ gridTemplateColumns: columns }}
                                 key={index}
-                                className="hover:bg-secondary p-3 py-1 border border-border rounded-md flex items-center shadow-sm"
-                                role="button"
+                                className="hover:bg-secondary border border-border rounded-md shadow-sm cursor-pointer"
                                 onClick={() => {
-                                    setSelectedCertificate(data.id);
+                                    setSelectedCertificate(data?.id);
                                     setViewCertificate(true);
                                 }}
                             >
                                 <div className="line-clamp-1">
-                                    {data?.type} | {data?.details?.name??"N/A"}
+                                    {data?.details?.name ?? "N/A"}
                                 </div>
+                                <div
+                                    className={cn(
+                                        data?.type === "coc"
+                                            ? "uppercase"
+                                            : "capitalize"
+                                    )}
+                                >
+                                    {data?.type}
+                                </div>
+                                <div>{format(data?.updated_at, "MMMM dd, y")}</div>
                                 <Button className="ml-auto" variant={"link"}>
                                     <Eye />
                                 </Button>
-                            </div>
+                            </TableRow>
                         ))}
                     </Fragment>
                 </Deferred>

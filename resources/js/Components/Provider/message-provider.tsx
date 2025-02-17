@@ -198,7 +198,7 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
                     }
                 }
 
-                if(openedUser && openedUser.id === newMessage.user.id) {
+                if(!openedUser /* && openedUser.id === newMessage.user.id */) {
                     toast({
                         title: "New message",
                         description: newMessage.user.full_name+" sent you a message.",
@@ -213,7 +213,7 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
                 setMessages(messagesList);
             }
 
-            if (!document.hasFocus()) {
+            if (!document.hasFocus() || !openedUser || (openedUser && openedUser.id !== newMessage.user.id)) {
                 const sound = new Audio(messageNotification);
                 sound.volume = messageNotificationVolume
                     ? parseFloat(messageNotificationVolume)
@@ -233,6 +233,9 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
                     .get<MESSAGELIST>(route("messages"))
                     .then((response) => {
                         let messages = response.data;
+                        const unread = messages.filter(n => !n.conversations.seen_at && n.conversations.sender != auth.id)
+
+                        setUnreadMessages(unread.length);
                         setMessages(messages);
                     })
                     .catch((error) => console.log(error));
@@ -266,7 +269,7 @@ const MessageProvider: React.FC<PropsWithChildren> = ({
 
                     setOpenedUser(null)
                 },
-                
+
                 selectConversation: (
                     message: any,
                     fromsearch?: boolean,

@@ -33,15 +33,15 @@ const MessageList = () => {
             >
                 <CardContent className="flex items-center p-0 px-3 gap-3 h-16">
                     <div className="size-fit my-auto">
-                        <ProfilePhoto className="size-10" src={message.user.avatar??""} />
+                        <ProfilePhoto className="size-10" src={message?.user?.avatar??""} />
                     </div>
                     <div className="grow">
                         <CardTitle className="text-base font-medium leading-5 line-clamp-1">
-                            {message.user.full_name}
+                            {message?.user?.full_name}
                         </CardTitle>
                         <CardDescription className="flex items-center">
-                            <div className="line-clamp-1 pr-3">{(message.conversations.sender == userid ? "You:":"")} {message.conversations.message}</div>
-                            <TypographySmall role="div" className="text-xs ml-auto">{getTimeFromNow(message.conversations.created_at)}</TypographySmall>
+                            <div className="line-clamp-1 pr-3">{(message?.conversations.sender == userid ? "You:":"")} {message?.conversations.message}</div>
+                            <TypographySmall role="div" className="text-xs ml-auto">{getTimeFromNow(message?.conversations.created_at)}</TypographySmall>
                         </CardDescription>
                     </div>
                 </CardContent>
