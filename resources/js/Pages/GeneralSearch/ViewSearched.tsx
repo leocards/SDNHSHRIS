@@ -44,21 +44,26 @@ const ViewSearched: React.FC<Props> = ({
         <div>
             <Header title="General Search" />
 
-            <Button
-                className=""
-                variant="outline"
-                onClick={() =>
-                    router.get(
-                        route("general-search"),
-                        {},
-                        {
-                            onBefore: () => setProcess(true),
-                        }
-                    )
-                }
-            >
-                <ChevronLeft /> Back
-            </Button>
+
+            <div className="flex items-center gap-4 font-medium uppercase">
+                <Button
+                    className=""
+                    variant="outline"
+                    onClick={() =>
+                        router.get(
+                            route("general-search"),
+                            {},
+                            {
+                                onBefore: () => setProcess(true),
+                            }
+                        )
+                    }
+                >
+                    <ChevronLeft /> Back
+                </Button>
+
+                <div>{user?.full_name}</div>
+            </div>
 
             <Tabs
                 className="overflow-hidden grow flex flex-col my-5"
