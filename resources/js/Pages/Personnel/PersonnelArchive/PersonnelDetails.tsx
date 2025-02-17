@@ -126,24 +126,37 @@ const PersonnelDetails = ({ user, servicecredits }: { user: User; servicecredits
                         </TypographySmall>
                     </div>
 
-                    <div className="flex gap-3 items-start">
-                        <TypographySmall className="w-24">
-                            Credits:
-                        </TypographySmall>
 
-                        <TypographySmall className="font-normal capitalize">
-                            {user && user.role != "teaching" ? (user.credits + servicecredits) : user.credits}
-                        </TypographySmall>
-                    </div>
+                    {user?.role != "teaching" ? (
+                        <>
+                            <div className="flex gap-3 items-start">
+                                <TypographySmall className="w-24">
+                                    Credits:
+                                </TypographySmall>
 
-                    {user?.role != "teaching" && (
+                                <TypographySmall className="font-normal capitalize">
+                                    {user && (user.credits + user.splcredits)}
+                                </TypographySmall>
+                            </div>
+
+                            <div className="flex gap-3 items-start">
+                                <TypographySmall className="w-24">
+                                    Service Credits:
+                                </TypographySmall>
+
+                                <TypographySmall className="font-normal capitalize">
+                                    {servicecredits??"0"}
+                                </TypographySmall>
+                            </div>
+                        </>
+                    ) : (
                         <div className="flex gap-3 items-start">
                             <TypographySmall className="w-24">
-                                SPL Credits:
+                                Service Credits:
                             </TypographySmall>
 
                             <TypographySmall className="font-normal capitalize">
-                                {user?.splcredits??"0"}
+                                {servicecredits??"0"}
                             </TypographySmall>
                         </div>
                     )}

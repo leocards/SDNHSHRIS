@@ -169,7 +169,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
 
                                 <TypographySmall className="font-normal">
-                                    {user?.hiredate}
+                                    {format(user?.hiredate, 'MMMM, d y')}
                                 </TypographySmall>
                             </div>
 
