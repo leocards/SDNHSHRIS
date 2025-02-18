@@ -75,7 +75,7 @@ export default function UpdatePasswordForm({
                             form={form}
                             label="Current Password"
                             name="current_password"
-                            password
+                            type="password"
                             icon={<PasswordCheck className="size-5" />}
                         />
                     </div>
@@ -85,7 +85,7 @@ export default function UpdatePasswordForm({
                             form={form}
                             label="Password"
                             name="password"
-                            password
+                            type="password"
                             icon={<PasswordCheck className="size-5" />}
                         />
 
@@ -116,7 +116,7 @@ export default function UpdatePasswordForm({
                             form={form}
                             label="Password Confirm"
                             name="password_confirmation"
-                            password
+                            type="password"
                             icon={<PasswordCheck className="size-5" />}
                         />
                     </div>
