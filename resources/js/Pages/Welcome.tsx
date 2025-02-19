@@ -16,8 +16,8 @@ export default function Welcome({ auth }: PageProps) {
                 <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-fuchsia-700 selection:text-white z-10">
                     <div className="relative w-full px-6 max-w-7xl">
                         <main className="my-6">
-                            <div className="grid gap-6 grid-cols-5 items-center">
-                                <div className="col-span-3 gap-6 flex flex-col items-center">
+                            <div className="grid gap-6 grid-cols-1 [@media(min-width:1050px)]:grid-cols-5 items-center">
+                                <div className="col-span-3 hidden gap-6 [@media(min-width:1050px)]:flex flex-col items-center">
                                     <div className="size-fit p-1 rounded-full bg-white mx-auto shadow-lg">
                                         <img
                                             src={sdnhslogo}
@@ -30,7 +30,7 @@ export default function Welcome({ auth }: PageProps) {
                                         <div className="font-black text-5xl uppercase text-fuchsia-100">Human Resource <br /> Information System</div>
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-start text-foreground md:row-sp an-3 col-start-4 col-end-7 gap-6 overflow-hidden rounded-lg bg-background p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] transition duration-300 focus:outline-none lg:p-10 lg:pb-10 dark:focus-visible:ring-[#FF2D20]">
+                                <div className="flex flex-col items-start text-foreground [@media(max-width:1050px)]:max-w-md [@media(max-width:1050px)]:w-full [@media(max-width:1050px)]:mx-auto [@media(min-width:1050px)]:col-start-4 [@media(min-width:1050px)]:col-end-7 gap-6 overflow-hidden rounded-lg bg-background p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] transition duration-300 focus:outline-none lg:p-10 lg:pb-10 dark:focus-visible:ring-[#FF2D20]">
                                     <Login />
                                 </div>
                             </div>

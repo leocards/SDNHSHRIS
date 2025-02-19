@@ -18,6 +18,7 @@ import { BorderBeam } from "@/Components/ui/border-beam";
 import AnimatedShinyText from "@/Components/ui/animated-shiny-text";
 import { PasswordCheck } from "iconsax-react";
 import { useToast } from "@/Hooks/use-toast";
+import sdnhslogo from "@/Assets/images/sdnhs-logo.png";
 
 const LOGINSCHEMA = z.object({
     email: z.string().min(1, requiredError("email")).email().default(""),
@@ -39,7 +40,7 @@ export default function Login({ status }: Props) {
     const [processing, setProcessing] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [redirecting, setRedirecting] = useState(false);
-    const { toast } = useToast()
+    const { toast } = useToast();
 
     const { data, setData, onSubmit, errors, ...form } =
         useFormSubmit<IFormLogin>({
@@ -49,7 +50,7 @@ export default function Login({ status }: Props) {
             defaultValues: {
                 email: "",
                 password: "",
-                remember: false
+                remember: false,
             },
             callback: {
                 onBefore: () => {
@@ -63,10 +64,12 @@ export default function Login({ status }: Props) {
                             setRedirecting(true);
                         }, 1200);
                     } else {
-                        const { title, message, status } = page.props.flash
+                        const { title, message, status } = page.props.flash;
                         toast({
-                            title, description: message, status
-                        })
+                            title,
+                            description: message,
+                            status,
+                        });
                         setProcessing(false);
                     }
                 },
@@ -79,7 +82,7 @@ export default function Login({ status }: Props) {
                     }
                     setProcessing(false);
                 },
-            }
+            },
         });
 
     useEffect(() => {
@@ -91,11 +94,11 @@ export default function Login({ status }: Props) {
     }, [redirecting]);
 
     return (
-        <div className="w-full h-[21.75rem]">
+        <div className="w-full [@media(min-width:1050px)]:h-[21.75rem]">
             {processing && (
-                <div className="h-full flex items-center justify-center">
+                <div className="h-full flex items-center justify-center [@media(max-width:1050px)]:py-12">
                     {!redirecting && (
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center [@media(max-width:1050px)]:my-auto">
                             <div className="rounded-full flex items-center justify-center size-12 relative">
                                 <Lock
                                     className="size-5 absolute rotate-0 scale-100 transition-all duration-300 data-[auth=true]:rotate-90 data-[auth=true]:scale-0"
@@ -140,8 +143,16 @@ export default function Login({ status }: Props) {
 
             {!processing && (
                 <div className="">
-                    <div className="mx-auto md:flex flex-col md:items-center">
-                        <div className="text-2xl font-semibold">
+                    <div className="size-fit p-1 rounded-full bg-white mx-auto shadow-lg mb-3 [@media(min-width:1050px)]:hidden">
+                        <img
+                            src={sdnhslogo}
+                            alt="sdnhs-log"
+                            className="size-16 sm:size-20"
+                        />
+                    </div>
+
+                    <div className="mx-auto flex flex-col items-center mb-2">
+                        <div className="text-lg sm:text-2xl font-semibold">
                             Log in to your account.
                         </div>
                     </div>

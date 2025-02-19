@@ -14,6 +14,7 @@ import { SCHOOLYEAR, User } from "@/Types";
 import { LEAVETYPEKEYS } from "../Leave/Types/leavetypes";
 import { APPLICATIONFORLEAVETYPES } from "../Leave/PDF/type";
 import { ACTIVELEAVETYPE, GENDERPROPORTIONTYPE, LEAVEAPPLICATIONS, OUTSTANDINGPERSONNEL, PERSONNELPERFORMANCETYPE } from "./type";
+import { useSidebar } from "@/Components/ui/sidebar";
 
 type Props = {
     totalpersonnel: number;
@@ -50,6 +51,8 @@ function Dashboard({
         time: format(new Date(), "hh:mm aaa"),
     });
 
+    const { state } = useSidebar()
+
     useEffect(() => {
         let timeInterval = Math.abs((new Date().getSeconds() - 60) * 1000);
 
@@ -81,7 +84,7 @@ function Dashboard({
                 servicecredits={servicecredits}
             />
 
-            <div className="grid grid-cols-[1fr,29rem] gap-4 my-4 [&>div]:h-[26rem]">
+            <div className={cn("grid gap-4 my-4 [&>div]:h-[26rem]", state === "collapsed" ? "[@media(min-width:1010px)]:grid-cols-[1fr,29rem]" : "[@media(min-width:1310px)]:grid-cols-[1fr,29rem]")}>
                 <ActiveLeave activeleave={activeleave} />
                 <Announcement announcements={announcements} />
             </div>
@@ -92,7 +95,7 @@ function Dashboard({
 
             <div
                 className={cn(
-                    "grid-cols-[25rem,1fr] gap-4 mt-4 [&>div]:h-[26rem]",
+                    "grid-cols-1 sm:grid-cols-[25rem,1fr] gap-4 mt-4 [&>div]:h-[26rem]",
                     user.role == "hr" ? "grid" : "hidden"
                 )}
             >

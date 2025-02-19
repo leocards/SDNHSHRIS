@@ -157,7 +157,7 @@ const HeaderNavigationBar: React.FC<Props> = ({}) => {
 
                         <MenubarSub>
                             <MenubarSubTrigger>SY 2024-2025</MenubarSubTrigger>
-                            <MenubarSubContent className="[@media_(max-width:360px)]:!-mr-[8rem] [@media_(max-width:360px)]:mt-9">
+                            <MenubarSubContent className="[@media_(max-width:360px)]:!-mr-[8rem] [@media_(max-width:360px)]:mt-9" alignOffset={-15}>
                                 <MenubarItem className="space-x-2">
                                     <Plus />
                                     <div>New School Year</div>

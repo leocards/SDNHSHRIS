@@ -9,14 +9,14 @@ import { createPortal } from "react-dom";
 export default function Guest({ children }: PropsWithChildren) {
     return (
         <ProcessIndicatorProvider>
-            <div className="flex min-h-screen w-full flex-col items-center bg-fuchsia-700 pt-6 sm:justify-center sm:pt-0">
+            <div className="flex min-h-screen w-full flex-col items-center bg-fuchsia-700 max-sm:px-3 pt-16 sm:justify-center sm:pt-0">
                 <div className="bg-white size-fit flex items-center justify-center rounded-full shadow-md">
                     <Link href="/">
-                        <img src={sdnhslogo} alt="sdnhs-logo" className="size-32 m-1" />
+                        <img src={sdnhslogo} alt="sdnhs-logo" className=" size-20 sm:size-32 m-1" />
                     </Link>
                 </div>
 
-                <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg">
+                <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md rounded-lg">
                     {children}
                 </div>
             </div>

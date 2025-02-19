@@ -216,7 +216,7 @@ const Sidebar = React.forwardRef<
                     <SheetContent
                         data-sidebar="sidebar"
                         data-mobile="true"
-                        className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+                        className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden border-fuchsia-700 dark:border-border"
                         style={
                             {
                                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
@@ -281,8 +281,10 @@ Sidebar.displayName = "Sidebar";
 
 const SidebarTrigger = React.forwardRef<
     React.ElementRef<typeof Button>,
-    React.ComponentProps<typeof Button>
->(({ className, onClick, ...props }, ref) => {
+    React.ComponentProps<typeof Button> & {
+        icon?: React.ReactNode
+    }
+>(({ className, onClick, icon, ...props }, ref) => {
     const { toggleSidebar } = useSidebar();
 
     return (
@@ -298,7 +300,7 @@ const SidebarTrigger = React.forwardRef<
             }}
             {...props}
         >
-            <PanelLeft />
+            {icon ? icon : <PanelLeft />}
             <span className="sr-only">Toggle Sidebar</span>
         </Button>
     );
@@ -575,6 +577,7 @@ const SidebarMenuButton = React.forwardRef<
         asChild?: boolean;
         isActive?: boolean;
         tooltip?: string | React.ComponentProps<typeof TooltipContent>;
+        isNav?: boolean;
     } & VariantProps<typeof sidebarMenuButtonVariants>
 >(
     (
@@ -585,12 +588,14 @@ const SidebarMenuButton = React.forwardRef<
             size = "default",
             tooltip,
             className,
+            onClick,
+            isNav = true,
             ...props
         },
         ref
     ) => {
         const Comp = asChild ? Slot : "button";
-        const { isMobile, state } = useSidebar();
+        const { isMobile, state, toggleSidebar } = useSidebar();
 
         const button = (
             <Comp
@@ -602,6 +607,13 @@ const SidebarMenuButton = React.forwardRef<
                     sidebarMenuButtonVariants({ variant, size }),
                     className
                 )}
+                onClick={(e) => {
+                    onClick?.(e)
+
+                    if(isNav && isMobile) {
+                        toggleSidebar()
+                    }
+                }}
                 {...props}
             />
         );
@@ -755,8 +767,9 @@ const SidebarMenuSubButton = React.forwardRef<
         size?: "sm" | "md";
         isActive?: boolean;
     }
->(({ asChild = false, size = "lg", isActive, className, ...props }, ref) => {
+>(({ asChild = false, size = "lg", isActive, className, onClick, ...props }, ref) => {
     const Comp = asChild ? Slot : "a";
+    const { isMobile, toggleSidebar } = useSidebar();
 
     return (
         <Comp
@@ -777,6 +790,14 @@ const SidebarMenuSubButton = React.forwardRef<
                 "group-data-[collapsible=icon]:hidden",
                 className
             )}
+            onClick={(e) => {
+                if(onClick) {
+                    onClick(e)
+
+                    if(isMobile)
+                        toggleSidebar()
+                }
+            }}
             {...props}
         />
     );

@@ -101,15 +101,15 @@ class IpcrReportController extends Controller
                                 return Str::trim($str);
                             }, $searchName);
 
-                            $user = User::whereIn(DB::raw('firstname'), $searchName)
-                                ->whereIn(DB::raw('lastname'), $searchName)
+                            $user = User::where(DB::raw('firstname'), $searchName[1])
+                                ->where(DB::raw('lastname'), $searchName[0])
                                 ->whereNot('role', 'hr')
                                 ->first(['id']);
 
                             // validate if user exist and check if it has already been added otherwise add the rating.
                             if ($user) {
                                 $existIPCR = IpcrReport::where('user_id', $user->id)->where('syid', $request->schoolyear)->exists();
-                                $exist = $user;
+                                dd(floatval($value[3]));
                                 if (floatval($value[3]) >= 1 || floatval($value[3]) <= 5) {
                                     if (!$existIPCR)
                                         IpcrReport::create([

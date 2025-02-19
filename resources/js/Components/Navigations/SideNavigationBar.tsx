@@ -10,6 +10,7 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
     SidebarSeparator,
+    SidebarTrigger,
     useSidebar,
 } from "../ui/sidebar";
 import sdnhslogo from "@/Assets/images/sdnhs-logo.png";
@@ -39,6 +40,7 @@ import {
     CollapsibleTrigger,
 } from "../ui/collapsible";
 import { useProcessIndicator } from "../Provider/process-indicator-provider";
+import { X } from "lucide-react";
 
 const SideNavigationBar = () => {
     const { url, props } = usePage();
@@ -58,6 +60,9 @@ const SideNavigationBar = () => {
 
     return (
         <Sidebar collapsible="icon">
+            {isMobile && (
+                <SidebarTrigger className="absolute top-2 -right-4 bg-background z-40 text-foreground" icon={<X />} />
+            )}
             <SidebarHeader className="mb-4">
                 <SidebarMenu>
                     <SidebarMenuItem
@@ -149,6 +154,7 @@ const SideNavigationBar = () => {
                                 <SidebarMenuButton
                                     tooltip="Personnel"
                                     isActive={url.startsWith("/personnel")}
+                                    isNav={false}
                                 >
                                     <Profile2User
                                         variant={
@@ -311,7 +317,7 @@ const SideNavigationBar = () => {
                             defaultOpen={url.startsWith("/myapproval")}
                         >
                             <CollapsibleTrigger asChild>
-                                <SidebarMenuButton tooltip="My Approval">
+                                <SidebarMenuButton tooltip="My Approval" isNav={false}>
                                     <TaskSquare
                                         variant={
                                             url.startsWith("/myapproval")
@@ -452,7 +458,7 @@ const SideNavigationBar = () => {
                             defaultOpen={url.startsWith("/myreports")}
                         >
                             <CollapsibleTrigger asChild>
-                                <SidebarMenuButton tooltip="My Reports">
+                                <SidebarMenuButton tooltip="My Reports" isNav={false}>
                                     <Chart2
                                         variant={
                                             url.startsWith("/myreports")
