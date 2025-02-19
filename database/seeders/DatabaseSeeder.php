@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'birthday' => '2000-02-23',
             'gender' => 'female',
             'personnelid' => 'SDNHS-123',
-            'department' => 'junior',
+            'department' => 'N/A',
             'role' => 'hr',
             'hiredate' => '2024-06-20',
             'enable_email_notification' => true,
