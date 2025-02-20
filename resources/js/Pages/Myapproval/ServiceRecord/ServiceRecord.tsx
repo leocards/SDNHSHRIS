@@ -25,6 +25,7 @@ import {
     FilterItem,
     MenubarLabel,
 } from "@/Components/ui/menubar";
+import SearchInput from "@/Components/SearchInput";
 
 const ServiceRecord: React.FC<{ sr: PAGINATEDDATA<SERVICERECORDTYPE> }> = (
     props
@@ -63,55 +64,67 @@ const Main = () => {
                     <TabsTrigger value="approved">Approved</TabsTrigger>
                     <TabsTrigger value="invalid">Invalid</TabsTrigger>
                 </TabsList>
-
-                <FilterButton isDirty={type !== "All"} filter={type} align="end" onClearFilter={() => {
-                    setType("All");
-                    onQuery({
-                        status,
-                        type: "All",
-                    });
-                }}>
-                    <FilterItem
-                        value="All"
-                        activeFilter={type}
-                        onClick={(value) => {
-                            setType(value as "All" | "COC" | "Certificate");
-                            onQuery({
-                                status,
-                                type: value,
-                            });
-                        }}
-                    >
-                        All
-                    </FilterItem>
-                    <FilterItem
-                        value="Certificate"
-                        activeFilter={type}
-                        onClick={(value) => {
-                            setType(value as "All" | "COC" | "Certificate");
-                            onQuery({
-                                status,
-                                type: value,
-                            });
-                        }}
-                    >
-                        Certificate
-                    </FilterItem>
-                    <FilterItem
-                        value="COC"
-                        activeFilter={type}
-                        onClick={(value) => {
-                            setType(value as "All" | "COC" | "Certificate");
-                            onQuery({
-                                status,
-                                type: value,
-                            });
-                        }}
-                    >
-                        COC
-                    </FilterItem>
-                </FilterButton>
             </Tabs>
+
+            <div className="mb-4 flex items-center justify-between gap-4">
+                <div>
+                    <FilterButton isDirty={type !== "All"} filter={type} align="end" onClearFilter={() => {
+                        setType("All");
+                        onQuery({
+                            status,
+                            type: "All",
+                        });
+                    }}>
+                        <FilterItem
+                            value="All"
+                            activeFilter={type}
+                            onClick={(value) => {
+                                setType(value as "All" | "COC" | "Certificate");
+                                onQuery({
+                                    status,
+                                    type: value,
+                                });
+                            }}
+                        >
+                            All
+                        </FilterItem>
+                        <FilterItem
+                            value="Certificate"
+                            activeFilter={type}
+                            onClick={(value) => {
+                                setType(value as "All" | "COC" | "Certificate");
+                                onQuery({
+                                    status,
+                                    type: value,
+                                });
+                            }}
+                        >
+                            Certificate
+                        </FilterItem>
+                        <FilterItem
+                            value="COC"
+                            activeFilter={type}
+                            onClick={(value) => {
+                                setType(value as "All" | "COC" | "Certificate");
+                                onQuery({
+                                    status,
+                                    type: value,
+                                });
+                            }}
+                        >
+                            COC
+                        </FilterItem>
+                    </FilterButton>
+                </div>
+
+                <div>
+                    <SearchInput
+                        onSearch={(search) => {
+                            onQuery({ status, type, search})
+                        }}
+                    />
+                </div>
+            </div>
 
             <Card className="min-h-[27rem] relative">
                 <TableDataSkeletonLoader

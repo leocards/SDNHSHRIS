@@ -69,7 +69,6 @@ const Main: React.FC<LeaveProps> = ({}) => {
     const [search, setSearch] = useState("");
     const searchRef = useRef<HTMLInputElement | null>(null);
     const { setProcess } = useProcessIndicator();
-    const [loading, setLoading] = useState(false); // loading state when on search
     const [status, setStatus] = useState("pending");
     const [filter, setFilter] = useState("");
     const [{ sort, order }, setSortOrder] = useState<{
@@ -219,8 +218,8 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                 <div>Name</div>
                                 <div>Type</div>
                                 <div>Date</div>
-                                <div>Principal Status</div>
                                 <div>HR Status</div>
+                                <div>Principal Status</div>
                                 <div className="justify-center"></div>
                             </TableHeader>
                             {page?.data.length === 0 && (
@@ -251,10 +250,10 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                                 pending: "text-amber-600",
                                                 approved: "text-green-600",
                                                 disapproved: "text-destructive",
-                                            }[leave?.principalstatus]
+                                            }[leave?.hrstatus]
                                         )}
                                     >
-                                        {leave?.principalstatus}
+                                        {leave?.hrstatus}
                                     </div>
                                     <div
                                         className={cn(
@@ -263,10 +262,10 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                                 pending: "text-amber-600",
                                                 approved: "text-green-600",
                                                 disapproved: "text-destructive",
-                                            }[leave?.hrstatus]
+                                            }[leave?.principalstatus]
                                         )}
                                     >
-                                        {leave?.hrstatus}
+                                        {leave?.principalstatus}
                                     </div>
                                     <div className="justify-center">
                                         <TooltipLabel label="View details">

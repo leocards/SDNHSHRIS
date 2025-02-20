@@ -26,13 +26,19 @@ const NumberInput = React.forwardRef<
     React.ComponentProps<"input">
 >(({ type, ...props }, ref) => {
     const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.target.value = e.target.value.replace(/[^0-9.]/g, ''); // Allow digits and periods
-        if ((e.target.value.match(/\./g) || []).length > 1) {
-            e.target.value = e.target.value.replace(/\.+$/, ''); // Remove extra decimals
-        }
+        let strInput = String(e.target.value).trim();
 
-        if(props.maxLength) {
-            e.target.value = e.target.value.substring(0, props.maxLength);
+        if(strInput.toLowerCase() === 'n/a' || strInput.toLowerCase() === 'n') {
+            e.target.value = 'N/A'
+        } else {
+            strInput = e.target.value.replace(/[^0-9.]/g, ''); // Allow digits and periods
+            if ((strInput.match(/\./g) || []).length > 1) {
+                e.target.value = strInput.replace(/\.+$/, ''); // Remove extra decimals
+            }
+
+            if(props.maxLength) {
+                e.target.value = strInput.substring(0, props.maxLength);
+            }
         }
     }
 

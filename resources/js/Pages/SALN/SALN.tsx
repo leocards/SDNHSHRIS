@@ -55,6 +55,7 @@ const Main = () => {
                 <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60">
                     <TabsTrigger value="pending">Pending</TabsTrigger>
                     <TabsTrigger value="approved">Approved</TabsTrigger>
+                    <TabsTrigger value="disapproved">Disapproved</TabsTrigger>
                 </TabsList>
 
                 <Button

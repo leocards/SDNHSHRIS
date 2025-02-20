@@ -15,6 +15,7 @@ use App\Models\PdsPersonalInformation;
 use App\Models\PdsVoluntaryWork;
 use App\Models\PdsWorkExperience;
 use App\Models\PersonalDataSheet;
+use App\Models\Scopes\ActiveUserScope;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -36,20 +37,115 @@ class PersonalDataSheetController extends Controller
 
         if ($role === "hr") {
             $status = $request->query('status') ?? "pending";
+            $search = $request->query('search');
 
-            $pds = PersonalDataSheet::with(['user' => function ($query) {
+            $pds = PersonalDataSheet::with(['user' => function ($query) use ($status) {
+                $query->when($status !== "pending", function ($query) {
                     $query->withoutGlobalScopes();
-                }])
+                });
+            }])
                 ->where('status', $status)
-                ->whereHas('user.pdsPersonalInformation')
-                ->orWhereHas('user.pdsFamilyBackground')
-                ->orWhereHas('user.pdsEducationalBackground')
-                ->orWhereHas('user.pdsCivilService')
-                ->orWhereHas('user.pdsWorkExperience')
-                ->orWhereHas('user.pdsVoluntaryWork')
-                ->orWhereHas('user.pdsLearningAndDevelopment')
-                ->orWhereHas('user.pdsOtherInformation')
-                ->orWhereHas('user.pdsC4')
+                ->whereHas('user', function ($query) use ($status) {
+                    $query->when($status !== "pending", function ($query) {
+                        $query->withoutGlobalScopes();
+                    });
+                })
+                ->where(function ($query) use ($search) {
+                    $query->whereHas('user', function ($query) use ($search) {
+                        $query
+                            ->when($search, function ($query) use ($search) {
+                                $query->where(function ($query) use ($search) {
+                                    $query->where('firstname', 'LIKE', "{$search}%")
+                                        ->orWhere('email', 'LIKE', "{$search}%")
+                                        ->orWhere('lastname', 'LIKE', "{$search}%")
+                                        ->orWhere('middlename', 'LIKE', "%{$search}%")
+                                        ->orWhere('extensionname', 'LIKE', "{$search}%")
+                                        ->orWhere('mobilenumber', 'LIKE', "{$search}%");
+                                });
+                            })
+                            ->orWhereHas('pdsPersonalInformation', function ($query) use ($search) {
+                                $query->when($search, function ($query) use ($search) {
+                                    $query->where('email', 'LIKE', "{$search}%")
+                                        ->orWhere('bloodtype', 'LIKE', "{$search}%")
+                                        ->orWhere('gsis', 'LIKE', "{$search}%")
+                                        ->orWhere('pagibig', 'LIKE', "{$search}%")
+                                        ->orWhere('philhealth', 'LIKE', "{$search}%")
+                                        ->orWhere('sss', 'LIKE', "{$search}%")
+                                        ->orWhere('tin', 'LIKE', "{$search}%")
+                                        ->orWhere('agencyemployee', 'LIKE', "{$search}%")
+                                        ->orWhere('telephone', 'LIKE', "{$search}%")
+                                        ->orWhere('mobile', 'LIKE', "{$search}%");
+                                });
+                            })
+                            ->orWhereHas('pdsPersonalInformation.addresses', function ($query) use ($search) {
+                                $query->when($search, function ($query) use ($search) {
+                                    $query->where('houselotblockno', 'LIKE', "{$search}%")
+                                        ->orWhere('street', 'LIKE', "{$search}%")
+                                        ->orWhere('subdivision', 'LIKE', "{$search}%")
+                                        ->orWhere('barangay', 'LIKE', "{$search}%")
+                                        ->orWhere('citymunicipality', 'LIKE', "{$search}%")
+                                        ->orWhere('province', 'LIKE', "{$search}%")
+                                        ->orWhere('zipcode', 'LIKE', "{$search}%");
+                                });
+                            })
+                            ->orWhereHas('pdsFamilyBackground', function ($query) use ($search) {
+                                $query->when($search, function ($query) use ($search) {
+                                    $query->where('details->familyname', 'LIKE', "{$search}%")
+                                        ->orWhere('details->firstname', 'LIKE', "{$search}%")
+                                        ->orWhere('details->extensinname', 'LIKE', "{$search}%")
+                                        ->orWhere('details->occupation', 'LIKE', "{$search}%")
+                                        ->orWhere('details->employerbusiness', 'LIKE', "{$search}%")
+                                        ->orWhere('details->businessaddress', 'LIKE', "{$search}%")
+                                        ->orWhere('details->telephone', 'LIKE', "{$search}%")
+                                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(details, '$[*].name')) LIKE ?", ["%{$search}%"]);
+                                });
+                            })
+                            ->orWhereHas('pdsEducationalBackground', function ($query) use ($search) {
+                                $query->when($search, function ($query) use ($search) {
+                                    $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(details, '$[*].nameofschool')) LIKE ?", ["%{$search}%"])
+                                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(details, '$[*].basiceddegreecourse')) LIKE ?", ["%{$search}%"]);
+                                });
+                            })
+                            ->orWhereHas('pdsCivilService', function ($query) use ($search) {
+                                $query->when($search, function ($query) use ($search) {
+                                    $query->where('careerservice', 'LIKE', "{$search}%")
+                                        ->orWhere('licensenumber', 'LIKE', "{$search}%")
+                                        ->orWhere('placeexamination', 'LIKE', "{$search}%");
+                                });
+                            })
+                            ->orWhereHas('pdsWorkExperience', function ($query) use ($search) {
+                                $query->when($search, function ($query) use ($search) {
+                                    $query->where('positiontitle', 'LIKE', "{$search}%")
+                                        ->orWhere('department', 'LIKE', "{$search}%")
+                                        ->orWhere('statusofappointment', 'LIKE', "{$search}%");
+                                });
+                            })
+                            ->orWhereHas('pdsVoluntaryWork', function ($query) use ($search) {
+                                $query->when($search, function ($query) use ($search) {
+                                    $query->where('organization', 'LIKE', "{$search}%");
+                                });
+                            })
+                            ->orWhereHas('pdsLearningAndDevelopment', function ($query) use ($search) {
+                                $query->when($search, function ($query) use ($search) {
+                                    $query->where('title', 'LIKE', "{$search}%")
+                                        ->orWhere('type', 'LIKE', "{$search}%")
+                                        ->orWhere('conductedby', 'LIKE', "{$search}%");
+                                });
+                            })
+                            ->orWhereHas('pdsOtherInformation', function ($query) use ($search) {
+                                $query->when($search, function ($query) use ($search) {
+                                    $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(details, '$[*].detail')) LIKE ?", ["%{$search}%"]);
+                                });
+                            })
+                            ->orWhereHas('pdsC4', function ($query) use ($search) {
+                                $query->when($search, function ($query) use ($search) {
+                                    $query->where('details->governmentissuedid', 'LIKE', "{$search}%")
+                                        ->orWhere('details->licensepassportid', 'LIKE', "{$search}%")
+                                        ->orWhere('details->issued', 'LIKE', "{$search}%");
+                                });
+                            });
+                    });
+                })
                 ->latest()
                 ->paginate($this->page);
 
@@ -211,11 +307,14 @@ class PersonalDataSheetController extends Controller
         DB::beginTransaction();
         try {
 
+            if($user->pdsExcel->file)
+                throw new Exception("User already has an uploaded PDS excel.");
+
             $path = $request->file('file')->store('public/PDSfiles');
 
             $user->personalDataSheet()->updateOrCreate([
                 "user_id" => $user->id
-            ],[
+            ], [
                 'status' => 'pending',
                 "file" => $path,
                 "original" => $request->file('file')->getClientOriginalName(),
@@ -226,7 +325,7 @@ class PersonalDataSheetController extends Controller
             $this->getC3Data($data["C3"], $user);
             $this->getC4Data($data["C4"], $user);
 
-            if($request->user()->role === "hr")
+            if ($request->user()->role === "hr")
                 Notification::create([
                     "user_id" => $user->id,
                     "type" => "pds",
@@ -246,7 +345,7 @@ class PersonalDataSheetController extends Controller
                         'link' => route('myapproval.pds'),
                         'name' => $user->full_name,
                         'avatar' => $request->user()->avatar,
-                        'message' => 'has uploaded '.$user->gender == 'male' ? 'his' : 'her'.' Personal Data Sheet.',
+                        'message' => 'has uploaded ' . $user->gender == 'male' ? 'his' : 'her' . ' Personal Data Sheet.',
                     ])->toArray()
                 ]);
             }
@@ -606,7 +705,7 @@ class PersonalDataSheetController extends Controller
         ]);
         $lastIndex = 0;
 
-        if(!$user->pdsVoluntaryWork()->exists())
+        if (!$user->pdsVoluntaryWork()->exists())
             foreach ($c3Data as $key => $value) {
                 if ($value[0] == "(Continue on separate sheet if necessary)") {
                     if ($c3Data[$key + 2][0] == "(Start from the most recent L&D/training program and include only the relevant L&D/training taken for the last five (5) years for Division Chief/Executive/Managerial positions)") {
@@ -631,7 +730,7 @@ class PersonalDataSheetController extends Controller
                 ]));
             }
 
-        if(!$user->pdsLearningAndDevelopment()->exists())
+        if (!$user->pdsLearningAndDevelopment()->exists())
             foreach ($c3Data->slice($lastIndex + 4) as $key => $value) {
                 if ($value[0] == "(Continue on separate sheet if necessary)") {
                     $lastIndex = $key;
@@ -653,7 +752,7 @@ class PersonalDataSheetController extends Controller
                 ]));
             }
 
-        if(!$user->pdsOtherInformation()->exists()) {
+        if (!$user->pdsOtherInformation()->exists()) {
             $oi = collect([
                 "skills" => collect(["user_id" => $user->id, "type" => "skills",  "details" => collect([])]),
                 "recognition" => collect(["user_id" => $user->id, "type" => "recognition",  "details" => collect([])]),
@@ -675,13 +774,13 @@ class PersonalDataSheetController extends Controller
             }
         }
 
-        if(!$user->pdsVoluntaryWork()->exists())
+        if (!$user->pdsVoluntaryWork()->exists())
             PdsVoluntaryWork::insert($result['voluntary']->toArray());
 
-        if(!$user->pdsLearningAndDevelopment()->exists())
+        if (!$user->pdsLearningAndDevelopment()->exists())
             PdsLearningDevelopment::insert($result['landd']->toArray());
 
-        if(!$user->pdsOtherInformation()->exists()) {
+        if (!$user->pdsOtherInformation()->exists()) {
             PdsOtherInformation::create([
                 'user_id' => $oi['skills']['user_id'],
                 'type' => $oi['skills']['type'],
@@ -704,7 +803,7 @@ class PersonalDataSheetController extends Controller
 
     function getC4Data($data, User $user)
     {
-        if($user->pdsC4()->exists()) return null;
+        if ($user->pdsC4()->exists()) return null;
 
         $c4 = collect([
             "34b" => $data[0]->only([6, 7, 8])->filter()->implode(''),

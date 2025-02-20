@@ -5,17 +5,7 @@ namespace App\Http\Controllers;
 use App\DateParserTrait;
 use App\Http\Requests\PersonnelRequest;
 use App\Models\Leave;
-use App\Models\PdsCivilService;
-use App\Models\PdsCs4;
-use App\Models\PdsEducationalBackground;
-use App\Models\PdsFamilyBackground;
-use App\Models\PdsLearningDevelopment;
-use App\Models\PdsOtherInformation;
-use App\Models\PdsPersonalInformation;
-use App\Models\PdsVoluntaryWork;
-use App\Models\PdsWorkExperience;
 use App\Models\PersonalDataSheet;
-use App\Models\ServiceRecord;
 use App\Models\Tardiness;
 use App\Models\User;
 use App\ResponseTrait;
@@ -39,6 +29,7 @@ class PersonnelController extends Controller
         $sortDataBy = $sort === "name" ? "lastname" : $sort;
 
         $personnel = User::excludeHr()
+            ->with('pdsExcel:id,user_id,file')
             ->when($pt === 'teaching', fn($query) => $query->where('role', $pt))
             ->when($pt === 'non-teaching', fn($query) => $query->where('role', $pt)->when(Auth::user()->role != "principal", fn($query) => $query->orWhere('role', 'principal')))
             ->when($filter, function ($query) use ($filter) {
@@ -92,11 +83,8 @@ class PersonnelController extends Controller
                     'role' => $request->personnel['role'],
                     'position' => $request->personnel['position'],
                     'hiredate' => $this->parseDate($request->personnel['datehired']),
-                    'credits' => $request->personnel['credits'] != '0' && $request->personnel['credits'] ?
-                        $request->personnel['credits'] : ($request->personnel['role'] != "teaching" ? 30 : 0),
-                    'splcredits' => $request->personnel['role'] != "teaching" ?
-                        ($request->personnel['splcredits'] != '0' && $request->personnel['splcredits'] ? $request->personnel['splcredits'] : 15)
-                        : 0,
+                    'credits' => $request->personnel['role'] != "teaching" ? $request->personnel['credits'] : 0,
+                    'splcredits' => $request->personnel['role'] != "teaching" ? $request->personnel['splcredits'] : 0,
                     'enable_email_notification' => true,
                     'password' => Hash::make($request->password)
                 ]

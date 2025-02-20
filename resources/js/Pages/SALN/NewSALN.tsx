@@ -3,7 +3,13 @@ import { TypographyLarge } from "@/Components/Typography";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { ArrowRight2 } from "iconsax-react";
 import React, { useEffect } from "react";
-import { getBifc, getRelatives, IFormSaln, SALNSCHEMA, SALNTYPE } from "./Types/type";
+import {
+    getBifc,
+    getRelatives,
+    IFormSaln,
+    SALNSCHEMA,
+    SALNTYPE,
+} from "./Types/type";
 import { Form, FormCalendar } from "@/Components/ui/form";
 import PersonalInformation from "./Partials/PersonalInformation";
 import Children from "./Partials/Children";
@@ -15,11 +21,12 @@ import { Button } from "@/Components/ui/button";
 import { useToast } from "@/Hooks/use-toast";
 import { SPOUSETYPE } from "../PDS/Types/FamilyBackground";
 import { IFormC4 } from "../PDS/Types/C4";
+import { cn } from "@/Lib/utils";
 
 type Props = {
     saln: SALNTYPE;
-    spouse: SPOUSETYPE|null
-    spousegoveid: IFormC4['governmentids'] | null
+    spouse: SPOUSETYPE | null;
+    spousegoveid: IFormC4["governmentids"] | null;
 };
 
 const getChildren = (data: SALNTYPE["children"]) => {
@@ -34,7 +41,7 @@ const getChildren = (data: SALNTYPE["children"]) => {
 
             data.forEach((child) => {
                 childrens.push({
-                    name: child.name??"",
+                    name: child.name ?? "",
                     dateofbirth: !child.name
                         ? null
                         : new Date(child.dateofbirth),
@@ -64,7 +71,11 @@ const NewSALN: React.FC<Props> = ({ saln, spouse, spousegoveid }) => {
                 officeaddress: saln?.spouse?.officeaddress ?? "",
                 governmentissuedid: saln?.spouse?.governmentissuedid ?? "",
                 idno: saln?.spouse?.idno ?? "",
-                dateissued: ((saln?.spouse?.dateissued && new Date(saln?.spouse?.dateissued)) || null) ?? null,
+                dateissued:
+                    ((saln?.spouse?.dateissued &&
+                        new Date(saln?.spouse?.dateissued)) ||
+                        null) ??
+                    null,
             },
             children: getChildren(saln?.children),
             assets: {
@@ -149,10 +160,23 @@ const NewSALN: React.FC<Props> = ({ saln, spouse, spousegoveid }) => {
 
     return (
         <div>
-            <Header title="New SALN">
+            <Header title="New SALN" className="w-full">
                 <div className="flex items-center gap-1">
                     SALN <ArrowRight2 className="size-4 [&>path]:stroke-[3]" />{" "}
                     New SALN
+                    <div
+                        className={cn(
+                            {
+                                default: "hidden",
+                                pending: "text-amber-600",
+                                approved: "text-green-600",
+                                disapproved: "text-destructive",
+                            }[saln?.status ?? "default"],
+                            "text-base capitalize ml-auto"
+                        )}
+                    >
+                        {saln?.status}
+                    </div>
                 </div>
             </Header>
 
@@ -173,7 +197,11 @@ const NewSALN: React.FC<Props> = ({ saln, spouse, spousegoveid }) => {
                         />
                     </div>
 
-                    <PersonalInformation form={form} spouse={spouse} spousegoveid={spousegoveid} />
+                    <PersonalInformation
+                        form={form}
+                        spouse={spouse}
+                        spousegoveid={spousegoveid}
+                    />
 
                     <Children form={form} />
 

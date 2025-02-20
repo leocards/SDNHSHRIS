@@ -8,8 +8,8 @@ class Leave extends Model
 {
     protected $fillable = [
         "user_id",
-        // "hr_id",
-        // "principal_id",
+        "hr_id",
+        "principal_id",
         "schoolyearid",
         "filingfrom",
         "filingto",
@@ -26,13 +26,15 @@ class Leave extends Model
         "hrdisapprovedmsg",
         "details",
         "detailsinput",
-        "notifiedDueMedical"
+        "approvedfor",
+        "notifiedDueMedical",
     ];
 
     protected function casts(): array
     {
         return [
-            "notifiedDueMedical" => "boolean"
+            "notifiedDueMedical" => "boolean",
+            "approvedfor" => "json"
         ];
     }
 

@@ -16,6 +16,7 @@ import { router } from "@inertiajs/react";
 import { format } from "date-fns";
 import { Eye } from "iconsax-react";
 import { Fragment } from "react";
+import empty from "@/Assets/empty-personnel.svg";
 
 type PersonnelProps = {};
 
@@ -63,7 +64,7 @@ const Main = () => {
                 {/* <div className="grow w-px mx-3.5 bg-border"></div> */}
             </div>
 
-            <Card className="min-h-[28rem]">
+            <Card className="min-h-[28rem] relative">
                 <TableDataSkeletonLoader
                     data="personnels"
                     columns={["minmax(5rem,1fr)", "7rem", "10rem", "5rem"]}
@@ -79,7 +80,17 @@ const Main = () => {
                                 <div>Date</div>
                                 <div className="justify-center">View</div>
                             </TableHeader>
-
+                            {page?.data.length === 0 && (
+                                <div className="flex flex-col items-center absolute inset-0 justify-center">
+                                    <img
+                                        className="size-24 opacity-40 dark:opacity-65"
+                                        src={empty}
+                                    />
+                                    <div className="text-sm font-medium text-foreground/50 mt-1 text-center">
+                                        No available personnel archive.
+                                    </div>
+                                </div>
+                            )}
                             {page?.data.map((personnel, index) => (
                                 <TableRow
                                     style={{ gridTemplateColumns: column }}

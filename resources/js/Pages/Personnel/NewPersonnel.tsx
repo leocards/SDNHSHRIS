@@ -36,7 +36,7 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({ personnel, hasPrincipal, pe
             },
             contact: {
                 email: personnel?.email ?? "",
-                mobilenumber: personnel?.mobilenumber,
+                mobilenumber: personnel?.mobilenumber ?? "",
             },
             personnel: {
                 ispersonnel: true,
@@ -47,8 +47,8 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({ personnel, hasPrincipal, pe
                 role: personnel?.role ?? personneltype,
                 department: personnel?.department || (personneltype === "non-teaching" ? "accounting" : undefined),
                 position: personnel?.position || undefined,
-                credits: '0',
-                splcredits: '0',
+                credits: !personnel && personneltype != "teaching" ? '30' : '0',
+                splcredits: !personnel && personneltype != "teaching" ? '15' : '0',
             },
             password: "12345678"
         },

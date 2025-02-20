@@ -8,6 +8,7 @@ use App\Models\Saln;
 use App\Models\User;
 use App\ResponseTrait;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -21,13 +22,60 @@ class SalnController extends Controller
     {
         $role = $request->user()->role;
         $status = $request->query('status') ?? "pending";
+        $search = $request->query('search');
 
-        $saln = Saln::when($role == "hr", function ($query) {
-                $query->with(['user' => fn ($query) => $query->withoutGlobalScopes()]);
+        $saln = Saln::when($role == "hr", function ($query) use ($status) {
+                $query->with(['user' => function ($query) use ($status) {
+                    $query->when($status !== "pending", function ($query) {
+                        $query->withoutGlobalScopes();
+                    });
+                }]);
             })->when($role != "hr", function ($query) use ($request) {
                 $query->where('user_id', $request->user()->id);
             })
             ->where('status', $status)
+            ->when($search, function ($query) use ($search, $status) {
+                $query->whereHas('user', function ($query) use ($search, $status) {
+                        $query->when($status !== "pending", function ($query) {
+                                $query->withoutGlobalScopes();
+                            })
+                            ->where('lastname', 'LIKE', "{$search}%")
+                            ->orWhere('firstname', 'LIKE', "{$search}%")
+                            ->orWhere('middlename', 'LIKE', "{$search}%");
+                    })
+                    ->orWhere('spouse->familyname', 'LIKE', "{$search}%")
+                    ->orWhere('spouse->firstname', 'LIKE', "{$search}%")
+                    ->orWhere('spouse->middleinitial', 'LIKE', "{$search}%")
+                    ->orWhere('spouse->position', 'LIKE', "{$search}%")
+                    ->orWhere('spouse->office', 'LIKE', "{$search}%")
+                    ->orWhere('spouse->officeaddress', 'LIKE', "{$search}%")
+                    ->orWhere('spouse->governmentissuedid', 'LIKE', "{$search}%")
+                    ->orWhere('spouse->idno', 'LIKE', "{$search}%")
+                    ->orWhere('spouse->dateissued', 'LIKE', "{$search}%")
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(children, '$[*].name')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.real[*].description')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.real[*].kind')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.real[*].exactlocation')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.real[*].assessedvalue')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.real[*].currentfairmarketvalue')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.real[*].acquisition.year')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.real[*].acquisition.mode')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.real[*].acquisitioncost')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.personal[*].description')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.personal[*].yearacquired')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(assets, '$.personal[*].acquisitioncost')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(children, '$[*].name')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(liabilities, '$[*].nature')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(liabilities, '$[*].nameofcreditors')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(liabilities, '$[*].outstandingbalances')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(biandfc, '$.bifc[*].name')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(biandfc, '$.bifc[*].address')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(biandfc, '$.bifc[*].nature')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(relativesingovernment, '$.relatives[*].name')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(relativesingovernment, '$.relatives[*].relationship')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(relativesingovernment, '$.relatives[*].position')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(relativesingovernment, '$.relatives[*].agencyandaddress')) LIKE ?", ["%{$search}%"]);
+            })
             ->paginate($this->page);
 
 
@@ -76,6 +124,8 @@ class SalnController extends Controller
 
         DB::beginTransaction();
         try {
+            if(!$saln && $request->user()->saln()->whereYear('asof', Carbon::parse($request->asof)->year)->exists())
+                throw new Exception('You have already submitted a SALN as of year ' . Carbon::parse($request->asof)->year .'.');
 
             if($request->isjoint === 'joint' && !$saln) {
                 $spouse = User::where('lastname', $request->spouse['familyname'])
@@ -134,7 +184,7 @@ class SalnController extends Controller
                 ->with(['title' => 'SALN', 'message' => 'You have successfully ' . ($saln ? 'updated' : 'submitted') . ' your SALN.', 'status' => 'success']);
         } catch (\Throwable $th) {
             DB::rollBack();
-            $message = $th->getMessage() . 'Failed to ' . ($saln ? 'update' : 'submit') . ' SALN.';
+            $message = $th->getMessage();
 
             return $this->returnResponse('SALN', $message, 'error');
         }
@@ -142,24 +192,24 @@ class SalnController extends Controller
 
     public function approveSaln(Request $request, Saln $saln)
     {
-        $saln->status = 'approved';
+        $saln->status = $request->action;
         $saln->save();
 
         Notification::create([
             'user_id' => $saln->user_id,
             'type' => 'pdsupdate',
             'details' => collect([
-                'link' => route('saln'),
+                'link' => route('saln.create', [$saln->id]),
                 'name' =>  'HR',
                 'avatar' => $request->user()->avatar,
-                'message' => 'approved your SALN.'
+                'message' => $request->action.' your SALN.'
             ])->toArray()
         ]);
 
         return $this->returnResponse('SALN Approval', 'SALN has been approved', 'success');
     }
 
-    public function view(Saln $saln)
+    public function view(Request $request, Saln $saln)
     {
         $saln->load(['user' => function ($query) {
             $query->withoutGlobalScopes();
@@ -218,6 +268,17 @@ class SalnController extends Controller
         }
 
         $address = $saln->user->load(['pdsPersonalInformation.addresses']);
+
+        if($request->user()->role === "hr") {
+            return Inertia::render('Myapproval/SALN/ViewSaln', [
+                "saln" => $saln,
+                "user" => $saln->user,
+                "address" => $address->pdsPersonalInformation?$this->getPermanentaddress($address->pdsPersonalInformation['addresses']):null,
+                "spouse" => $spouse,
+                "declarannt" => $saln->user->pdsC4->where('type', 'governmentId')->first()?->details,
+                "pages" => $pages
+            ]);
+        }
 
         return Inertia::render('SALN/ViewSaln', [
             "saln" => $saln,

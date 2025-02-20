@@ -13,7 +13,7 @@ const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
     <nav
         role="navigation"
         aria-label="pagination"
-        className={cn("mx-auto flex w-full justify-center", className)}
+        className={cn("mx-auto flex w-full", className)}
         {...props}
     />
 );
@@ -141,20 +141,22 @@ const PaginationData = () => {
     }, [page]);
 
     return (
-        <Pagination className="mt-4 items-center px-2">
-            <div className="h-9 items-center bor der border-border rounded-md flex">
-                {total == 0 || !total ? (
-                    <TypographySmall>0 records</TypographySmall>
-                ) : (
-                    <TypographySmall>
-                        {from}-{to} of {total} records
-                    </TypographySmall>
-                )}
-            </div>
-            <PaginationContent className="ml-auto">
+        <Pagination className="mt-4 items-center max-md:flex-col px-2">
+            <div className="flex items-center justify-between w-full">
+                <div className="h-9 items-center bor der border-border rounded-md flex">
+                    {total == 0 || !total ? (
+                        <TypographySmall>0 records</TypographySmall>
+                    ) : (
+                        <TypographySmall>
+                            {from}-{to} of {total} records
+                        </TypographySmall>
+                    )}
+                </div>
                 <small className="text-sm font-medium leading-none mr-4">
                     Page {page?.current_page??1} of {page?.last_page??1}
                 </small>
+            </div>
+            <PaginationContent className="max-md:ml-aut">
                 <PaginationItem>
                     <TooltipLabel label="First page">
                         <PaginationPrevious

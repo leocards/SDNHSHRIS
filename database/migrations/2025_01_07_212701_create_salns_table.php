@@ -24,7 +24,7 @@ return new class extends Migration
             $table->json('relativesingovernment');
             $table->date('date');
             $table->enum('isjoint', ['joint','separate','not']);
-            $table->enum('status', ['pending','approved'])->default('pending');
+            $table->enum('status', ['pending','approved', 'disapproved'])->default('pending');
             $table->timestamps();
         });
     }

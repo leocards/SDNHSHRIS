@@ -16,46 +16,48 @@ import { useProcessIndicator } from "@/Components/Provider/process-indicator-pro
 import { Skeleton } from "@/Components/ui/skeleton";
 import { useToast } from "@/Hooks/use-toast";
 import { X } from "lucide-react";
+import { TableHeader, TableRow } from "@/Components/Header";
+import { useSidebar } from "@/Components/ui/sidebar";
 
 const ATTENDANCESCHEMA = z.object({
     attendances: z.array(
         z.object({
             user: z.object({
                 id: z.number(),
-                name: z.string().min(1, requiredError("personnel")),
+                name: z.string().min(1, ""),
             }),
             present: z
                 .string()
-                .min(1, requiredError("no. of days present"))
+                .min(1, "")
                 .refine((value) => {
                     if (isNaN(parseInt(value))) return false;
 
                     return true;
-                }, "Must be a number of days present."),
+                }, ""),
             absent: z
                 .string()
-                .min(1, requiredError("no. of days absent"))
+                .min(1, "")
                 .refine((value) => {
                     if (isNaN(parseInt(value))) return false;
 
                     return true;
-                }, "Must be a number of days absent."),
+                }, ""),
             timetardy: z
                 .string()
-                .min(1, requiredError("no. of time tardy"))
+                .min(1, "")
                 .refine((value) => {
                     if (isNaN(parseInt(value))) return false;
 
                     return true;
-                }, "Must be a number of time tardy."),
+                }, ""),
             undertime: z
                 .string()
-                .min(1, requiredError("no. of undertime"))
+                .min(1, "")
                 .refine((value) => {
                     if (isNaN(parseInt(value))) return false;
 
                     return true;
-                }, "Must be a number of undertime."),
+                }, ""),
         })
     ),
     sy: z.string(),
@@ -70,6 +72,9 @@ type AttendanceProps = ModalProps & {
     onSuccess: CallableFunction;
 };
 
+const Columns = ["1fr", ...Array(4).fill("minmax(5rem,1fr)")].join(" ");
+const ColumnsMobile = [...Array(4).fill("minmax(5rem,1fr)")].join(" ");
+
 const Attendance: React.FC<AttendanceProps> = ({
     show,
     onClose,
@@ -79,6 +84,7 @@ const Attendance: React.FC<AttendanceProps> = ({
 }) => {
     const { toast } = useToast();
     const { setLabel } = useProcessIndicator();
+    const { isMobile } = useSidebar();
 
     const [sy, setSy] = useState({
         sy: attendance ? attendance.id : schoolyears[0].id,
@@ -111,7 +117,7 @@ const Attendance: React.FC<AttendanceProps> = ({
 
                 if (page.props.flash.status === "success") {
                     onClose(false);
-                    onSuccess()
+                    onSuccess();
                 }
             },
             onError: (error: any) => {
@@ -143,7 +149,7 @@ const Attendance: React.FC<AttendanceProps> = ({
     const watchMonth = form.watch("month");
 
     const onChangeSYandMonth = async (shoolYear: string, month: string) => {
-        if(attendance) return null
+        if (attendance) return null;
 
         setLoading(true);
         let syId = schoolyears.find((sy) => sy.schoolyear == shoolYear)!;
@@ -193,8 +199,13 @@ const Attendance: React.FC<AttendanceProps> = ({
     }, [watchSy, watchMonth, show, schoolyears]);
 
     return (
-        <Modal show={show} onClose={onClose} title="Attendance">
-            <Button variant="ghost" size="icon" className="absolute top-3 right-3" onClick={() => onClose(false)}>
+        <Modal show={show} onClose={onClose} title="Attendance" maxWidth="4xl">
+            <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-3 right-3"
+                onClick={() => onClose(false)}
+            >
                 <X />
             </Button>
 
@@ -221,7 +232,9 @@ const Attendance: React.FC<AttendanceProps> = ({
                                         )}
                                     </>
                                 }
-                                onValueChange={(value) => onChangeSYandMonth(value, sy.month)}
+                                onValueChange={(value) =>
+                                    onChangeSYandMonth(value, sy.month)
+                                }
                             />
                         </div>
                         <div className="w-36">
@@ -231,7 +244,9 @@ const Attendance: React.FC<AttendanceProps> = ({
                                 label="Month"
                                 required={false}
                                 disabled={!!attendance}
-                                onValueChange={(value) => onChangeSYandMonth(watchSy, value)}
+                                onValueChange={(value) =>
+                                    onChangeSYandMonth(watchSy, value)
+                                }
                                 items={
                                     <>
                                         {Array.from({ length: 12 }).map(
@@ -263,25 +278,37 @@ const Attendance: React.FC<AttendanceProps> = ({
                         </div>
                     </div>
 
-                    {
-                        loading ? (
-                            <div className="flex items-center justify-center py-10 gap-2">
-                                <span className="loading loading-spinner loading-md"></span>
-                                <span>Please wait...</span>
-                            </div>
-                        ) : (
-                            <div className="my-4 space-y-4">
-                                {fields.map((field, index) => (
-                                    <AttendanceRow
-                                        key={field.id}
-                                        form={form}
-                                        name={`attendances`}
-                                        index={index}
-                                    />
-                                ))}
-                            </div>
-                        )
-                    }
+                    {loading ? (
+                        <div className="flex items-center justify-center py-10 gap-2">
+                            <span className="loading loading-spinner loading-md"></span>
+                            <span>Please wait...</span>
+                        </div>
+                    ) : (
+                        <div className="divide-y border-border">
+                            <TableHeader
+                                style={{
+                                    gridTemplateColumns: isMobile
+                                        ? ColumnsMobile
+                                        : Columns,
+                                }}
+                                className="text-sm border-b-0 [&>div]:brea"
+                            >
+                                <div className="max-md:!hidden">Personnel</div>
+                                <div>No. of days present</div>
+                                <div>No. of days absent</div>
+                                <div>No. of time tardy</div>
+                                <div>No. of undertime</div>
+                            </TableHeader>
+                            {fields.map((field, index) => (
+                                <AttendanceRow
+                                    key={field.id}
+                                    form={form}
+                                    name={`attendances`}
+                                    index={index}
+                                />
+                            ))}
+                        </div>
+                    )}
 
                     <div className="border-t border-border flex items-center pt-3 mt-5">
                         <Button
@@ -307,42 +334,50 @@ type AttendanceRowProps = {
 };
 
 const AttendanceRow: React.FC<AttendanceRowProps> = ({ form, name, index }) => {
-    let count = index + 1;
+    const { isMobile } = useSidebar();
 
     return (
-        <Card>
-            <CardContent className="p-3 relative">
-                <div className="flex justify-between items-center">
-                    <div className="text-sm font-semibold">
-                        {count}.) {form.getValues(`${name}.${index}.user.name`)}
-                    </div>
+        <Card className="rounded-none border-0 shadow-none">
+            <CardContent className="relative m-0 p-0">
+                <div className="text-sm font-semibold md:!hidden pl-2 pt-1">
+                    {form.getValues(`${name}.${index}.user.name`)}
                 </div>
-                <div className="space-y-3 mt-3">
-                    <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-3">
+                    <TableRow
+                        style={{
+                            gridTemplateColumns: isMobile
+                                ? ColumnsMobile
+                                : Columns,
+                        }}
+                        className=""
+                    >
+                        <div className="text-sm font-semibold max-md:!hidden">
+                            {form.getValues(`${name}.${index}.user.name`)}
+                        </div>
                         <FormInput
                             form={form}
                             name={`${name}.${index}.present`}
-                            label="No. of days present"
+                            label=""
                         />
 
                         <FormInput
                             form={form}
                             name={`${name}.${index}.absent`}
-                            label="No. of days absent"
+                            label=""
                         />
 
                         <FormInput
                             form={form}
                             name={`${name}.${index}.timetardy`}
-                            label="No. of time tardy"
+                            label=""
                         />
 
                         <FormInput
                             form={form}
                             name={`${name}.${index}.undertime`}
-                            label="No. of undertime"
+                            label=""
                         />
-                    </div>
+                    </TableRow>
                 </div>
             </CardContent>
         </Card>

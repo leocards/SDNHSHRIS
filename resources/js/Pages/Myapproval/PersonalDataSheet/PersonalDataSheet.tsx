@@ -14,6 +14,9 @@ import TableDataSkeletonLoader from "@/Components/TableDataSkeletonLoader";
 import { ProfilePhoto } from "@/Components/ui/avatar";
 import { format } from "date-fns";
 import ViewPds from "@/Pages/PDS/ViewPds";
+import { Button } from "@/Components/ui/button";
+import { Eye } from "iconsax-react";
+import SearchInput from "@/Components/SearchInput";
 
 type PDSTYPE = {
     id: number;
@@ -64,10 +67,16 @@ const Main = () => {
                 </TabsList>
             </Tabs>
 
+            <div className="mb-4">
+                <SearchInput onSearch={(search) => {
+                    onQuery({ status, search });
+                }} />
+            </div>
+
             <Card className="min-h-[27rem] relative">
                 <TableDataSkeletonLoader
                     data="pds"
-                    columns={["1fr", "10rem"]}
+                    columns={["1fr", "10rem", "5rem"]}
                     length={8}
                 >
                     {(column) => (
@@ -77,6 +86,7 @@ const Main = () => {
                             >
                                 <div>Name</div>
                                 <div>Date modified</div>
+                                <div className="justify-center">View</div>
                             </TableHeader>
                             {page?.data?.length === 0 && (
                                 <Empty
@@ -88,11 +98,6 @@ const Main = () => {
                                 <TableRow
                                     key={index}
                                     style={{ gridTemplateColumns: column }}
-                                    role="button"
-                                    onClick={() => {
-                                        setUserid(pds.user.id)
-                                        setViewpds(true)
-                                    }}
                                 >
                                     <div className="gap-2">
                                         <ProfilePhoto src={pds?.user?.avatar} />
@@ -105,6 +110,18 @@ const Main = () => {
                                             new Date(pds?.updated_at),
                                             "MMM dd, yyyy"
                                         )}
+                                    </div>
+                                    <div className="justify-center">
+                                        <Button
+                                            size={"icon"}
+                                            variant={"outline"}
+                                            onClick={() => {
+                                                setUserid(pds.user.id);
+                                                setViewpds(true);
+                                            }}
+                                        >
+                                            <Eye />
+                                        </Button>
                                     </div>
                                 </TableRow>
                             ))}

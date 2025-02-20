@@ -2,7 +2,12 @@ import FilePondUploader from "@/Components/FilePondUploader";
 import Modal, { ModalProps } from "@/Components/Modal";
 import TypographySmall from "@/Components/Typography";
 import { Button } from "@/Components/ui/button";
-import { Form, FormCalendar, FormInput, FormSelect } from "@/Components/ui/form";
+import {
+    Form,
+    FormCalendar,
+    FormInput,
+    FormSelect,
+} from "@/Components/ui/form";
 import { SelectItem } from "@/Components/ui/select";
 import { useToast } from "@/Hooks/use-toast";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
@@ -10,10 +15,19 @@ import { cn } from "@/Lib/utils";
 import { requiredError } from "@/Types/types";
 import { Fragment, useEffect, useState } from "react";
 import { z } from "zod";
+import COCForm from "./COCPartial/COCForm";
+import { useFieldArray } from "react-hook-form";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Add } from "iconsax-react";
 
-const allowedMimeTypes = ["application/pdf", "image/jpeg", "image/jpg", "image/png"];
+export const allowedMimeTypes = [
+    "application/pdf",
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+];
 
-const COCSCHEMA = z
+const COC = z
     .object({
         name: z.string().optional().default(""),
         memofileid: z.number().nullable().default(null),
@@ -26,73 +40,94 @@ const COCSCHEMA = z
                 invalid_type_error: requiredError("session"),
             })
             .nullable(),
-        numofhours: z
-            .string()
-            .optional()
-            .default(""),
+        numofhours: z.string().optional().default(""),
     })
-    .superRefine(({ memofileid, coafileid, dtrfileid, from, to, session, numofhours }, ctx) => {
-        if (!memofileid) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: requiredError("MEMO"),
-                path: ["memofileid"],
-            });
-        }
-
-        if (!coafileid) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: requiredError("Certificate of Appearance"),
-                path: ["coafileid"],
-            });
-        }
-
-        if (!dtrfileid) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: requiredError("DTR"),
-                path: ["dtrfileid"],
-            });
-        }
-
-        if (!from) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: requiredError('"from"'),
-                path: ["from"],
-            });
-        }
-
-        if (to && from) {
-            from.setHours(0, 0, 0, 0);
-            to.setHours(0, 0, 0, 0);
-
-            if (to.getTime() === from.getTime()) {
+    .superRefine(
+        (
+            { memofileid, coafileid, dtrfileid, from, to, session, numofhours },
+            ctx
+        ) => {
+            if (!memofileid) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: "'from' and 'to' must not be the same.",
-                    path: ["to"],
+                    message: requiredError("MEMO"),
+                    path: ["memofileid"],
                 });
             }
 
-            if (to.getTime() < from.getTime()) {
+            if (!coafileid) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: "'to' must be ahead of 'from'.",
-                    path: ["to"],
+                    message: requiredError("Certificate of Appearance"),
+                    path: ["coafileid"],
                 });
             }
+
+            if (!dtrfileid) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: requiredError("DTR"),
+                    path: ["dtrfileid"],
+                });
+            }
+
+            if (!from) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: requiredError('"from"'),
+                    path: ["from"],
+                });
+            }
+
+            if (to && from) {
+                from.setHours(0, 0, 0, 0);
+                to.setHours(0, 0, 0, 0);
+
+                if (to.getTime() === from.getTime()) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: "'from' and 'to' must not be the same.",
+                        path: ["to"],
+                    });
+                }
+
+                if (to.getTime() < from.getTime()) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: "'to' must be ahead of 'from'.",
+                        path: ["to"],
+                    });
+                }
+            }
+
+            if(!session)
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: requiredError("session"),
+                    path: ["session"],
+                });
+
+            if (session === "halfday" && !numofhours)
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: requiredError("number of hours"),
+                    path: ["numofhours"],
+                });
         }
+    );
 
-        if(session === "halfday" && !numofhours)
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: requiredError("number of hours"),
-                path: ['numofhours']
-            })
+const defaultCOC = {
+    name: "",
+    memofileid: null,
+    coafileid: null,
+    dtrfileid: null,
+    from: null,
+    to: null,
+    numofhours: "",
+    session: null,
+};
 
-    });
+const COCSCHEMA = z.object({ coc: z.array(COC) });
 
 type IFormCOC = z.infer<typeof COCSCHEMA>;
 
@@ -100,21 +135,12 @@ type Props = ModalProps;
 
 const NewCOC: React.FC<Props> = ({ show, onClose }) => {
     const { toast } = useToast();
-    const [errors, setErrors] = useState<any>(null);
 
     const form = useFormSubmit<IFormCOC>({
         route: route("sr.store.coc"),
         method: "post",
         schema: COCSCHEMA,
-        defaultValues: {
-            name: "",
-            memofileid: null,
-            coafileid: null,
-            dtrfileid: null,
-            from: null,
-            to: null,
-            numofhours: "",
-        },
+        defaultValues: { coc: [defaultCOC] },
         async: true,
         callback: {
             onSuccess: (page: any) => {
@@ -145,15 +171,10 @@ const NewCOC: React.FC<Props> = ({ show, onClose }) => {
         },
     });
 
-    const watchSession = form.watch('session')
-
-    useEffect(() => {
-        if(watchSession === "halfday") {
-            form.setValue('to', null)
-        } else if(watchSession === "fullday") {
-            form.setValue('numofhours', '')
-        }
-    }, [watchSession])
+    const { fields, append, remove } = useFieldArray({
+        control: form.control,
+        name: "coc",
+    });
 
     useEffect(() => {
         if (!show) {
@@ -163,168 +184,26 @@ const NewCOC: React.FC<Props> = ({ show, onClose }) => {
         }
     }, [show]);
 
-    useEffect(() => {
-        const formErrors = form.formState.errors;
-
-        if (formErrors) {
-            setErrors(formErrors);
-        }
-    }, [form.formState.errors]);
-
     return (
         <Modal show={show} onClose={onClose} title="Upload COC">
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
                     <div className="space-y-4">
-                        <FormInput
-                            form={form}
-                            name="name"
-                            label="Name/Title"
-                            required={false}
-                            placeholder="(Optional)"
-                        />
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormCalendar
-                                form={form}
-                                name="from"
-                                label="From"
-                            />
-                            <FormCalendar
-                                form={form}
-                                name="to"
-                                label="To"
-                                required={false}
-                                disabled={watchSession === "halfday"}
-                                triggerClass="disabled:opacity-100 disabled:text-foreground/20"
-                            />
-                            <FormSelect
-                                form={form}
-                                name={`session`}
-                                label="Session"
-                                displayValue={(watchSession === "halfday" ? "Half-day":!watchSession ? "" :"Whole-day")}
-                                items={
-                                    <Fragment>
-                                        <SelectItem value="halfday" children="Half-day" />
-                                        <SelectItem value="fullday" children="Whole-day" />
-                                    </Fragment>
-                                }
-                            />
-                            <FormInput
-                                form={form}
-                                name="numofhours"
-                                label="Number of hours"
-                                required={watchSession === "halfday"}
-                                disabled={watchSession === "fullday" || !watchSession}
-                            />
-                        </div>
+                        {fields.map((field, index) => (
+                            <COCForm key={field.id} form={form} index={index} />
+                        ))}
+                    </div>
 
-                        <div className="space-y-2">
-                            <TypographySmall
-                                className={cn(
-                                    "required",
-                                    errors?.coafileid && "text-destructive"
-                                )}
-                            >
-                                Certificate of Appearance
-                            </TypographySmall>
-                            <FilePondUploader
-                                route={route("sr.temporary")}
-                                mimetypes={allowedMimeTypes}
-                                handleLoad={(id) => {
-                                    form.setValue("coafileid", id, {
-                                        shouldDirty: true,
-                                        shouldValidate: true,
-                                    });
-                                }}
-                                handleRemove={() => {
-                                    form.setValue("coafileid", null, {
-                                        shouldDirty: true,
-                                        shouldValidate: true,
-                                    });
-                                }}
-                            />
-                            {errors?.coafileid && (
-                                <TypographySmall
-                                    className={cn(
-                                        "text-[0.8rem] text-destructive"
-                                    )}
-                                >
-                                    {errors?.coafileid?.message}
-                                </TypographySmall>
-                            )}
-                        </div>
-
-                        <div className="space-y-2">
-                            <TypographySmall
-                                className={cn(
-                                    "required",
-                                    errors?.dtrfileid && "text-destructive"
-                                )}
-                            >
-                                DTR
-                            </TypographySmall>
-                            <FilePondUploader
-                                route={route("sr.temporary")}
-                                mimetypes={allowedMimeTypes}
-                                handleLoad={(id) => {
-                                    form.setValue("dtrfileid", id, {
-                                        shouldDirty: true,
-                                        shouldValidate: true,
-                                    });
-                                }}
-                                handleRemove={() => {
-                                    form.setValue("dtrfileid", null, {
-                                        shouldDirty: true,
-                                        shouldValidate: true,
-                                    });
-                                }}
-                            />
-                            {errors?.dtrfileid && (
-                                <TypographySmall
-                                    className={cn(
-                                        "text-[0.8rem] text-destructive"
-                                    )}
-                                >
-                                    {errors?.dtrfileid?.message}
-                                </TypographySmall>
-                            )}
-                        </div>
-
-                        <div className="space-y-2">
-                            <TypographySmall
-                                className={cn(
-                                    "required",
-                                    errors?.memofileid && "text-destructive"
-                                )}
-                            >
-                                MEMO
-                            </TypographySmall>
-                            <FilePondUploader
-                                route={route("sr.temporary")}
-                                mimetypes={allowedMimeTypes}
-                                handleLoad={(id) => {
-                                    form.setValue("memofileid", id, {
-                                        shouldDirty: true,
-                                        shouldValidate: true,
-                                    });
-                                }}
-                                handleRemove={() => {
-                                    form.setValue("memofileid", null, {
-                                        shouldDirty: true,
-                                        shouldValidate: true,
-                                    });
-                                }}
-                            />
-                            {errors?.memofileid && (
-                                <TypographySmall
-                                    className={cn(
-                                        "text-[0.8rem] text-destructive"
-                                    )}
-                                >
-                                    {errors?.memofileid?.message}
-                                </TypographySmall>
-                            )}
-                        </div>
+                    <div className="mt-4">
+                        <Button
+                            type="button"
+                            variant={"outline"}
+                            className="border-dashed w-full border-2 shadow-none"
+                            onClick={() => append(defaultCOC)}
+                        >
+                            <Add className="" />
+                            <span>New row</span>
+                        </Button>
                     </div>
 
                     <div className="mt-7 pt-4 flex items-center gap-4 border-t border-border">

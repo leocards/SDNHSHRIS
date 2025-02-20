@@ -62,7 +62,7 @@ const GenderDemographic = ({
                         <div className="text-sm font-medium text-foreground/50">No available data to visualize.</div>
                     </div>
                 </div> : (
-                    <ChartContainer config={chartConfig} className="my-auto">
+                    <ChartContainer config={chartConfig} className="my-auto h-[200px] w-full">
                         <BarChart accessibilityLayer data={chartData}>
                             <CartesianGrid vertical={false} />
                             <XAxis

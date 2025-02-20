@@ -42,18 +42,18 @@ class DashboardController extends Controller
                     ->count()
             ]),
             "activeleave" => Leave::with('user')
-            ->when($user->role != "hr", function ($query) {
-                $query->where('user_id', Auth::id());
-            })
-            ->where('principalstatus', 'approved')
-            ->where('hrstatus', 'approved')
-            ->where(function ($query) {
-                $query->whereDate('from', '<=', Carbon::now()->format('Y-m-d'))
-                    ->whereDate('to', '>=', Carbon::now()->format('Y-m-d'))
-                    ->orWhereDate('from', '>=', Carbon::now()->format('Y-m-d'))
-                    ->whereNull('to');
-            })
-            ->get(['id', 'user_id', 'type', 'from', 'to']),
+                ->when($user->role != "hr", function ($query) {
+                    $query->where('user_id', Auth::id());
+                })
+                ->where('principalstatus', 'approved')
+                ->where('hrstatus', 'approved')
+                ->where(function ($query) {
+                    $query->whereDate('from', '<=', Carbon::now()->format('Y-m-d'))
+                        ->whereDate('to', '>=', Carbon::now()->format('Y-m-d'))
+                        ->orWhereDate('from', '>=', Carbon::now()->format('Y-m-d'))
+                        ->whereNull('to');
+                })
+                ->get(['id', 'user_id', 'type', 'from', 'to']),
             "announcements" => Announcement::all(),
             "schoolyears" => SchoolYear::all(),
             "personnelperformance" => $user->role === 'hr' ? [] : IpcrReport::with('schoolyear')
@@ -94,12 +94,12 @@ class DashboardController extends Controller
                     ->get()
             ]) : null,
             "servicecredits" => ServiceRecord::where('user_id', Auth::id())
-                    ->where('status', 'approved')
-                    ->where('details->creditstatus', 'pending')
-                    ->get()
-                    ->reduce(function ($carry, $item) {
-                        return $carry + $item->details['remainingcredits'];
-                    }, 0)
+                ->where('status', 'approved')
+                ->where('details->creditstatus', 'pending')
+                ->get()
+                ->reduce(function ($carry, $item) {
+                    return $carry + $item->details['remainingcredits'];
+                }, 0)
         ]);
     }
 

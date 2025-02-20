@@ -82,7 +82,7 @@ const SideNavigationBar = () => {
                         <div
                             className={cn(
                                 "grow pl-4 text-nowrap overflow-x-hidden",
-                                state == "collapsed" && "hidden"
+                                (state == "collapsed" && !isMobile) && "hidden"
                             )}
                         >
                             SDNHS - HRIS
@@ -110,7 +110,7 @@ const SideNavigationBar = () => {
                                 />
                                 <span
                                     className={cn(
-                                        state == "collapsed" && "hidden"
+                                        (state == "collapsed" && !isMobile) && "hidden"
                                     )}
                                 >
                                     General Search
@@ -136,7 +136,7 @@ const SideNavigationBar = () => {
                                 />
                                 <span
                                     className={cn(
-                                        state == "collapsed" && "hidden"
+                                        (state == "collapsed" && !isMobile) && "hidden"
                                     )}
                                 >
                                     Dashboard
@@ -165,7 +165,7 @@ const SideNavigationBar = () => {
                                     />
                                     <span
                                         className={cn(
-                                            state == "collapsed" && "hidden"
+                                            (state == "collapsed" && !isMobile) && "hidden"
                                         )}
                                     >
                                         Personnel
@@ -327,7 +327,7 @@ const SideNavigationBar = () => {
                                     />
                                     <span
                                         className={cn(
-                                            state == "collapsed" && "hidden",
+                                            (state == "collapsed" && !isMobile) && "hidden",
                                             "text-nowrap"
                                         )}
                                     >
@@ -468,7 +468,7 @@ const SideNavigationBar = () => {
                                     />
                                     <span
                                         className={cn(
-                                            state == "collapsed" && "hidden",
+                                            (state == "collapsed" && !isMobile) && "hidden",
                                             "text-nowrap"
                                         )}
                                     >
@@ -609,7 +609,7 @@ const SideNavigationBar = () => {
                                 />
                                 <span
                                     className={cn(
-                                        state == "collapsed" && "hidden"
+                                        (state == "collapsed" && !isMobile) && "hidden"
                                     )}
                                 >
                                     Personal Data Sheet
@@ -638,7 +638,7 @@ const SideNavigationBar = () => {
                                 />
                                 <span
                                     className={cn(
-                                        state == "collapsed" && "hidden"
+                                        (state == "collapsed" && !isMobile) && "hidden"
                                     )}
                                 >
                                     Service Record
@@ -663,7 +663,7 @@ const SideNavigationBar = () => {
                                 />
                                 <span
                                     className={cn(
-                                        state == "collapsed" && "hidden"
+                                        (state == "collapsed" && !isMobile) && "hidden"
                                     )}
                                 >
                                     Tardiness
@@ -690,7 +690,7 @@ const SideNavigationBar = () => {
                                 />
                                 <span
                                     className={cn(
-                                        state == "collapsed" && "hidden"
+                                        (state == "collapsed" && !isMobile) && "hidden"
                                     )}
                                 >
                                     {props.auth.user.role === "principal" &&
@@ -719,7 +719,7 @@ const SideNavigationBar = () => {
                                 />
                                 <span
                                     className={cn(
-                                        state == "collapsed" && "hidden"
+                                        (state == "collapsed" && !isMobile) && "hidden"
                                     )}
                                 >
                                     SALN

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('schoolyearid')->constrained('school_years')->onDelete('cascade');
-            // $table->foreignId('hr_id')->constrained('users')->onDelete('cascade');
-            // $table->foreignId('principal_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('hr_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('principal_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->date('filingfrom');
             $table->date('filingto')->nullable();
             $table->string('salary', 20)->nullable();
@@ -48,6 +48,7 @@ return new class extends Migration
             $table->enum('details', ['vphilippines', 'vabroad', 'shospital', 'spatient', 'degree', 'examreview', 'monitization', 'terminal']);
             $table->string('detailsinput', 1000)->nullable();
             $table->boolean('notifiedDueMedical')->nullable();
+            $table->json('approvedfor')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

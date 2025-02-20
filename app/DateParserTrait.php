@@ -8,6 +8,6 @@ trait DateParserTrait
 {
     public function parseDate(string $date): string
     {
-        return Carbon::parse($date)->toDateString();
+        return Carbon::parse($date, "Asia/Manila")->toDateString();
     }
 }

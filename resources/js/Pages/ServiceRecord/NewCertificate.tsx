@@ -15,6 +15,7 @@ import TypographySmall from "@/Components/Typography";
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 import { SelectItem } from "@/Components/ui/select";
+import { cn } from "@/Lib/utils";
 
 const allowedMimeTypes = [
     "application/pdf",
@@ -243,7 +244,7 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
     }, [watchSession])
 
     return (
-        <div className="relative p-4 border border-border rounded-md space-y-3">
+        <div className={cn("relative p-4 border border-border rounded-md space-y-3", form.formState.errors?.sr?.[0] && "!border-destructive")}>
             <Button
                 type="button"
                 variant="outline"
@@ -330,8 +331,7 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
                     onremovefile={handleFilePondRemove}
                 />
                 {
-                    (form.formState.errors && form.formState.errors.sr &&
-                    form.formState.errors.sr[index].fileid) && (
+                    (form.formState.errors?.sr?.[index]?.fileid) && (
                         <TypographySmall className="text-destructive font-medium">{form.formState.errors.sr[index].fileid.message}</TypographySmall>
                     )
                 }

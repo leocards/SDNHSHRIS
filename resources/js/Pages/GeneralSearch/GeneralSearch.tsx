@@ -16,6 +16,7 @@ import { router } from "@inertiajs/react";
 import { SearchNormal1 } from "iconsax-react";
 import { X } from "lucide-react";
 import React, { Fragment, useEffect, useRef, useState } from "react";
+import empty from "@/Assets/empty-personnel.svg";
 
 type GENERALSEARCHTYPE = User & { sr: number | null};
 
@@ -94,6 +95,17 @@ const Main = () => {
                                 <div className="justify-center">Credits</div>
                                 <div></div>
                             </TableHeader>
+                            {page?.data.length === 0 && (
+                                <div className="flex flex-col items-center absolute inset-0 justify-center">
+                                    <img
+                                        className="size-24 opacity-40 dark:opacity-65"
+                                        src={empty}
+                                    />
+                                    <div className="text-sm font-medium text-foreground/50 mt-1 text-center">
+                                        No available personnel data.
+                                    </div>
+                                </div>
+                            )}
                             {page?.data?.map((data, index) => (
                                 <TableRow
                                     key={index}

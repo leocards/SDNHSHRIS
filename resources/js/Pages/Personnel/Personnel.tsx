@@ -46,6 +46,7 @@ import {
 import ImportExcelPds from "./ImportExcelPds";
 import ViewDetails from "./ViewDetails";
 import PersonnelConfirmation from "./PersonnelConfirmation";
+import empty from "@/Assets/empty-personnel.svg";
 
 type PersonnelProps = {
     personneltype: "teaching" | "non-teaching";
@@ -54,8 +55,14 @@ type PersonnelProps = {
     accounting: number;
 };
 
+type PersonnelType = User & {
+    pds_excel: {
+        id: number; user_id: number; file: string | null
+    } | null
+}
+
 const Personnel: React.FC<
-    PersonnelProps & { personnels: PAGINATEDDATA<User> }
+    PersonnelProps & { personnels: PAGINATEDDATA<PersonnelType> }
 > = (props) => {
     return (
         <PaginateProvider<User>
@@ -74,7 +81,10 @@ const Main: React.FC<PersonnelProps> = ({
     accounting,
 }) => {
     const role = usePage().props.auth.user.role;
-    const { page, onQuery } = usePagination<User>();
+    const { page, onQuery } = usePagination<User & {
+        pds_excel: {
+            id: number; user_id: number; file: string | null
+        } | null }>();
     const { setProcess } = useProcessIndicator();
     const [filter, setFilter] = useState<any>(undefined);
     const [{ sort, order }, setSortOrder] = useState<{
@@ -195,7 +205,7 @@ const Main: React.FC<PersonnelProps> = ({
                 )}
             </div>
 
-            <Card className="min-h-[26rem]">
+            <Card className="min-h-[26rem] relative">
                 <TableDataSkeletonLoader
                     data="personnels"
                     columns={[
@@ -220,6 +230,17 @@ const Main: React.FC<PersonnelProps> = ({
                                 <div>Credits</div>
                                 <div></div>
                             </TableHeader>
+                            {page?.data.length === 0 && (
+                                <div className="flex flex-col items-center absolute inset-0 justify-center">
+                                    <img
+                                        className="size-24 opacity-40 dark:opacity-65"
+                                        src={empty}
+                                    />
+                                    <div className="text-sm font-medium text-foreground/50 mt-1 text-center">
+                                        No available personnel data.
+                                    </div>
+                                </div>
+                            )}
                             {page?.data.map((personnel, index) => (
                                 <ListRow
                                     key={index}
@@ -272,7 +293,7 @@ const Main: React.FC<PersonnelProps> = ({
 };
 
 interface ListRowProps extends HTMLAttributes<HTMLDivElement> {
-    user: User;
+    user: PersonnelType;
     pt: "teaching" | "non-teaching";
     onImportPds: CallableFunction;
     onPreselect: CallableFunction;
@@ -419,7 +440,12 @@ const ListRow: React.FC<ListRowProps> = ({
 
                                     <MenubarItem
                                         className="pl-2 flex items-center gap-2"
-                                        onClick={() => onImportPds()}
+                                        onClick={() => {
+                                            if(!user.pds_excel?.file)
+                                                onImportPds()
+
+                                        }}
+                                        disabled={!!user.pds_excel?.file}
                                     >
                                         <DocumentUpload className="size-5" />
                                         <span>Upload PDS</span>

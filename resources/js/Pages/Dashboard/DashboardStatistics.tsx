@@ -38,7 +38,7 @@ const DashboardStatistics = ({
                 role === "hr" || role === "teaching"
                     ? state === "collapsed" || isMobile
                     ? "grid-cols-4 [@media(max-width:755px)]:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]"
-                    : "grid-cols-4 [@media(max-width:1300px)]:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]"
+                    : "grid-cols-4 [@media(max-width:1162px)]:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]"
                     : (state === "collapsed" || isMobile
                     ? "grid-cols-5 [@media(max-width:755px)]:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]"
                     : "grid-cols-5 [@media(max-width:1300px)]:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]")

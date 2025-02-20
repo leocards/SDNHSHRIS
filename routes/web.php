@@ -110,6 +110,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('saln')->middleware(['role:hr'])->group(function () {
             Route::controller(SalnController::class)->group(function () {
                 Route::get('/', 'index')->name('myapproval.saln');
+                Route::get('/view/{saln?}', 'view')->name('myapproval.saln.view');
 
                 Route::post('/approval/{saln}', 'approveSaln')->name('myapproval.saln.approval');
             });

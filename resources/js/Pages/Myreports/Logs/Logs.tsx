@@ -280,7 +280,7 @@ const PDSData = ({ column, onView }: { column: string; onView: CallableFunction 
                 </TypographyStatus>
             </div>
             <div className="justify-center">
-                {format(log.created_at, "MMM dd, y hh:ii aaa")}
+                {format(log.created_at, "MMMM dd, y")}
             </div>
             <div className="justify-center">
                 <Button variant="outline" size="icon" className="size-7" onClick={() => onView(log.details.userid)}>
@@ -316,7 +316,7 @@ const LeaveData = ({ column, onView }: { column: string; onView?: CallableFuncti
                 </TypographyStatus>
             </div>
             <div className="justify-center">
-                {format(log.created_at, "MMM dd, y hh:ii aaa")}
+                {format(log.created_at, "MMMM dd, y")}
             </div>
             <div className="justify-center">
                 <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.leaveid)}>
@@ -352,7 +352,7 @@ const COCData = ({ column, onView }: { column: string; onView?: CallableFunction
                 </TypographyStatus>
             </div>
             <div className="justify-center">
-                {format(log.created_at, "MMM dd, y hh:ii aaa")}
+                {format(log.created_at, "MMMM dd, y")}
             </div>
             <div className="justify-center">
                 <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.cocid)}>
@@ -388,7 +388,7 @@ const CertificateData = ({ column, onView }: { column: string; onView?: Callable
                 </TypographyStatus>
             </div>
             <div className="justify-center">
-                {format(log.created_at, "MMM dd, y hh:ii aaa")}
+                {format(log.created_at, "MMMM dd, y")}
             </div>
             <div className="justify-center">
                 <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.certificateid)}>

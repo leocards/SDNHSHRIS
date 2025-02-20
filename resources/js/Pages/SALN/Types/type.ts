@@ -30,7 +30,12 @@ const SALNSCHEMA = z.object({
                 assessedvalue: z.string().default(''),
                 currentfairmarketvalue: z.string().default(''),
                 acquisition: z.object({
-                    year: z.string().length(4, 'Must be 4 characters representing a year.').default(''),
+                    year: z.string().refine(
+                        (value) => value.toLowerCase() === 'n/a' || /^\d{4}$/.test(value),
+                        {
+                            message: 'Must be 4 characters representing a year or "N/A".',
+                        }
+                    ).default(''),
                     mode: z.string().default(''),
                 }).partial(),
                 acquisitioncost: z.string().default('')
@@ -262,7 +267,7 @@ export type SALNTYPE = {
     }
     date: string
     isjoint: 'joint' | 'separate' | 'not'
-    status: 'approved' | 'peding'
+    status: 'approved' | 'pending' | 'disapproved'
     created_at: string
     updated_at: string
 }
@@ -339,14 +344,14 @@ export type SALNTPRINTYPE = {
         issued: string
     }
     pages: Array<PAGE>
-    address: string|null
+    address: string | null
 }
 
 export type PAGE = {
     children: Array<{
         name: string
         dateofbirth: string
-    }>|null
+    }> | null
     real: SALNTYPE['assets']['real']
     personal: SALNTYPE['assets']['personal']
     liabilities: SALNTYPE['liabilities']

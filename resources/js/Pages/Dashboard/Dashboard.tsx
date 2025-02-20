@@ -51,7 +51,7 @@ function Dashboard({
         time: format(new Date(), "hh:mm aaa"),
     });
 
-    const { state } = useSidebar()
+    const { state, isMobile } = useSidebar()
 
     useEffect(() => {
         let timeInterval = Math.abs((new Date().getSeconds() - 60) * 1000);
@@ -95,8 +95,9 @@ function Dashboard({
 
             <div
                 className={cn(
-                    "grid-cols-1 sm:grid-cols-[25rem,1fr] gap-4 mt-4 [&>div]:h-[26rem]",
-                    user.role == "hr" ? "grid" : "hidden"
+                    "grid-cols-1 gap-4 mt-4 [&>div]:h-[26rem]",
+                    user.role == "hr" ? "grid" : "hidden",
+                    state === "collapsed" || isMobile ? "[@media(min-width:990px)]:grid-cols-[25rem,1fr]" : "[@media(min-width:1160px)]:grid-cols-[25rem,1fr]"
                 )}
             >
                 <GenderDemographic gender={genderProportion} />

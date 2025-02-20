@@ -32,12 +32,16 @@ class LeaveController extends Controller
         $approvalLeave = $request->is('myapproval*');
 
         $leaves = Leave::when($role == "hr", function ($query) use ($status, $search) {
-                $query->with(['user' => function ($query) {
-                    $query->withoutGlobalScopes();
+                $query->with(['user' => function ($query) use ($status) {
+                    $query->when($status !== "pending", function ($query) {
+                        $query->withoutGlobalScopes();
+                    });
                 }])
                 ->where('hrstatus', $status)
-                ->whereHas('user', function ($query) use ($search) {
-                    $query->withoutGlobalScopes()
+                ->whereHas('user', function ($query) use ($search, $status) {
+                    $query->when($status !== "pending", function ($query) {
+                        $query->withoutGlobalScopes();
+                    })
                     ->where(function ($query) use ($search) {
                         $query->where('firstname', 'LIKE', "%$search%")
                             ->orWhere('lastname', 'LIKE', "%$search%")
@@ -273,9 +277,9 @@ class LeaveController extends Controller
 
         return Inertia::render('Leave/LeaveView', [
             'leave' => $leave,
-            'hr' => User::where('role', 'hr')->first()->name,
+            'hr' => User::where('id', $leave->hr_id)->first()->name,
             'applicant' => $leave->userWithoutScopes()->first()->only(['name', 'full_name', 'role']),
-            'principal' => User::where('role', 'principal')->first()?->only(['name', 'full_name', 'position'])
+            'principal' => User::where('id', $leave->principal_id)->first()?->only(['name', 'full_name', 'position'])
         ]);
     }
 
@@ -291,12 +295,10 @@ class LeaveController extends Controller
             $auth = $request->user();
             $leaveApplicant = $leave->user;
 
-            // dd($leaveApplicant);
-
             if ($auth->role == 'hr') {
                 $leave->hrstatus = $request->response;
                 $leave->hrdisapprovedmsg = $request->message;
-                // $leave->hr_id = $auth->id;
+                $leave->hr_id = $auth->id;
 
                 // deduct credits for principal that applies leave
                 if ($leave->user->role === "principal") {
@@ -305,7 +307,7 @@ class LeaveController extends Controller
             } else if ($auth->role == 'principal') {
                 $leave->principalstatus = $request->response;
                 $leave->principaldisapprovedmsg = $request->message;
-                // $leave->principal_id = $auth->id;
+                $leave->principal_id = $auth->id;
 
                 if ($leave->type !== "maternity" && $request->response == "approved") {
                     $this->processCreditDeduction($leaveApplicant, $leave);
@@ -354,99 +356,103 @@ class LeaveController extends Controller
 
     function processCreditDeduction(User $user, Leave $leave)
     {
+
+        $approvedfor = collect([]);
+
         if ($user->role === "teaching") {
             $sr = $user->serviceRecord()
                 ->where('status', 'approved')
                 ->where('details->creditstatus', 'pending')
                 ->get();
 
-            $credits = $leave->daysapplied;
+            $daysapplied = $leave->daysapplied;
+            $usercredits = $user->credits - $daysapplied;
+
+            $approvedfor['dayswithpay'] = $user->credits >= $daysapplied ? $daysapplied :  abs($daysapplied - abs($usercredits));
+            $approvedfor['dayswithoutpay'] = $user->credits >= $daysapplied ? 0 : abs($usercredits);
+
+            $leave->approvedfor = $approvedfor;
+
+            $user->credits = $usercredits > 0 ? $usercredits : 0;
+            $user->save();
 
             foreach ($sr as $value) {
-                $details = $value->details;
+                // get the service records details
+                $srdetails = $value->details;
 
-                $srcredit = $details['remainingcredits'];
-                $credits = $srcredit - $credits;
+                $srcredit = $srdetails['remainingcredits'];
 
-                if ($credits < 0) {
-                    $details['remainingcredits'] = 0;
-                    $details['creditstatus'] = "used";
-                    $value->details = $details;
-                    $value->save();
-                } else if ($credits === 0) {
-                    $details['remainingcredits'] = 0;
-                    $details['creditstatus'] = "used";
-                    $value->details = $details;
-                    $value->save();
+                // get the remaining days applied
+                $remaindaysapplied = $srcredit >= abs($daysapplied) ? 0 : ($srcredit - abs($daysapplied));
 
-                    $user->credits = 0;
-                    $user->save();
-
-                    break;
-                } else {
-                    $details['remainingcredits'] = $credits;
-                    $details['creditstatus'] = "pending";
-                    $value->details = $details;
+                if($remaindaysapplied <= 0){
+                    // update the remaining credits of service record
+                    $srdetails['remainingcredits'] = ($srcredit - abs($daysapplied)) <= 0 ? 0 : ($srcredit - abs($daysapplied));
+                    $srdetails['creditstatus'] = ($srcredit - abs($daysapplied)) <= 0 ? "used" : "pending";
+                    $value->details = $srdetails;
                     $value->save();
 
-                    $user->credits = $user->credits - $leave->daysapplied;
-                    $user->save();
+                    $daysapplied = $remaindaysapplied;
 
-                    break;
+                    if($daysapplied === 0) break;
                 }
             }
-
-            $user->save();
         } else {
             if ($leave->type === "spl") {
+                $approvedfor['dayswithpay'] = $leave->daysapplied;
+                $approvedfor['dayswithoutpay'] = 0;
+                $leave->approvedfor = $approvedfor;
+
                 $user->splcredits = $user->splcredits - $leave->daysapplied;
                 $user->save();
             } else {
-                $remaincredit = $user->credits - $leave->daysapplied;
+                $daysapplied = $leave->daysapplied;
+                $usercredit = $user->credits - $daysapplied;
 
-                if ($remaincredit < 0) {
-                    // use credits
+                // get the remaining days applied (positive value)
+                $daysapplied = $usercredit < 0 ? abs($usercredit) : 0;
+
+                if ($usercredit < 0) {
+                    // use service credits
                     $sr = $user->serviceRecord()
                         ->where('status', 'approved')
                         ->where('details->creditstatus', 'pending')
                         ->get();
 
-                    $totalremain = $remaincredit;
+                    $approvedfor['dayswithpay'] = $user->credits >= $daysapplied ? $daysapplied :  abs($daysapplied - abs($usercredit));
+                    $approvedfor['dayswithoutpay'] = $user->credits >= $daysapplied ? 0 : abs($usercredit);
+
+                    $leave->approvedfor = $approvedfor;
+
+                    $user->credits = $usercredit > 0 ? $usercredit : 0;
+                    $user->save();
 
                     foreach ($sr as $value) {
                         $details = $value->details;
+
                         $srcredit = $value->details['remainingcredits'];
-                        $totalremain = $srcredit + $totalremain;
 
-                        if ($totalremain < 0) {
-                            $details['remainingcredits'] = 0;
-                            $details['creditstatus'] = "used";
-                            $value->details = $details;
-                            $value->save();
-                        } else if ($totalremain === 0) {
-                            $details['remainingcredits'] = 0;
-                            $details['creditstatus'] = "used";
-                            $value->details = $details;
-                            $value->save();
+                        // get the remaining days applied
+                        $remaindaysapplied = $srcredit >= abs($daysapplied) ? 0 : ($srcredit - abs($daysapplied));
 
-                            $user->credits = 0;
-                            $user->save();
-
-                            break;
-                        } else {
-                            $details['remainingcredits'] = $totalremain;
-                            $details['creditstatus'] = "pending";
+                        if($remaindaysapplied <= 0) {
+                            $srremaincredit = $srcredit - abs($daysapplied);
+                            $details['remainingcredits'] = $srremaincredit > 0 ? $srremaincredit : 0;
+                            $details['creditstatus'] = $srremaincredit > 0 ? "pending" : "used";
                             $value->details = $details;
                             $value->save();
 
-                            $user->credits = 0;
-                            $user->save();
+                            if($remaindaysapplied === 0) break;
 
-                            break;
+                            $daysapplied = abs($remaindaysapplied);
                         }
                     }
                 } else {
-                    $user->credits = $remaincredit;
+                    $approvedfor['dayswithpay'] = $leave->daysapplied;
+                    $approvedfor['dayswithoutpay'] = 0;
+                    $leave->approvedfor = $approvedfor;
+
+                    $user->credits = $usercredit;
                     $user->save();
                 }
             }

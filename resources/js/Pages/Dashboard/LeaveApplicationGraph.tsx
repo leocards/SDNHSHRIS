@@ -42,9 +42,9 @@ const LeaveApplicationGraph = ({ leave, schoolyears }: Props) => {
     const [loading, setLoading] = useState(false);
 
     const Leaves = useMemo(() => {
-        if (leave?.appliedleaves) {
+        if (leavegraph?.appliedleaves) {
             const appliedLeaves = LEAVETYPEKEYSARRAY.filter((l) =>
-                leave?.appliedleaves.some((ap) => ap.type == l)
+                leavegraph?.appliedleaves.some((ap) => ap.type == l)
             );
 
             const leaveData = appliedLeaves.map((type, index) => ({
@@ -70,14 +70,14 @@ const LeaveApplicationGraph = ({ leave, schoolyears }: Props) => {
                 });
             };
 
-            updateLeaveData(leave.approved);
-            updateLeaveData(leave.disapproved, true);
+            updateLeaveData(leavegraph.approved);
+            updateLeaveData(leavegraph.disapproved, true);
 
             return leaveData;
         } else {
             return [];
         }
-    }, [leave]);
+    }, [leave, leavegraph]);
 
     const chartConfig = {
         approved: {
@@ -94,15 +94,17 @@ const LeaveApplicationGraph = ({ leave, schoolyears }: Props) => {
         if (filter !== schoolyear?.schoolyear) {
             const sy = schoolyears.find((sy) => sy.schoolyear === filter);
 
-            setLoading(true);
-            window.axios
-                .get(route("", [sy?.id]))
-                .then((response) => {
-                    const data = response.data;
+            if(sy) {
+                setLoading(true);
+                window.axios
+                    .get(route("dashboard.leaveapplication", [sy?.id]))
+                    .then((response) => {
+                        const data = response.data;
 
-                    setLeavegraph(data);
-                })
-                .finally(() => setLoading(false));
+                        setLeavegraph(data);
+                    })
+                    .finally(() => setLoading(false));
+            }
         } else {
             setLeavegraph(leave);
         }
@@ -137,6 +139,7 @@ const LeaveApplicationGraph = ({ leave, schoolyears }: Props) => {
                                 value={sy?.schoolyear}
                                 key={index}
                                 onClick={setFilter}
+                                activeFilter={filter}
                             >
                                 {sy?.schoolyear}
                             </FilterItem>
@@ -145,7 +148,7 @@ const LeaveApplicationGraph = ({ leave, schoolyears }: Props) => {
                 </div>
             </CardHeader>
             <CardContent className="p-2 overflow-y-auto relative">
-                {!leavegraph ? (
+                {leavegraph?.appliedleaves.length == 0 ? (
                     <div className="flex flex-col items-center absolute inset-0 justify-center">
                         <img
                             className="size-24 opacity-40 dark:opacity-65"
@@ -239,7 +242,7 @@ const LeaveApplicationGraph = ({ leave, schoolyears }: Props) => {
                 )}
             </CardContent>
             <CardFooter className="border-t p-2">
-                {[...leave.appliedleaves].map((leave, index) => (
+                {[...leavegraph?.appliedleaves??[]].map((leave, index) => (
                     <div key={index} className="flex items-center text-sm m-1 border p-1 px-1.5 rounded shadow-sm">
                         <div className="min-w-8 font-semibold">L{1 + index} - </div>
                         <div className="">{LEAVETYPESOBJ[leave.type]}</div>

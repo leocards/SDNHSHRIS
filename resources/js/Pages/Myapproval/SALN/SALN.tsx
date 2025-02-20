@@ -14,10 +14,10 @@ import { SALNTYPE } from "@/Pages/SALN/Types/type";
 import TableDataSkeletonLoader from "@/Components/TableDataSkeletonLoader";
 import { Button } from "@/Components/ui/button";
 import { format } from "date-fns";
+import { Eye } from "iconsax-react";
 import { router } from "@inertiajs/react";
 import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
-import TypographySmall from "@/Components/Typography";
-import { useToast } from "@/Hooks/use-toast";
+import SearchInput from "@/Components/SearchInput";
 
 type HRSALNTYPE = SALNTYPE & {
     user: User;
@@ -38,24 +38,6 @@ const Main = () => {
     const { page, onQuery } = usePagination<HRSALNTYPE>();
     const [status, setStatus] = useState("pending");
     const { setProcess } = useProcessIndicator();
-    const { toast } = useToast();
-
-    const onApprove = (id: number) => {
-        router.post(
-            route("myapproval.saln.approval", [id]),
-            {},
-            {
-                onBefore: () => setProcess(true),
-                onSuccess: (page) => {
-                    toast({
-                        title: page.props.flash.title,
-                        description: page.props.flash.message,
-                        status: page.props.flash.status,
-                    })
-                }
-            }
-        );
-    };
 
     return (
         <div className="mx-auto max-w-4xl">
@@ -75,8 +57,15 @@ const Main = () => {
                 <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60">
                     <TabsTrigger value="pending">Pending</TabsTrigger>
                     <TabsTrigger value="approved">Approved</TabsTrigger>
+                    <TabsTrigger value="disapproved">Disapproved</TabsTrigger>
                 </TabsList>
             </Tabs>
+
+            <div className="mb-4">
+                <SearchInput onSearch={(search) => {
+                    onQuery({ status, search });
+                }} />
+            </div>
 
             <Card className="min-h-[27rem] relative">
                 <TableDataSkeletonLoader
@@ -91,7 +80,7 @@ const Main = () => {
                             >
                                 <div>Name</div>
                                 <div>As of</div>
-                                <div></div>
+                                <div className="justify-center">View</div>
                             </TableHeader>
                             {page?.data.length === 0 && (
                                 <Empty
@@ -106,18 +95,17 @@ const Main = () => {
                                     <div>{data.user.full_name}</div>
                                     <div>{format(data.asof, "MMM dd, y")}</div>
                                     <div className="justify-center">
-                                        {data.status === "approved" ? (
-                                            <TypographySmall className="text-green-600 capitalize">
-                                                {data.status}
-                                            </TypographySmall>
-                                        ) : (
-                                            <Button
-                                                className="bg-green-600 hover:bg-green-500"
-                                                onClick={() => onApprove(data.id)}
-                                            >
-                                                Approve
-                                            </Button>
-                                        )}
+                                        <Button
+                                            size={"icon"}
+                                            variant={"outline"}
+                                            onClick={() => {
+                                                router.get(route('myapproval.saln.view', data.id), {}, {
+                                                    onBefore: () => setProcess(true)
+                                                });
+                                            }}
+                                        >
+                                            <Eye />
+                                        </Button>
                                     </div>
                                 </TableRow>
                             ))}

@@ -25,13 +25,20 @@ class ServiceRecordController extends Controller
 
         $status = $request->query('status') ?? "pending";
         $type = $request->query('type') ?? "All";
+        $search = $request->query('search');
 
         $sr = null;
 
-        $sr = ServiceRecord::when($role == "hr", function ($query) {
-                $query->with(['user' => function($query) {
-                    $query->withoutGlobalScopes();
+        $sr = ServiceRecord::when($role == "hr", function ($query) use ($status) {
+                $query->with(['user' => function ($query) use ($status) {
+                    $query->when($status !== "pending", function ($query) {
+                        $query->withoutGlobalScopes();
+                    });
                 }]);
+            })->whereHas('user', function ($query) use ($status) {
+                $query->when($status !== "pending", function ($query) {
+                    $query->withoutGlobalScopes();
+                });
             })
             ->when($role !== "hr", function ($query) use ($request) {
                 $query->where('user_id', $request->user()->id);
@@ -40,6 +47,19 @@ class ServiceRecordController extends Controller
                 $query->where('type', strtolower($type));
             })
             ->where('status', $status)
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('type', 'certificate')
+                        ->where(function ($query) use ($search) {
+                            $query->where('details->venue', 'LIKE', "%{$search}%")
+                                ->orWhere('details->name', 'LIKE', "%{$search}%")
+                                ->orWhere('details->organizer', 'LIKE', "%{$search}%")
+                                ->orWhere('details->filename', 'LIKE', "%{$search}%");
+                        })
+                        ->orWhere('type', 'coc')
+                        ->where('details->name', 'LIKE', "%{$search}%");
+                });
+            })
             ->latest()
             ->paginate($this->page);
 
@@ -88,7 +108,7 @@ class ServiceRecordController extends Controller
                         'from' => $this->parseDate($sr['from']),
                         'to' => $sr['to'] ? $this->parseDate($sr['to']) : null,
                         'credits' => $credits,
-                        'session' => $request->session,
+                        'session' => $sr['session'],
                         'remainingcredits' => $credits,
                         'creditstatus' => "pending"
                     ]);
@@ -114,59 +134,72 @@ class ServiceRecordController extends Controller
     public function storeCOC(Request $request)
     {
         $request->validate([
-            'from' => 'required|date',
-            'to' => 'nullable|date',
-            'session' => 'in:halfday,fullday',
-            'numofhours' => ['required_if:session,halfday', 'nullable', 'regex:/^[0-9]+$/'],
+            'coc.*.from' => 'required|date',
+            'coc.*.to' => 'nullable|date',
+            'coc.*.session' => 'in:halfday,fullday',
+            'coc.*.numofhours' => ['required_if:session,halfday', 'nullable', 'regex:/^[0-9]+$/'],
         ], [
-            'numofhours.required' => 'The number of hours field is required',
-            'numofhours.regex' => 'The number of hours must be numeric in value.'
+            'coc.*.numofhours.required' => 'The number of hours field is required',
+            'coc.*.numofhours.regex' => 'The number of hours must be numeric in value.'
         ]);
 
         DB::beginTransaction();
         try {
+            $movedFiles = [];
 
-            $memofile = $request->user()->temporary()->find($request->memofileid);
-            $coafile = $request->user()->temporary()->find($request->coafileid);
-            $dtrfile = $request->user()->temporary()->find($request->dtrfileid);
+            foreach ($request->coc as $value) {
+                $memofile = $request->user()->temporary()->find($value['memofileid']);
+                $coafile = $request->user()->temporary()->find($value['coafileid']);
+                $dtrfile = $request->user()->temporary()->find($value['dtrfileid']);
 
-            $memofilepath = Str::replace('public/temporary', 'public/certificate', $memofile->path);
-            $coafilepath = Str::replace('public/temporary', 'public/certificate', $coafile->path);
-            $dtrfilepath = Str::replace('public/temporary', 'public/certificate', $dtrfile->path);
+                $memofilepath = Str::replace('public/temporary', 'public/certificate', $memofile->path);
+                $coafilepath = Str::replace('public/temporary', 'public/certificate', $coafile->path);
+                $dtrfilepath = Str::replace('public/temporary', 'public/certificate', $dtrfile->path);
 
-            Storage::move($memofile->path, $memofilepath);
-            Storage::move($coafile->path, $coafilepath);
-            Storage::move($dtrfile->path, $dtrfilepath);
+                Storage::move($memofile->path, $memofilepath);
+                Storage::move($coafile->path, $coafilepath);
+                Storage::move($dtrfile->path, $dtrfilepath);
 
-            $from = Carbon::parse($request->from);
-            $to = $request->to ? Carbon::parse($request->to) : null;
-            $credits = $request->session == "halfday" ? 0.5 : ($to ? ($from->diffInDays($to) + 1) : 1);
+                $movedFiles[] = [$memofile->path, $memofilepath];
+                $movedFiles[] = [$coafile->path, $coafilepath];
+                $movedFiles[] = [$dtrfile->path, $dtrfilepath];
 
-            ServiceRecord::create([
-                'user_id' => $request->user()->id,
-                'type' => 'coc',
-                'details' => collect([
-                    'name' => $request->name,
-                    'coa' => Str::replace('public', '/storage', $memofilepath),
-                    'dtr' => Str::replace('public', '/storage', $coafilepath),
-                    'memo' => Str::replace('public', '/storage', $dtrfilepath),
-                    'from' => $this->parseDate($request->from),
-                    'to' => $request->to?$this->parseDate($request->to):null,
-                    'numofhours' => $request->numofhours,
-                    'session' => $request->session,
-                    'credits' => $credits,
-                    'remainingcredits' => $credits,
-                    'creditstatus' => "pending",
-                ])
-            ]);
+                $from = Carbon::parse($value['from']);
+                $to = $value['to'] ? Carbon::parse($value['to']) : null;
+                $credits = $value['session'] == "halfday" ? 0.5 : ($to ? ($from->diffInDays($to) + 1) : 1);
+
+                ServiceRecord::create([
+                    'user_id' => $request->user()->id,
+                    'type' => 'coc',
+                    'details' => collect([
+                        'name' => $value['name'],
+                        'coa' => Str::replace('public', '/storage', $memofilepath),
+                        'dtr' => Str::replace('public', '/storage', $coafilepath),
+                        'memo' => Str::replace('public', '/storage', $dtrfilepath),
+                        'from' => $this->parseDate($value['from']),
+                        'to' => $value['to'] ? $this->parseDate($value['to']) : null,
+                        'numofhours' => $value['numofhours'],
+                        'session' => $value['session'],
+                        'credits' => $credits,
+                        'remainingcredits' => $credits,
+                        'creditstatus' => "pending",
+                    ])
+                ]);
+            }
 
             DB::commit();
 
-            return $this->returnResponse('COC upload','Successfully uploaded COC','success');
+            return $this->returnResponse('COC upload', 'Successfully uploaded COC', 'success');
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            return $this->returnResponse('COC upload',$th->getMessage().'Failed to upload COC','error');
+            foreach ($movedFiles as [$originalPath, $newPath]) {
+                if (Storage::exists($newPath)) {
+                    Storage::move($newPath, $originalPath);
+                }
+            }
+
+            return $this->returnResponse('COC upload', $th->getMessage() . 'Failed to upload COC', 'error');
         }
     }
 
@@ -201,7 +234,7 @@ class ServiceRecordController extends Controller
     public function view(ServiceRecord $sr)
     {
         try {
-            $sr->load(['user' => fn ($query) => $query->withoutGlobalScopes()]);
+            $sr->load(['user' => fn($query) => $query->withoutGlobalScopes()]);
 
             return response()->json($sr);
         } catch (\Throwable $th) {
@@ -217,13 +250,13 @@ class ServiceRecordController extends Controller
 
                 $personnel = User::withoutGlobalScopes()->find($sr->user_id);
 
-                if($personnel->role === "teaching" && $request->response === "approved") {
-                    $personnel->credits = floatval($sr->details['credits']) + floatval($personnel->credits);
+                if ($personnel->role === "teaching" && $request->response === "approved") {
+                    $personnel->credits = (floatval($sr->details['credits']) + floatval($personnel->credits));
 
                     $personnel->save();
                 }
 
-                if($personnel->status_updated_at)
+                if ($personnel->status_updated_at)
                     $sr->saveQuietly();
 
                 $sr->save();

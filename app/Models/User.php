@@ -275,4 +275,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserCredit::class);
     }
+
+    public function saln()
+    {
+        return $this->hasMany(Saln::class);
+    }
+
+    public function pdsExcel()
+    {
+        return $this->hasOne(PersonalDataSheet::class);
+    }
 }
