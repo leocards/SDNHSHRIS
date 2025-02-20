@@ -109,7 +109,6 @@ class IpcrReportController extends Controller
                             // validate if user exist and check if it has already been added otherwise add the rating.
                             if ($user) {
                                 $existIPCR = IpcrReport::where('user_id', $user->id)->where('syid', $request->schoolyear)->exists();
-                                dd(floatval($value[3]));
                                 if (floatval($value[3]) >= 1 || floatval($value[3]) <= 5) {
                                     if (!$existIPCR)
                                         IpcrReport::create([
