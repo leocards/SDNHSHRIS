@@ -447,8 +447,10 @@ const ListRow: React.FC<ListRowProps> = ({
                                         }}
                                         disabled={!!user.pds_excel?.file}
                                     >
-                                        <DocumentUpload className="size-5" />
-                                        <span>Upload PDS</span>
+                                        {!!user.pds_excel?.file ? "Already uploaded PDS" : <>
+                                            <DocumentUpload className="size-5" />
+                                            <span>Upload PDS</span>
+                                        </>}
                                     </MenubarItem>
                                 </Fragment>
                             )}

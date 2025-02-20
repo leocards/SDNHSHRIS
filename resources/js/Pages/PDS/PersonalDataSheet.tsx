@@ -42,8 +42,8 @@ type PersonalDataSheetProps = {
 };
 
 const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
-    const [showImport, setShowImport] = useState(false)
-    const user = usePage().props.auth.user
+    const [showImport, setShowImport] = useState(false);
+    const user = usePage().props.auth.user;
 
     return (
         <div>
@@ -85,12 +85,20 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                         </div>
                     </div>
                     <div className="ml-auto w-fit">
-                        <Button onClick={() => {
-                            if(!!!props.hasImport)
-                                setShowImport(true)
-                        }} disabled={!!props.hasImport}>
-                            <Export />
-                            <span>Import</span>
+                        <Button
+                            onClick={() => {
+                                if (!!!props.hasImport) setShowImport(true);
+                            }}
+                            disabled={!!props.hasImport}
+                        >
+                            {!!props.hasImport ? (
+                                "Already uploaded PDS"
+                            ) : (
+                                <>
+                                    <Export />
+                                    <span>Import</span>
+                                </>
+                            )}
                         </Button>
                     </div>
                 </div>
