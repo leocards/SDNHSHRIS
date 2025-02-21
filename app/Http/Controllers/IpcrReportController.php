@@ -137,7 +137,7 @@ class IpcrReportController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            return back()->with(['title' => 'Import IPCR', 'message' => $th->getMessage().'IPCR import failed', 'status'=>'error']);
+            return back()->with(['title' => 'Import IPCR', 'message' => 'IPCR import failed', 'status'=>'error']);
         }
     }
 
