@@ -60,7 +60,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                         Cancel
                     </Button>
 
-                    <Button className="ms-4" disabled={processing}>
+                    <Button className="ms-4 !bg-[#FF00FF] text-fuchsia-900" disabled={processing}>
                         Reset Password
                     </Button>
                 </div>

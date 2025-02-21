@@ -12,7 +12,7 @@ export default function Welcome({ auth }: PageProps) {
     return (
         <Fragment>
             <Head title="Welcome" />
-            <div className="bg-fuchsia-700 text-black/50 w-full">
+            <div className="bg-[#FF00FF] text-black/50 w-full">
                 <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-fuchsia-700 selection:text-white z-10">
                     <div className="relative w-full px-6 max-w-7xl">
                         <main className="my-6">
@@ -60,7 +60,7 @@ export default function Welcome({ auth }: PageProps) {
                         [35, 10],
                       ]}
                     className={cn(
-                        "[mask-image:linear-gradient(to_bottom_right,#e9d5ff,transparent,#e9d5ff)] stroke-fuchsia-400/30 fill-fuchsia-600/30",
+                        "[mask-image:linear-gradient(to_bottom_right,#e9d5ff,transparent,#e9d5ff)] stroke-fuchsia-300/70 fill-white/50 fuchsia-500/50",
                     )}
                 />
             </div>

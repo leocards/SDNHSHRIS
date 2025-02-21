@@ -209,7 +209,7 @@ export default function Login({ status }: Props) {
 
                             <div className="mt-7 space-y-4">
                                 <Button
-                                    className="h-11 w-full shadow-md"
+                                    className="h-11 w-full shadow-md !bg-[#FF00FF] text-fuchsia-900 font-semibold"
                                     disabled={processing}
                                 >
                                     Log in
