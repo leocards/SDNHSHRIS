@@ -88,9 +88,8 @@ class IpcrReportController extends Controller
                 if ($data[0]->count() !== 0) {
 
                     foreach ($data[0] as $key => $value) {
-
                         // check if there is number indicator in the data to verify if it is the valid content to add
-                        if (is_int($value[0])) {
+                        if (is_int($value[0]) && !empty($value[1]) && !empty($value[2])) {
                             $searchName = strtolower($value[1]);
                             $searchName = explode(',', $searchName);
                             $searchName = array_map(function ($str) {
@@ -138,7 +137,7 @@ class IpcrReportController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            return back()->with(['title' => 'Import IPCR', 'message' => 'IPCR import failed', 'status'=>'error']);
+            return back()->with(['title' => 'Import IPCR', 'message' => $th->getMessage().'IPCR import failed', 'status'=>'error']);
         }
     }
 
