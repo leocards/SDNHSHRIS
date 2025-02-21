@@ -119,6 +119,8 @@ class ServiceRecordController extends Controller
                         'details' => $details->toArray(),
                     ]);
                 }
+
+                $file->delete();
             }
 
             DB::commit();
@@ -185,6 +187,10 @@ class ServiceRecordController extends Controller
                         'creditstatus' => "pending",
                     ])
                 ]);
+
+                $memofile->delete();
+                $coafile->delete();
+                $dtrfile->delete();
             }
 
             DB::commit();

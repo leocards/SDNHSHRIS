@@ -344,6 +344,8 @@ class LeaveController extends Controller
                 ]);
             }
 
+            $file->delete();
+
             DB::commit();
 
             return redirect()->back()->with(['title' => 'Medical Upload', 'message' => 'Medical Certficate has been submitted successfully.', 'status' => 'success']);
