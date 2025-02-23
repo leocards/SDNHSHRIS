@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class EmailNotification extends Mailable implements ShouldQueue
 {
@@ -29,6 +30,7 @@ class EmailNotification extends Mailable implements ShouldQueue
      */
     public function envelope(): Envelope
     {
+        Log::info([new Address(env("MAIL_FROM_ADDRESS"), "HRIS"), env("MAIL_FROM_ADDRESS")]);
         return new Envelope(
             from: empty($this->fromEmail) ? new Address(env("MAIL_FROM_ADDRESS"), "HRIS") : $this->fromEmail['email'],
             subject: $this->emailSubject,
