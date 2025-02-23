@@ -30,7 +30,7 @@ class EmailNotification extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: empty($this->fromEmail) ? new Address(env("MAIL_FROM_ADDRESS", "sdnhshris06@gmail.com"), "HRIS") : $this->fromEmail['email']??"sdnhshris06@gmail.com",
+            from: "sdnhshris06@gmail.com",
             subject: $this->emailSubject,
         );
     }
