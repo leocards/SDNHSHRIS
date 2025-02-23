@@ -13,15 +13,17 @@ class UserObserver
      */
     public function created(User $user): void
     {
+        $data = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'login' => "[Login here!](".route('login').")",
+        ];
+        
         Mail::to($user->email)
             ->send(new EmailNotification(
                 'Welcome to SDNHS-HRIS!',
                 'newaccount',
-                [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'login' => "[Login here!](".route('login').")",
-                ]
+                $data
             ));
     }
 
