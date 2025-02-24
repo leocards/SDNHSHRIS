@@ -1,4 +1,6 @@
 import StatisticsCard from "@/Components/StatisticsCard";
+import { useSidebar } from "@/Components/ui/sidebar";
+import { cn } from "@/Lib/utils";
 import { Profile2User, SecurityUser, TagUser, Verify } from "iconsax-react";
 import React from "react";
 
@@ -9,8 +11,10 @@ type Props = {
 };
 
 const PersonnelStatistics = (props: Props) => {
+    const { state, isMobile } = useSidebar();
     return (
-        <div className="grid max-sm:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] grid-cols-4 gap-4 mt-4">
+        <div className={cn("grid grid-cols-4 gap-4 [@media(max-width:456px)]:gap-2 mt-4",
+        state === "collapsed" || isMobile ? "[@media(max-width:876px)]:grid-cols-2 [@media(max-width:456px)]:!grid-cols-4" :"[@media(max-width:1076px)]:grid-cols-2")}>
             <StatisticsCard
                 label="Junior High School"
                 data={props.jhs}

@@ -47,6 +47,7 @@ import ImportExcelPds from "./ImportExcelPds";
 import ViewDetails from "./ViewDetails";
 import PersonnelConfirmation from "./PersonnelConfirmation";
 import empty from "@/Assets/empty-personnel.svg";
+import useWindowSize from "@/Hooks/useWindowResize";
 
 type PersonnelProps = {
     personneltype: "teaching" | "non-teaching";
@@ -57,9 +58,11 @@ type PersonnelProps = {
 
 type PersonnelType = User & {
     pds_excel: {
-        id: number; user_id: number; file: string | null
-    } | null
-}
+        id: number;
+        user_id: number;
+        file: string | null;
+    } | null;
+};
 
 const Personnel: React.FC<
     PersonnelProps & { personnels: PAGINATEDDATA<PersonnelType> }
@@ -80,11 +83,17 @@ const Main: React.FC<PersonnelProps> = ({
     shs,
     accounting,
 }) => {
+    const { width } = useWindowSize();
     const role = usePage().props.auth.user.role;
-    const { page, onQuery } = usePagination<User & {
-        pds_excel: {
-            id: number; user_id: number; file: string | null
-        } | null }>();
+    const { page, onQuery } = usePagination<
+        User & {
+            pds_excel: {
+                id: number;
+                user_id: number;
+                file: string | null;
+            } | null;
+        }
+    >();
     const { setProcess } = useProcessIndicator();
     const [filter, setFilter] = useState<any>(undefined);
     const [{ sort, order }, setSortOrder] = useState<{
@@ -97,10 +106,25 @@ const Main: React.FC<PersonnelProps> = ({
     const [importPds, setImportPds] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [viewDetails, setViewDetails] = useState(false);
-    const [showPersonnelConfirmation, setShowPersonnelConfirmation] = useState(false)
+    const [showPersonnelConfirmation, setShowPersonnelConfirmation] =
+        useState(false);
     const [personnelStatus, setPersonnelStatus] = useState<
         "retired" | "resigned" | "transferred" | null
     >(null);
+
+    const Columns =
+        width <= 640
+            ? ["1fr", "5rem"]
+            : width <= 978
+            ? ["minmax(5rem,1fr)", "5rem", "5rem"]
+            : [
+                  "minmax(5rem,1fr)",
+                  "minmax(5rem,1fr)",
+                  "minmax(5rem,1fr)",
+                  "10rem",
+                  "5rem",
+                  "5rem",
+              ];
 
     return (
         <div>
@@ -118,7 +142,7 @@ const Main: React.FC<PersonnelProps> = ({
             <PersonnelStatistics jhs={jhs} shs={shs} accounting={accounting} />
 
             <div className="mb-4 mt-7 h-fit flex">
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-4 max-sm:gap-2 items-center">
                     {personneltype == "teaching" && (
                         <FilterButton
                             isDirty={!!filter}
@@ -200,7 +224,7 @@ const Main: React.FC<PersonnelProps> = ({
                         }
                     >
                         <UserAdd className="[&>path]:stroke-[2]" />
-                        <div>New Personnel</div>
+                        <div className="max-sm:hidden">New Personnel</div>
                     </Button>
                 )}
             </div>
@@ -208,14 +232,7 @@ const Main: React.FC<PersonnelProps> = ({
             <Card className="min-h-[26rem] relative">
                 <TableDataSkeletonLoader
                     data="personnels"
-                    columns={[
-                        "minmax(5rem,1fr)",
-                        "minmax(5rem,1fr)",
-                        "minmax(5rem,1fr)",
-                        "10rem",
-                        "5rem",
-                        "5rem",
-                    ]}
+                    columns={Columns}
                     length={7}
                 >
                     {(column) => (
@@ -224,10 +241,12 @@ const Main: React.FC<PersonnelProps> = ({
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Name</div>
-                                <div>Email</div>
-                                <div>Department</div>
-                                <div>Position</div>
-                                <div>Credits</div>
+                                <div className="[@media(max-width:978px)]:!hidden">Email</div>
+                                <div className="[@media(max-width:978px)]:!hidden">Department</div>
+                                <div className="[@media(max-width:978px)]:!hidden">
+                                    Position
+                                </div>
+                                <div className="max-sm:!hidden">Credits</div>
                                 <div></div>
                             </TableHeader>
                             {page?.data.length === 0 && (
@@ -253,7 +272,7 @@ const Main: React.FC<PersonnelProps> = ({
                                     onImportPds={() => setImportPds(true)}
                                     onViewDetails={() => setViewDetails(true)}
                                     onPersonnelAction={(action) => {
-                                        setShowPersonnelConfirmation(true)
+                                        setShowPersonnelConfirmation(true);
                                         setSelectedUser(personnel);
                                         setPersonnelStatus(action);
                                     }}
@@ -282,7 +301,7 @@ const Main: React.FC<PersonnelProps> = ({
                 show={showPersonnelConfirmation}
                 action={personnelStatus}
                 onClose={() => {
-                    setShowPersonnelConfirmation(false)
+                    setShowPersonnelConfirmation(false);
                     setSelectedUser(null);
                     setPersonnelStatus(null);
                 }}
@@ -319,16 +338,18 @@ const ListRow: React.FC<ListRowProps> = ({
                 <ProfilePhoto src={user.avatar} />
                 <div className="line-clamp-1 break-words">{user.name}</div>
             </div>
-            <div className="">
+            <div className="[@media(max-width:978px)]:!hidden">
                 <div className="line-clamp-1 !break-words">{user.email}</div>
             </div>
-            <div className="">
+            <div className="[@media(max-width:978px)]:!hidden">
                 <div className="line-clamp-1 !break-words">
                     {Departments[user.department]}
                 </div>
             </div>
-            <div>{user.position}</div>
-            <div>{user.credits}</div>
+            <div className="[@media(max-width:978px)]:!hidden">
+                {user.position}
+            </div>
+            <div className="max-sm:!hidden">{user.credits}</div>
             <div>
                 <Menubar
                     className="bg-tranparent !shadow-none size-8 mx-auto"
@@ -399,15 +420,15 @@ const ListRow: React.FC<ListRowProps> = ({
                                                 Current status
                                             </MenubarItem>
                                             <div className="px-2 pb-1 pt-0 text-xs font-medium capitalize">
-                                                {user.status??"Active"}
+                                                {user.status ?? "Active"}
                                             </div>
                                             <MenubarSeparator />
                                             <MenubarItem
                                                 onClick={() => {
                                                     user.status == null &&
-                                                    onPersonnelAction(
-                                                        "retired"
-                                                    )
+                                                        onPersonnelAction(
+                                                            "retired"
+                                                        );
                                                 }}
                                                 disabled={!!user.status}
                                             >
@@ -416,9 +437,9 @@ const ListRow: React.FC<ListRowProps> = ({
                                             <MenubarItem
                                                 onClick={() => {
                                                     user.status == null &&
-                                                    onPersonnelAction(
-                                                        "resigned"
-                                                    )
+                                                        onPersonnelAction(
+                                                            "resigned"
+                                                        );
                                                 }}
                                                 disabled={!!user.status}
                                             >
@@ -427,9 +448,9 @@ const ListRow: React.FC<ListRowProps> = ({
                                             <MenubarItem
                                                 onClick={() => {
                                                     user.status == null &&
-                                                    onPersonnelAction(
-                                                        "transferred"
-                                                    )
+                                                        onPersonnelAction(
+                                                            "transferred"
+                                                        );
                                                 }}
                                                 disabled={!!user.status}
                                             >
@@ -441,16 +462,19 @@ const ListRow: React.FC<ListRowProps> = ({
                                     <MenubarItem
                                         className="pl-2 flex items-center gap-2"
                                         onClick={() => {
-                                            if(!user.pds_excel?.file)
-                                                onImportPds()
-
+                                            if (!user.pds_excel?.file)
+                                                onImportPds();
                                         }}
                                         disabled={!!user.pds_excel?.file}
                                     >
-                                        {!!user.pds_excel?.file ? "Already uploaded PDS" : <>
-                                            <DocumentUpload className="size-5" />
-                                            <span>Upload PDS</span>
-                                        </>}
+                                        {!!user.pds_excel?.file ? (
+                                            "Already uploaded PDS"
+                                        ) : (
+                                            <>
+                                                <DocumentUpload className="size-5" />
+                                                <span>Upload PDS</span>
+                                            </>
+                                        )}
                                     </MenubarItem>
                                 </Fragment>
                             )}

@@ -277,7 +277,7 @@ const FilterButton = React.forwardRef<HTMLDivElement, FilterButtonProps>(
                     <TooltipLabel label={tooltipLabel} className={cn(className)}>
                         <MenubarTrigger className="relative h- pr-3.5 max-w-40" disabled={disabled}>
                             <Filter className="[&>path]:stroke-[2]" />
-                            <span className={cn("line-clamp-1", filterValueClass)}>{filter ? filter : "Filter"}</span>
+                            <span className={cn("line-clamp-1 max-sm:!hidden", filterValueClass)}>{filter ? filter : "Filter"}</span>
                             {isDirty && (
                                 <div className="size-2 absolute top-1 right-1 bg-primary rounded-full" />
                             )}
@@ -358,7 +358,7 @@ const SortButton = React.forwardRef<HTMLDivElement, SortButtonProps>(
                     <TooltipLabel label="Sort">
                         <MenubarTrigger className="relative pr-3.5">
                             <ArrowSwapVertical className="[&>path]:stroke-[2]" />
-                            <span>Sort</span>
+                            <span className="max-sm:hidden">Sort</span>
                         </MenubarTrigger>
                     </TooltipLabel>
                     <MenubarContent align={align} className="min-w-36">

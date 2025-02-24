@@ -9,13 +9,14 @@ import { Card } from "@/Components/ui/card";
 import { FilterButton, FilterItem } from "@/Components/ui/menubar";
 import { PaginationData } from "@/Components/ui/pagination";
 import { PAGINATEDDATA, SCHOOLYEAR } from "@/Types";
-import { ArrowRight2, ClipboardTick, Edit } from "iconsax-react";
+import { ArrowRight2, ClipboardTick, Edit, Eye } from "iconsax-react";
 import React, { Fragment, PropsWithChildren, useState } from "react";
 import Attendance from "./Attendance";
 import empty from "@/Assets/empty-tardiness.svg";
 import { ProfilePhoto } from "@/Components/ui/avatar";
 import { format } from "date-fns";
 import { usePage } from "@inertiajs/react";
+import useWindowSize from "@/Hooks/useWindowResize";
 
 export type TARDINESSTYPE = {
     id: number;
@@ -54,6 +55,7 @@ const Tardiness: React.FC<TardinessProps> = ({ ...props }) => {
 const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
     const { page, onQuery } = usePagination<TARDINESSTYPE>();
     const { props } = usePage();
+    const { width } = useWindowSize()
 
     const [filterSy, setFilterSy] = useState<{
         id: number;
@@ -157,7 +159,7 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
 
                 <Button onClick={() => setShowAttendance(true)}>
                     <ClipboardTick className="[&>path]:stroke-[1]" />
-                    Attendance
+                    <div className="max-sm:hidden">Attendance</div>
                 </Button>
             </div>
 
@@ -165,10 +167,10 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                 <TableDataSkeletonLoader
                     data={["tardinesses"]}
                     length={8}
-                    columns={[
+                    columns={width <= 710 ? ['1fr', '7rem'] : [
                         "minmax(6rem,1fr)",
                         ...Array.from({ length: 4 }).map(
-                            () => "minmax(7.5rem,12rem)"
+                            () => "minmax(7rem,12rem)"
                         ),
                         "5rem",
                     ]}
@@ -177,13 +179,15 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                         <Fragment>
                             <TableHeader
                                 style={{ gridTemplateColumns: column }}
+                                className=""
                             >
                                 <div>Name</div>
-                                <div>No. of Days Present</div>
-                                <div>No. of Days Absent</div>
-                                <div>No. of Time Tardy</div>
-                                <div>No. of Undertime</div>
-                                <div className="justify-center">Edit</div>
+                                <div className="[@media(max-width:710px)]:!hidden">No. of Days Present</div>
+                                <div className="[@media(max-width:710px)]:!hidden">No. of Days Absent</div>
+                                <div className="[@media(max-width:710px)]:!hidden">No. of Time Tardy</div>
+                                <div className="[@media(max-width:710px)]:!hidden">No. of Undertime</div>
+                                <div className="justify-center [@media(max-width:710px)]:!hidden">Edit</div>
+                                <div className="justify-center [@media(min-width:710px)]:!hidden">Action</div>
                             </TableHeader>
                             {page?.data.length === 0 && (
                                 <div className="flex flex-col items-center absolute inset-0 justify-center">
@@ -210,13 +214,13 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                                             {tardiness?.user?.name}
                                         </div>
                                     </div>
-                                    <div>{tardiness?.present}</div>
-                                    <div>{tardiness?.absent}</div>
-                                    <div>
+                                    <div className="[@media(max-width:710px)]:!hidden">{tardiness?.present}</div>
+                                    <div className="[@media(max-width:710px)]:!hidden">{tardiness?.absent}</div>
+                                    <div className="[@media(max-width:710px)]:!hidden">
                                         {tardiness?.timetardy}
                                     </div>
-                                    <div>{tardiness?.undertime}</div>
-                                    <div className="justify-center">
+                                    <div className="[@media(max-width:710px)]:!hidden">{tardiness?.undertime}</div>
+                                    <div className="justify-center [@media(max-width:710px)]:gap-2">
                                         <Button
                                             className="size-8"
                                             variant="outline"
@@ -229,6 +233,10 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                                             }
                                         >
                                             <Edit className="!size-4" />
+                                        </Button>
+
+                                        <Button size="icon" variant="outline" className="size-8 [@media(min-width:710px)]:hidden">
+                                            <Eye />
                                         </Button>
                                     </div>
                                 </TableRow>

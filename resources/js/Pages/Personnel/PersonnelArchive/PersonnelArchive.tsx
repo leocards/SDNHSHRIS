@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import { Eye } from "iconsax-react";
 import { Fragment } from "react";
 import empty from "@/Assets/empty-personnel.svg";
+import useWindowSize from "@/Hooks/useWindowResize";
 
 type PersonnelProps = {};
 
@@ -36,6 +37,7 @@ const Personnel: React.FC<
 const Main = () => {
     const { page, onQuery } = usePagination<User>();
     const { setProcess } = useProcessIndicator()
+    const { width } = useWindowSize()
 
     return (
         <div className="max-w-4xl mx-auto">
@@ -67,7 +69,7 @@ const Main = () => {
             <Card className="min-h-[28rem] relative">
                 <TableDataSkeletonLoader
                     data="personnels"
-                    columns={["minmax(5rem,1fr)", "7rem", "10rem", "5rem"]}
+                    columns={["minmax(5rem,1fr)", (width <= 480 ? "5.5rem" : "10rem"), "5rem"]}
                     length={9}
                 >
                     {(column) => (
@@ -76,7 +78,6 @@ const Main = () => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Name</div>
-                                <div>Status</div>
                                 <div>Date</div>
                                 <div className="justify-center">View</div>
                             </TableHeader>
@@ -102,11 +103,11 @@ const Main = () => {
                                             {personnel.name}
                                         </div>
                                     </div>
-                                    <div className="capitalize text-center">
-                                        {personnel.status}
-                                    </div>
                                     <div className="text-center">
-                                        {format(
+                                        {width <= 480 ? format(
+                                            personnel.status_updated_at!,
+                                            "LL/d/yy"
+                                        ) : format(
                                             personnel.status_updated_at!,
                                             "LLLL d, y"
                                         )}

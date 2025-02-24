@@ -20,6 +20,7 @@ import PersonnelLeave from "./PersonnelLeave";
 import { LEAVETYPEKEYSARRAY } from "@/Pages/Leave/Types/leavetypes";
 import { SALNREPORTTYPE } from "@/Pages/Myreports/SALN/SALN";
 import PersonnelSALN from "./PersonnelSALN";
+import { cn } from "@/Lib/utils";
 
 type Props = {
     user: User & {
@@ -42,9 +43,8 @@ const View: React.FC<Props> = ({
     certificates,
     leaves,
     saln,
-    servicecredits
+    servicecredits,
 }) => {
-
     return (
         <div>
             <Header
@@ -57,7 +57,10 @@ const View: React.FC<Props> = ({
                 className="overflow-hidden grow flex flex-col my-5"
                 defaultValue="details"
             >
-                <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60">
+                <TabsList className={cn(
+                    "w-fit flex rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60 [@media(max-width:540px)]:justify-start [@media(max-width:540px)]:overflow-x-auto [@media(max-width:540px)]:max-w-full",
+                    ""
+                )} style={{ scrollbarColor: "hsl(var(--primary)) transparent !important" }}>
                     <TabsTrigger value="details">Details</TabsTrigger>
                     <TabsTrigger value="pds">PDS</TabsTrigger>
                     <TabsTrigger value="tardiness">Attendance</TabsTrigger>

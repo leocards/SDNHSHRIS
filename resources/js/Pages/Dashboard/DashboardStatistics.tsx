@@ -34,10 +34,10 @@ const DashboardStatistics = ({
     return (
         <div
             className={cn(
-                "grid gap-4 mt-4",
+                "grid gap-4 [@media(max-width:456px)]:gap-2 mt-4",
                 role === "hr" || role === "teaching"
                     ? state === "collapsed" || isMobile
-                    ? "grid-cols-4 [@media(max-width:755px)]:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]"
+                    ? "grid-cols-4 [@media(max-width:755px)]:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] [@media(max-width:456px)]:!grid-cols-4"
                     : "grid-cols-4 [@media(max-width:1162px)]:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]"
                     : (state === "collapsed" || isMobile
                     ? "grid-cols-5 [@media(max-width:755px)]:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]"

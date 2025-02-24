@@ -29,17 +29,24 @@ const ViewDetails: React.FC<Props> = ({ user, show, onClose }) => {
     }[user?.gender ?? "male"];
 
     return (
-        <Modal show={show} onClose={onClose} title="Personnel Details" maxWidth="sm">
-            <Button className="absolute top-3 right-3" variant="outline" size="icon" onClick={() => onClose(false)}>
+        <Modal
+            show={show}
+            onClose={onClose}
+            title="Personnel Details"
+            maxWidth="sm"
+        >
+            <Button
+                className="absolute top-3 right-3"
+                variant="outline"
+                size="icon"
+                onClick={() => onClose(false)}
+            >
                 <X />
             </Button>
 
             <div className="p-6 flex flex-col">
                 <div className="mx-auto">
-                    <ProfilePhoto
-                        src={user?.avatar}
-                        className="size-20"
-                    />
+                    <ProfilePhoto src={user?.avatar} className="size-20" fallbackSize={30} />
                 </div>
 
                 <Label className="text-lg text-center mt-2">{`${user?.firstname} ${user?.middlename} ${user?.lastname}`}</Label>
@@ -57,20 +64,29 @@ const ViewDetails: React.FC<Props> = ({ user, show, onClose }) => {
                     </div>
                     <div className="flex items-center px-3 py-1 gap-2 text-yellow-600 bg-yellow-100 rounded-md text-sm font-medium shrink-0">
                         <Cake className="size-5 text-yellow-600" />
-                        {user?.birthday &&
-                            format(user?.birthday, "PP")}
+                        {user?.birthday && format(user?.birthday, "PP")}
                     </div>
                 </div>
 
-                <div className="mx-auto flex flex-col p-3 rounded-md border mt-5 shadow-sm">
-                    <div className="flex items-center gap-2 mx-auto text-sm">
-                        <Smartphone className="size-4" strokeWidth={2.2} />
+                <div className="mx-auto flex flex-col p-3 rounded-md border shadow-sm mt-5">
+                    <div className="flex items-center gap-2 text-sm">
+                        <div className="">Contact:</div>
                         {user?.mobilenumber}
                     </div>
 
-                    <div className="flex items-center gap-2 text-sm mx-auto mt-2">
-                        <AtSign className="size-4" strokeWidth={2.2} />
+                    <div className="flex items-center gap-2 text-sm mt-2">
+                        <div>Email:</div>
                         {user?.email}
+                    </div>
+
+                    <div className="flex items-center gap-2 text-sm mt-2">
+                        <div>Department:</div>
+                        {user?.department}
+                    </div>
+
+                    <div className="flex items-center gap-2 text-sm mt-2">
+                        <div>Credits:</div>
+                        {user?.credits??0 + (user?.role != 'teaching' ? user?.splcredits??0 : 0)}
                     </div>
                 </div>
             </div>

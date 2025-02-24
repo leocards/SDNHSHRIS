@@ -2,21 +2,23 @@ import Modal, { ModalProps } from "@/Components/Modal";
 import { useToast } from "@/Hooks/use-toast";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { requiredError } from "@/Types/types";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect } from "react";
 import { z } from "zod";
-import { FilePond, registerPlugin } from 'react-filepond';
-import 'filepond/dist/filepond.min.css';
-import { usePage } from "@inertiajs/react";
+import "filepond/dist/filepond.min.css";
 import { useFieldArray } from "react-hook-form";
-import { Form, FormCalendar, FormInput, FormSelect } from "@/Components/ui/form";
+import {
+    Form,
+    FormCalendar,
+    FormInput,
+    FormSelect,
+} from "@/Components/ui/form";
 import { Button } from "@/Components/ui/button";
 import { Add, Trash } from "iconsax-react";
 import TypographySmall from "@/Components/Typography";
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
-import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 import { SelectItem } from "@/Components/ui/select";
 import { cn } from "@/Lib/utils";
 import { isWeekend } from "date-fns";
+import FilePondUploader from "@/Components/FilePondUploader";
 
 const allowedMimeTypes = [
     "application/pdf",
@@ -25,65 +27,66 @@ const allowedMimeTypes = [
     "image/png",
 ];
 
-const SERVICERECORD = z.object({
-    name: z
-        .string()
-        .min(1, requiredError("certificate name"))
-        .default(""),
-    fileid: z.number().nullable(),
-    venue: z.string().min(1, requiredError("venue")),
-    organizer: z.string().min(1, requiredError("organizer")),
-    session: z.enum(['halfday', 'fullday', 'weekdays'], {
-        invalid_type_error: requiredError('session')
-    }).nullable(),
-    from: z.date({ required_error: requiredError("from") }).nullable(),
-    to: z.date().optional().nullable().default(null),
-}).superRefine((sr, ctx) => {
-    if(!sr.fileid) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Please provide certificate.",
-            path: ['fileid']
-        })
-    }
-
-    if(!sr.session) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: requiredError('session'),
-            path: ['session']
-        })
-    }
-
-    if(!sr.from) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: requiredError('"from"'),
-            path: ['from']
-        })
-    }
-
-    if(sr.to && sr.from) {
-        sr.from.setHours(0, 0, 0, 0);
-        sr.to.setHours(0, 0, 0, 0);
-
-        if(sr.to.getTime() === sr.from.getTime()) {
+const SERVICERECORD = z
+    .object({
+        name: z.string().min(1, requiredError("certificate name")).default(""),
+        fileid: z.number().nullable(),
+        venue: z.string().min(1, requiredError("venue")),
+        organizer: z.string().min(1, requiredError("organizer")),
+        session: z
+            .enum(["halfday", "fullday", "weekdays"], {
+                invalid_type_error: requiredError("session"),
+            })
+            .nullable(),
+        from: z.date({ required_error: requiredError("from") }).nullable(),
+        to: z.date().optional().nullable().default(null),
+    })
+    .superRefine((sr, ctx) => {
+        if (!sr.fileid) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "'from' and 'to' must not be the same.",
-                path: ['to']
-            })
+                message: "Please provide certificate.",
+                path: ["fileid"],
+            });
         }
 
-        if(sr.to.getTime() < sr.from.getTime()) {
+        if (!sr.session) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "'to' must be ahead of 'from'.",
-                path: ['to']
-            })
+                message: requiredError("session"),
+                path: ["session"],
+            });
         }
-    }
-});
+
+        if (!sr.from) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: requiredError('"from"'),
+                path: ["from"],
+            });
+        }
+
+        if (sr.to && sr.from) {
+            sr.from.setHours(0, 0, 0, 0);
+            sr.to.setHours(0, 0, 0, 0);
+
+            if (sr.to.getTime() === sr.from.getTime()) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "'from' and 'to' must not be the same.",
+                    path: ["to"],
+                });
+            }
+
+            if (sr.to.getTime() < sr.from.getTime()) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "'to' must be ahead of 'from'.",
+                    path: ["to"],
+                });
+            }
+        }
+    });
 
 const defaultSR = {
     name: "",
@@ -92,23 +95,23 @@ const defaultSR = {
     organizer: "",
     from: null,
     to: null,
-    session: null
-}
+    session: null,
+};
 
 const SERVICERECORDSCHEMA = z.object({ sr: z.array(SERVICERECORD) });
 
-type IFormServiceRecord = z.infer<typeof SERVICERECORDSCHEMA>
+type IFormServiceRecord = z.infer<typeof SERVICERECORDSCHEMA>;
 
-type Props = ModalProps & {}
+type Props = ModalProps & {};
 
 type ServiceRecordCardProps = {
     form: any;
     index: number;
     onRemove: CallableFunction;
-}
+};
 
 const NewCertificate: React.FC<Props> = ({ show, onClose }) => {
-    const { toast } = useToast()
+    const { toast } = useToast();
 
     const form = useFormSubmit<IFormServiceRecord>({
         route: route("sr.store"),
@@ -126,8 +129,7 @@ const NewCertificate: React.FC<Props> = ({ show, onClose }) => {
                     status: page.props.flash.status,
                 });
 
-                if(page.props.flash.status === "success")
-                    onClose(false)
+                if (page.props.flash.status === "success") onClose(false);
             },
             onError: (error: any) => {
                 if ("0" in error)
@@ -150,14 +152,14 @@ const NewCertificate: React.FC<Props> = ({ show, onClose }) => {
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
-        name: "sr"
-    })
+        name: "sr",
+    });
 
     useEffect(() => {
-        if(!show) {
-            setTimeout(() => form.reset(), 500)
+        if (!show) {
+            setTimeout(() => form.reset(), 500);
         }
-    }, [show])
+    }, [show]);
 
     return (
         <Modal
@@ -169,14 +171,14 @@ const NewCertificate: React.FC<Props> = ({ show, onClose }) => {
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
                     <div className="space-y-4">
-                    {fields.map((field, index) => (
-                        <ServiceRecordCard
-                            key={field.id}
-                            form={form}
-                            index={index}
-                            onRemove={() => remove(index)}
-                        />
-                    ))}
+                        {fields.map((field, index) => (
+                            <ServiceRecordCard
+                                key={field.id}
+                                form={form}
+                                index={index}
+                                onRemove={() => remove(index)}
+                            />
+                        ))}
                     </div>
 
                     <div className="mt-4">
@@ -209,49 +211,44 @@ const NewCertificate: React.FC<Props> = ({ show, onClose }) => {
 };
 
 const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
-    form, index, onRemove
+    form,
+    index,
+    onRemove,
 }) => {
-    const page = usePage()
-    const pondRef = useRef<FilePond|null>(null)
+    const watchSession = form.watch(`sr.${index}.session`);
 
-    const watchSession = form.watch(`sr.${index}.session`)
-
-    registerPlugin(
-        FilePondPluginFileValidateType,
-        FilePondPluginFileValidateSize
-    )
-
-    const handleFilepondLoad = (load: any): any => {
-        const response = JSON.parse(load)
-
-        if(response.status === 'success')
-            form.setValue(`sr.${index}.fileid`, response.file.id, { shouldDirty: true })
-
-        return null
-    }
-
-    const handleFilepondError = (error: any) => {
-        // console.log(error)
-    }
+    const handleFilepondLoad = (id: number): any => {
+        form.setValue(`sr.${index}.fileid`, id, {
+            shouldDirty: true,
+        });
+    };
 
     const handleFilePondRemove = () => {
-        form.setValue(`sr.${index}.fileid`, null, { shouldDirty: true })
-    }
+        form.setValue(`sr.${index}.fileid`, null, { shouldDirty: true });
+    };
 
     useEffect(() => {
-        if(watchSession === "halfday") {
-            form.setValue(`sr.${index}.to`, null)
-        } else if(watchSession === "weekdays") {
-            if(form.getValues(`sr.${index}.from`) && isWeekend(form.getValues(`sr.${index}.from`))) {
-                form.setValue(`sr.${index}.from`, null)
-                if(isWeekend(form.getValues(`sr.${index}.to`)))
-                    form.setValue(`sr.${index}.to`, null)
+        if (watchSession === "halfday") {
+            form.setValue(`sr.${index}.to`, null);
+        } else if (watchSession === "weekdays") {
+            if (
+                form.getValues(`sr.${index}.from`) &&
+                isWeekend(form.getValues(`sr.${index}.from`))
+            ) {
+                form.setValue(`sr.${index}.from`, null);
+                if (isWeekend(form.getValues(`sr.${index}.to`)))
+                    form.setValue(`sr.${index}.to`, null);
             }
         }
-    }, [watchSession])
+    }, [watchSession]);
 
     return (
-        <div className={cn("relative p-4 border border-border rounded-md space-y-3", form.formState.errors?.sr?.[0] && "!border-destructive")}>
+        <div
+            className={cn(
+                "relative p-4 border border-border rounded-md space-y-3",
+                form.formState.errors?.sr?.[0] && "!border-destructive"
+            )}
+        >
             <Button
                 type="button"
                 variant="outline"
@@ -286,7 +283,15 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
                     form={form}
                     name={`sr.${index}.session`}
                     label="Session"
-                    displayValue={(watchSession === "halfday" ? "Half-day":watchSession==="fullday"?"Whole-day":watchSession ? "Weekdays":"")}
+                    displayValue={
+                        watchSession === "halfday"
+                            ? "Half-day"
+                            : watchSession === "fullday"
+                            ? "Whole-day"
+                            : watchSession
+                            ? "Weekdays"
+                            : ""
+                    }
                     items={
                         <Fragment>
                             <SelectItem value="halfday" children="Half-day" />
@@ -303,7 +308,7 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
                     name={`sr.${index}.from`}
                     label="From"
                     disableDate={(date) => {
-                        return watchSession === "weekdays" && isWeekend(date)
+                        return watchSession === "weekdays" && isWeekend(date);
                     }}
                 />
                 <FormCalendar
@@ -311,48 +316,29 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
                     name={`sr.${index}.to`}
                     label="To"
                     required={false}
-                    disabled={watchSession === 'halfday' || !watchSession}
+                    disabled={watchSession === "halfday" || !watchSession}
                     triggerClass="disabled:opacity-100 disabled:text-foreground/20"
                     disableDate={(date) => {
-                        return watchSession === "weekdays" && isWeekend(date)
+                        return watchSession === "weekdays" && isWeekend(date);
                     }}
                 />
             </div>
 
             <div className="size-full pt-2">
-                <FilePond
-                    ref={pondRef}
-                    name="file"
-                    maxFiles={1}
-                    className="filepond--pane filepond--drop-label"
-                    credits={false}
-                    maxFileSize={"10mb"}
-                    allowFileTypeValidation
-                    acceptedFileTypes={allowedMimeTypes}
-                    server={{
-                        timeout: 7000,
-                        process: {
-                            url: route('sr.temporary'),
-                            method: "POST",
-                            headers: {
-                                'X-CSRF-TOKEN': page.props.ct,
-                            },
-                            withCredentials: false,
-                            onload: handleFilepondLoad,
-                            onerror: handleFilepondError,
-                        },
-                    }}
-                    onremovefile={handleFilePondRemove}
+                <FilePondUploader
+                    route={route("sr.temporary")}
+                    mimetypes={allowedMimeTypes}
+                    handleLoad={handleFilepondLoad}
+                    handleRemove={handleFilePondRemove}
                 />
-                {
-                    (form.formState.errors?.sr?.[index]?.fileid) && (
-                        <TypographySmall className="text-destructive font-medium">{form.formState.errors.sr[index].fileid.message}</TypographySmall>
-                    )
-                }
+                {form.formState.errors?.sr?.[index]?.fileid && (
+                    <TypographySmall className="text-destructive font-medium">
+                        {form.formState.errors.sr[index].fileid.message}
+                    </TypographySmall>
+                )}
             </div>
-
         </div>
-    )
-}
+    );
+};
 
 export default NewCertificate;

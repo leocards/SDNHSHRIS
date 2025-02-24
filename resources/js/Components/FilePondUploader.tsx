@@ -4,7 +4,6 @@ import "filepond/dist/filepond.min.css";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import { usePage } from "@inertiajs/react";
-
 type Props = {
     mimetypes: Array<string>
     handleLoad: (id: number) => void;
@@ -43,6 +42,7 @@ const FilePondUploader: React.FC<Props> = ({ route, mimetypes, handleLoad, handl
                 credits={false}
                 maxFileSize={"10mb"}
                 allowFileTypeValidation
+                allowFileSizeValidation
                 acceptedFileTypes={mimetypes}
                 server={{
                     timeout: 7000,

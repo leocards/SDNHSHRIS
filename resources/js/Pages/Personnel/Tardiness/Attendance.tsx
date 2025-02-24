@@ -18,6 +18,7 @@ import { useToast } from "@/Hooks/use-toast";
 import { X } from "lucide-react";
 import { TableHeader, TableRow } from "@/Components/Header";
 import { useSidebar } from "@/Components/ui/sidebar";
+import useWindowSize from "@/Hooks/useWindowResize";
 
 const ATTENDANCESCHEMA = z.object({
     attendances: z.array(
@@ -211,8 +212,8 @@ const Attendance: React.FC<AttendanceProps> = ({
 
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
-                    <div className="flex items-center justify-end gap-3">
-                        <div className="w-36">
+                    <div className="flex items-center justify-end [@media(max-width:410px)]:flex-col gap-3">
+                        <div className="[@media(min-width:410px)]:w-36 w-full">
                             <FormSelect
                                 form={form}
                                 name="sy"
@@ -237,7 +238,7 @@ const Attendance: React.FC<AttendanceProps> = ({
                                 }
                             />
                         </div>
-                        <div className="w-36">
+                        <div className="[@media(min-width:410px)]:w-36 w-full">
                             <FormSelect
                                 form={form}
                                 name="month"
@@ -284,14 +285,14 @@ const Attendance: React.FC<AttendanceProps> = ({
                             <span>Please wait...</span>
                         </div>
                     ) : (
-                        <div className="divide-y border-border">
+                        <div className="[@media(min-width:410px)]:divide-y border-border [@media(max-width:410px)]:mt-5 [@media(max-width:410px)]:space-y-4">
                             <TableHeader
                                 style={{
                                     gridTemplateColumns: isMobile
                                         ? ColumnsMobile
                                         : Columns,
                                 }}
-                                className="text-sm border-b-0 [&>div]:brea"
+                                className="text-sm border-b-0 [&>div]:brea [@media(max-width:410px)]:hidden"
                             >
                                 <div className="max-md:!hidden">Personnel</div>
                                 <div>No. of days present</div>
@@ -310,16 +311,16 @@ const Attendance: React.FC<AttendanceProps> = ({
                         </div>
                     )}
 
-                    <div className="border-t border-border flex items-center pt-3 mt-5">
+                    <div className="border-t border-border flex items-center [@media(max-width:410px)]:flex-col-reverse pt-3 mt-5 [@media(max-width:410px)]:gap-3">
                         <Button
                             type="button"
                             variant={"ghost"}
-                            className="mr-auto px-7"
+                            className="mr-auto px-7 [@media(max-width:410px)]:w-full"
                             onClick={() => onClose(false)}
                         >
                             Cancel
                         </Button>
-                        <Button>Submit Attendance</Button>
+                        <Button className="[@media(max-width:410px)]:w-full">Submit Attendance</Button>
                     </div>
                 </form>
             </Form>
@@ -335,10 +336,11 @@ type AttendanceRowProps = {
 
 const AttendanceRow: React.FC<AttendanceRowProps> = ({ form, name, index }) => {
     const { isMobile } = useSidebar();
+    const { width } = useWindowSize()
 
     return (
-        <Card className="rounded-none border-0 shadow-none">
-            <CardContent className="relative m-0 p-0">
+        <Card className="[@media(min-width:410px)]:rounded-none [@media(min-width:410px)]:border-0 shadow-none">
+            <CardContent className="relative m-0 [@media(min-width:410px)]:p-0 [@media(max-width:410px)]:p-2">
                 <div className="text-sm font-semibold md:!hidden pl-2 pt-1">
                     {form.getValues(`${name}.${index}.user.name`)}
                 </div>
@@ -346,37 +348,45 @@ const AttendanceRow: React.FC<AttendanceRowProps> = ({ form, name, index }) => {
                     <TableRow
                         style={{
                             gridTemplateColumns: isMobile
-                                ? ColumnsMobile
+                                ? width <= 410 ? ["1fr"].join(" ") : ColumnsMobile
                                 : Columns,
                         }}
-                        className=""
+                        className="[@media(max-width:410px)]:hover:bg-transparent [@media(max-width:410px)]:[&>div:not(:last-child)]:!pb-0"
                     >
                         <div className="text-sm font-semibold max-md:!hidden">
                             {form.getValues(`${name}.${index}.user.name`)}
                         </div>
-                        <FormInput
-                            form={form}
-                            name={`${name}.${index}.present`}
-                            label=""
-                        />
+                        <div className="[@media(max-width:410px)]:flex [&_div]:w-full">
+                            <FormInput
+                                form={form}
+                                name={`${name}.${index}.present`}
+                                label={width <= 410 ? "No. of days present" : ""}
+                            />
+                        </div>
 
-                        <FormInput
-                            form={form}
-                            name={`${name}.${index}.absent`}
-                            label=""
-                        />
+                        <div className="[@media(max-width:410px)]:flex [&_div]:w-full">
+                            <FormInput
+                                form={form}
+                                name={`${name}.${index}.absent`}
+                                label={width <= 410 ? "No. of days absent" : ""}
+                            />
+                        </div>
 
-                        <FormInput
-                            form={form}
-                            name={`${name}.${index}.timetardy`}
-                            label=""
-                        />
+                        <div className="[@media(max-width:410px)]:flex [&_div]:w-full">
+                            <FormInput
+                                form={form}
+                                name={`${name}.${index}.timetardy`}
+                                label={width <= 410 ? "No. of time tardy" : ""}
+                            />
+                        </div>
 
-                        <FormInput
-                            form={form}
-                            name={`${name}.${index}.undertime`}
-                            label=""
-                        />
+                        <div className="[@media(max-width:410px)]:flex [&_div]:w-full">
+                            <FormInput
+                                form={form}
+                                name={`${name}.${index}.undertime`}
+                                label={width <= 410 ? "No. of undertime" : ""}
+                            />
+                        </div>
                     </TableRow>
                 </div>
             </CardContent>

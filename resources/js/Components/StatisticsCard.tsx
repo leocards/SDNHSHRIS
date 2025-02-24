@@ -13,15 +13,15 @@ const StatisticsCard: React.FC<
     return (
         <div
             className={cn(
-                "flex max-smflex-col items-center gap-3 p-3 rounded-xl bg-gradient-to-tl text-primary-foreground dark:text-white/90",
+                "flex [@media(max-width:456px)]:flex-col items-center gap-3 [@media(max-width:456px)]:gap-2 p-3 rounded-xl bg-gradient-to-tl text-primary-foreground dark:text-white/90",
                 className,
             )}
         >
-            <div className={cn(iconClass, "size-10 sm:size-12 shrink-0")}>{children}</div>
+            <div className={cn(iconClass, "size-10 sm:size-12 [@media(max-width:456px)]:size-8 [@media(max-width:456px)]:[&_svg]:!size-5 shrink-0")}>{children}</div>
             <div className="relative z-10">
                 <div
                     className={cn(
-                        "text-sm font-semibold",
+                        "text-sm font-semibold [@media(max-width:456px)]:hidden",
                     )}
                 >
                     {label}
