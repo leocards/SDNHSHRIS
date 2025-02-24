@@ -405,7 +405,7 @@ const LeaveData = ({
         <LogsListCard
             buttonColumn={buttonColumn}
             headers={["type", "Status", "Date", "View"]}
-            headerColumn={Array(3).fill("1fr")}
+            headerColumn={Array(4).fill("1fr")}
         >
             {(leaveLog, column) =>
                 leaveLog?.logs?.map((log, index) => (
