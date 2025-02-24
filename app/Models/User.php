@@ -287,4 +287,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(PersonalDataSheet::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(LogsReport::class);
+    }
 }

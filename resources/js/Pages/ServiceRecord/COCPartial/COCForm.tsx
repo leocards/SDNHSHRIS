@@ -124,7 +124,7 @@ const COCForm: React.FC<Porps> = ({ form, index }) => {
                         name={`coc[${index}].numofhours`}
                         label="Number of hours"
                         required={watchSession === "halfday"}
-                        disabled={watchSession === "fullday" || !watchSession}
+                        disabled={watchSession !== "halfday" || !watchSession }
                     />
                 </div>
 

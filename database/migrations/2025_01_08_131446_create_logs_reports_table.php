@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('logs_reports', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained();
             $table->string("type");
             $table->enum("status", ['pending', 'approved', 'disapproved', 'invalid']);
             $table->json("details");

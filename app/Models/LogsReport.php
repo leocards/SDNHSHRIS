@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class LogsReport extends Model
 {
     protected $fillable = [
+        "user_id",
         "type",
         "status",
         "details",
@@ -17,5 +18,10 @@ class LogsReport extends Model
         return [
             "details" => "json"
         ];
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

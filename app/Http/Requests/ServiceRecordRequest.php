@@ -40,6 +40,7 @@ class ServiceRecordRequest extends FormRequest
             'sr.*.venue' => 'venue',
             'sr.*.organizer' => 'organizer',
             'sr.*.fileid' => 'file',
+            'sr.*.session' => 'session',
         ];
     }
 }

@@ -17,12 +17,12 @@ class PersonalDataSheetObserver implements ShouldHandleEventsAfterCommit
         if($personalDataSheet->status != "pending") {
             $user = User::find($personalDataSheet->user_id);
             LogsReport::create([
+                'user_id' => $personalDataSheet->user_id,
                 'type' => 'pds',
                 'status' => $personalDataSheet->status,
                 'details' => collect([
                     'userid' => $personalDataSheet->user_id,
-                    'username' => $user->full_name,
-                    'useravatar' => $user->avatar
+                    'username' => $user->name,
                 ])->toArray()
             ]);
         }

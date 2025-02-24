@@ -46,15 +46,14 @@ class ServiceRecordObserver implements ShouldHandleEventsAfterCommit
 
             $details = $serviceRecord->type === 'coc' ? collect([
                 'cocid' => $serviceRecord->id,
-                'username' => $user->full_name,
-                'useravatar' => $user->avatar,
+                'username' => $user->name,
             ]) : collect([
                 'certificateid' => $serviceRecord->id,
-                'username' => $user->full_name,
-                'useravatar' => $user->avatar,
+                'username' => $user->name,
             ]);
 
             LogsReport::create([
+                'user_id' => $serviceRecord->user_id,
                 'type' => $serviceRecord->type,
                 'status' => $serviceRecord->status,
                 'details' => $details->toArray()

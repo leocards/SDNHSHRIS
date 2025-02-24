@@ -7,6 +7,7 @@ use App\Models\ServiceRecord;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class LogsReportController extends Controller
@@ -17,14 +18,29 @@ class LogsReportController extends Controller
         $status = $request->query('status') ?? "all";
         $filterYear = $request->query('filterYear') ?? "all";
 
-        $logs = LogsReport::where('type', $type)
-            ->when($status != "all", function ($query) use ($status) {
-                $query->where('status', $status);
+        $logs = User::withoutGlobalScopes()
+            ->with(['logs' => function ($query) use ($type, $status, $filterYear) {
+                $query->where('type', $type)
+                    ->when($status != "all", function ($query) use ($status) {
+                        $query->where('status', $status);
+                    })
+                    ->when($filterYear != "all", function ($query) use ($filterYear) {
+                        $query->whereYear('created_at', $filterYear);
+                    })
+                    ->latest();
+            }])
+            ->excludeHr()
+            ->whereHas('logs', function ($query) use ($type, $status, $filterYear) {
+                $query->where('type', $type)
+                    ->when($status != "all", function ($query) use ($status) {
+                        $query->where('status', $status);
+                    })
+                    ->when($filterYear != "all", function ($query) use ($filterYear) {
+                        $query->whereYear('created_at', $filterYear);
+                    });
             })
-            ->when($filterYear != "all", function ($query) use ($filterYear) {
-                $query->whereYear('created_at', $filterYear);
-            })
-            ->latest()
+            ->select('id', 'firstname', 'lastname', 'middlename', 'avatar')
+            ->orderBy('lastname')
             ->paginate($this->page);
 
         if ($request->expectsJson())
@@ -64,6 +80,7 @@ class LogsReportController extends Controller
             ->when($filterYear != "all", function ($query) use ($filterYear) {
                 $query->whereYear('created_at', $filterYear);
             })
+            ->latest()
             ->get();
 
         return response()->json($logs);

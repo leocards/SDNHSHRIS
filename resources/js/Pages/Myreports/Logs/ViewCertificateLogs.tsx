@@ -112,17 +112,6 @@ const ViewCertificateLogs = ({ certificate, show, onClose }: Props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <TypographySmall
-                                    className=""
-                                    children="Status:"
-                                />
-                                <TypographyStatus
-                                    status={certificates?.status}
-                                    children={certificates?.status}
-                                    className="capitalize"
-                                />
-                            </div>
                         </div>
                     </Fragment>
                 )

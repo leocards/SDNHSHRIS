@@ -21,13 +21,25 @@ import ViewPdsLogs from "./ViewPdsLogs";
 import ViewLeaveLogs from "./ViewLeaveLogs";
 import ViewCOCLogs from "./ViewCOCLogs";
 import ViewCertificateLogs from "./ViewCertificateLogs";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/Components/ui/accordion";
+import { cn } from "@/Lib/utils";
 
 type LOGSTYPE = {
     id: number;
-    type: string;
-    details: any;
-    status: string;
-    created_at: string;
+    name: string;
+    avatar: string | null;
+    logs: Array<{
+        id: number;
+        type: string;
+        details: any;
+        status: string;
+        created_at: string;
+    }>;
 };
 
 type Props = {
@@ -50,9 +62,10 @@ const Logs = (props: Props) => {
 const Main: React.FC<Props> = ({ years, principal }) => {
     const { page, onQuery } = usePagination<LOGSTYPE>();
 
-    const { setProcess } = useProcessIndicator();
     const [yearList, setYearList] = useState(years);
-    const [type, setType] = useState<"leave" | "pds" | "coc" | "certificate">("leave");
+    const [type, setType] = useState<"leave" | "pds" | "coc" | "certificate">(
+        "leave"
+    );
     const [filterYear, setFilterYear] = useState(
         yearList.length > 0 ? yearList[0].toString() : ""
     );
@@ -64,7 +77,7 @@ const Main: React.FC<Props> = ({ years, principal }) => {
 
     const onFilterType = (value: any) => {
         setType(value);
-        setSelected(null)
+        setSelected(null);
         onQuery({ type: value, status, filterYear });
     };
 
@@ -85,13 +98,7 @@ const Main: React.FC<Props> = ({ years, principal }) => {
         onQuery({ type, status: value ?? "all", filterYear });
     };
 
-    const Columns = [
-        "3rem",
-        "1fr",
-        "minmax(4rem,7rem)",
-        "minmax(5rem,14rem)",
-        "4rem",
-    ];
+    const Columns = ["3rem", "1fr"];
 
     useEffect(() => {
         if (type) {
@@ -106,7 +113,7 @@ const Main: React.FC<Props> = ({ years, principal }) => {
     }, [type]);
 
     return (
-        <div>
+        <div className="max-w-4xl mx-auto">
             <Header title="Logs">Logs</Header>
 
             <Tabs
@@ -207,10 +214,7 @@ const Main: React.FC<Props> = ({ years, principal }) => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div></div>
-                                <div>Personnel Name</div>
-                                <div>Status</div>
-                                <div className="justify-center">Date</div>
-                                <div className="justify-center">View</div>
+                                <div className="!pl-4">Personnel Name</div>
                             </TableHeader>
                             {page?.data.length === 0 && (
                                 <Empty
@@ -218,10 +222,31 @@ const Main: React.FC<Props> = ({ years, principal }) => {
                                     label={`No recorded logs.`}
                                 />
                             )}
-                            {type === "pds" && <PDSData column={column} onView={setSelected} />}
-                            {type === "leave" && <LeaveData column={column} onView={setSelected} />}
-                            {type === "coc" && <COCData column={column} onView={setSelected} />}
-                            {type === "certificate" && <CertificateData column={column} onView={setSelected} />}
+                            <Accordion
+                                type="single"
+                                collapsible
+                                className="w-full"
+                            >
+                                {type === "pds" && (
+                                    <PDSData
+                                        buttonColumn={column}
+                                        onView={setSelected}
+                                    />
+                                )}
+                                {type === "leave" && <LeaveData buttonColumn={column} onView={setSelected} />}
+                                {type === "coc" && (
+                                    <COCData
+                                        buttonColumn={column}
+                                        onView={setSelected}
+                                    />
+                                )}
+                                {type === "certificate" && (
+                                    <CertificateData
+                                        buttonColumn={column}
+                                        onView={setSelected}
+                                    />
+                                )}
+                            </Accordion>
                         </Fragment>
                     )}
                 </TableDataSkeletonLoader>
@@ -237,166 +262,328 @@ const Main: React.FC<Props> = ({ years, principal }) => {
             />
 
             {type === "leave" ? (
-                <div><ViewLeaveLogs leaveid={selected} show={!!selected} onClose={() => setSelected(null)} /></div>
+                <div>
+                    <ViewLeaveLogs
+                        leaveid={selected}
+                        show={!!selected}
+                        onClose={() => setSelected(null)}
+                    />
+                </div>
             ) : type === "pds" ? (
                 <div>
-                    <ViewPdsLogs userid={selected} show={!!selected} onClose={() => setSelected(null)} />
+                    <ViewPdsLogs
+                        userid={selected}
+                        show={!!selected}
+                        onClose={() => setSelected(null)}
+                    />
                 </div>
             ) : type === "coc" ? (
                 <div>
-                    <ViewCOCLogs cocid={selected} show={!!selected} onClose={() => setSelected(null)} />
+                    <ViewCOCLogs
+                        cocid={selected}
+                        show={!!selected}
+                        onClose={() => setSelected(null)}
+                    />
                 </div>
             ) : (
                 <div>
-                    <ViewCertificateLogs certificate={selected} show={!!selected} onClose={() => setSelected(null)} />
+                    <ViewCertificateLogs
+                        certificate={selected}
+                        show={!!selected}
+                        onClose={() => setSelected(null)}
+                    />
                 </div>
             )}
         </div>
     );
 };
 
-const PDSData = ({ column, onView }: { column: string; onView: CallableFunction }) => {
+type LogsListCardProps = {
+    children: (page: LOGSTYPE, column: string) => React.ReactNode;
+    headers: string[];
+    headerColumn: string[];
+    buttonColumn: string;
+};
+const LogsListCard: React.FC<LogsListCardProps> = ({
+    children,
+    headers,
+    headerColumn,
+    buttonColumn,
+}) => {
     const { page } = usePagination<LOGSTYPE>();
 
     return page?.data?.map((log, index) => (
-        <TableRow
-            key={index}
-            style={{ gridTemplateColumns: column }}
-            className="hover:bg-background"
-        >
-            <div className="justify-center">{index + 1}</div>
-            <div>{log.details.username}</div>
-            <div className="capitalize">
-                <TypographyStatus
-                    status={
-                        log.status as
-                            | "approved"
-                            | "disapproved"
-                            | "invalid"
-                            | "pending"
-                    }
+        <AccordionItem value={log.id.toString()} key={index}>
+            <AccordionTrigger className="px-4">
+                <div
+                    className="grid"
+                    style={{ gridTemplateColumns: buttonColumn }}
                 >
-                    {log.status}
-                </TypographyStatus>
-            </div>
-            <div className="justify-center">
-                {format(log.created_at, "MMMM dd, y")}
-            </div>
-            <div className="justify-center">
-                <Button variant="outline" size="icon" className="size-7" onClick={() => onView(log.details.userid)}>
-                    <Eye />
-                </Button>
-            </div>
-        </TableRow>
+                    <div>{index + 1}</div>
+                    <div>{log.name}</div>
+                </div>
+            </AccordionTrigger>
+            <AccordionContent className="group-data-[state=open]/accordion:border-border border-transparent border-t pb-0 transition">
+                <TableHeader
+                    style={{ gridTemplateColumns: headerColumn?.join(" ") }}
+                    className="bg-accent/40"
+                >
+                    {headers.map((header, index) => (
+                        <div key={index} className={cn("justify-center")}>
+                            {header}
+                        </div>
+                    ))}
+                </TableHeader>
+                {children(log, headerColumn.join(" "))}
+            </AccordionContent>
+        </AccordionItem>
     ));
 };
 
-const LeaveData = ({ column, onView }: { column: string; onView?: CallableFunction }) => {
-    const { page } = usePagination<LOGSTYPE>();
-
-    return page?.data?.map((log, index) => (
-        <TableRow
-            key={index}
-            style={{ gridTemplateColumns: column }}
-            className="hover:bg-background"
+const PDSData = ({
+    buttonColumn,
+    onView,
+}: {
+    onView: CallableFunction;
+    buttonColumn: string;
+}) => {
+    return (
+        <LogsListCard
+            buttonColumn={buttonColumn}
+            headers={["Status", "Date", "View"]}
+            headerColumn={Array(3).fill("1fr")}
         >
-            <div className="justify-center">{index + 1}</div>
-            <div>{log.details.username}</div>
-            <div className="capitalize">
-                <TypographyStatus
-                    status={
-                        log.status as
-                            | "approved"
-                            | "disapproved"
-                            | "invalid"
-                            | "pending"
-                    }
-                >
-                    {log.status}
-                </TypographyStatus>
-            </div>
-            <div className="justify-center">
-                {format(log.created_at, "MMMM dd, y")}
-            </div>
-            <div className="justify-center">
-                <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.leaveid)}>
-                    <Eye />
-                </Button>
-            </div>
-        </TableRow>
-    ));
+            {(pdsLog, column) =>
+                pdsLog.logs?.map((log, index) => (
+                    <TableRow
+                        key={index}
+                        style={{ gridTemplateColumns: column }}
+                        className="hover:bg-background"
+                    >
+                        <div className="capitalize">
+                            <TypographyStatus
+                                status={
+                                    log.status as
+                                        | "approved"
+                                        | "disapproved"
+                                        | "invalid"
+                                        | "pending"
+                                }
+                            >
+                                {log.status}
+                            </TypographyStatus>
+                        </div>
+                        <div className="justify-center">
+                            {format(log.created_at, "MMMM dd, y")}
+                        </div>
+                        <div className="justify-center">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="size-7"
+                                onClick={() => onView(log.details.userid)}
+                            >
+                                <Eye />
+                            </Button>
+                        </div>
+                    </TableRow>
+                ))
+            }
+        </LogsListCard>
+    );
 };
 
-const COCData = ({ column, onView }: { column: string; onView?: CallableFunction }) => {
-    const { page } = usePagination<LOGSTYPE>();
-
-    return page?.data?.map((log, index) => (
-        <TableRow
-            key={index}
-            style={{ gridTemplateColumns: column }}
-            className="hover:bg-background"
+const LeaveData = ({
+    buttonColumn,
+    onView,
+}: {
+    buttonColumn: string;
+    onView?: CallableFunction;
+}) => {
+    return (
+        <LogsListCard
+            buttonColumn={buttonColumn}
+            headers={["Status", "Date", "View"]}
+            headerColumn={Array(3).fill("1fr")}
         >
-            <div className="justify-center">{index + 1}</div>
-            <div>{log.details.username}</div>
-            <div className="capitalize">
-                <TypographyStatus
-                    status={
-                        log.status as
-                            | "approved"
-                            | "disapproved"
-                            | "invalid"
-                            | "pending"
-                    }
-                >
-                    {log.status}
-                </TypographyStatus>
-            </div>
-            <div className="justify-center">
-                {format(log.created_at, "MMMM dd, y")}
-            </div>
-            <div className="justify-center">
-                <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.cocid)}>
-                    <Eye />
-                </Button>
-            </div>
-        </TableRow>
-    ));
+            {(leaveLog, column) =>
+                leaveLog?.logs?.map((log, index) => (
+                    <TableRow
+                        key={index}
+                        style={{ gridTemplateColumns: column }}
+                        className="hover:bg-background"
+                    >
+                        <div className="capitalize justify-center">
+                            <TypographyStatus
+                                status={
+                                    log.status as
+                                        | "approved"
+                                        | "disapproved"
+                                        | "invalid"
+                                        | "pending"
+                                }
+                            >
+                                {log.status}
+                            </TypographyStatus>
+                        </div>
+                        <div className="justify-center">
+                            {format(log.created_at, "MMMM dd, y")}
+                        </div>
+                        <div className="justify-center">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="size-7"
+                                onClick={() => onView?.(log.details.leaveid)}
+                            >
+                                <Eye />
+                            </Button>
+                        </div>
+                    </TableRow>
+                ))
+            }
+        </LogsListCard>
+    );
 };
 
-const CertificateData = ({ column, onView }: { column: string; onView?: CallableFunction }) => {
-    const { page } = usePagination<LOGSTYPE>();
-
-    return page?.data?.map((log, index) => (
-        <TableRow
-            key={index}
-            style={{ gridTemplateColumns: column }}
-            className="hover:bg-background"
+const COCData = ({
+    buttonColumn,
+    onView,
+}: {
+    buttonColumn: string;
+    onView?: CallableFunction;
+}) => {
+    return (
+        <LogsListCard
+            buttonColumn={buttonColumn}
+            headers={["Status", "Date", "View"]}
+            headerColumn={Array(3).fill("1fr")}
         >
-            <div className="justify-center">{index + 1}</div>
-            <div>{log.details.username}</div>
-            <div className="capitalize">
-                <TypographyStatus
-                    status={
-                        log.status as
-                            | "approved"
-                            | "disapproved"
-                            | "invalid"
-                            | "pending"
-                    }
-                >
-                    {log.status}
-                </TypographyStatus>
-            </div>
-            <div className="justify-center">
-                {format(log.created_at, "MMMM dd, y")}
-            </div>
-            <div className="justify-center">
-                <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.certificateid)}>
-                    <Eye />
-                </Button>
-            </div>
-        </TableRow>
-    ));
+            {(cdLog, column) =>
+                cdLog.logs?.map((log, index) => (
+                    <TableRow
+                        key={index}
+                        style={{ gridTemplateColumns: column }}
+                        className="hover:bg-background"
+                    >
+                        <div className="capitalize justify-center">
+                            <TypographyStatus
+                                status={
+                                    log.status as
+                                        | "approved"
+                                        | "disapproved"
+                                        | "invalid"
+                                        | "pending"
+                                }
+                            >
+                                {log.status}
+                            </TypographyStatus>
+                        </div>
+                        <div className="justify-center">
+                            {format(log.created_at, "MMMM dd, y")}
+                        </div>
+                        <div className="justify-center">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="size-7"
+                                onClick={() => onView?.(log.details.cocid)}
+                            >
+                                <Eye />
+                            </Button>
+                        </div>
+                    </TableRow>
+                ))
+            }
+        </LogsListCard>
+    );
+};
+
+const CertificateData = ({
+    buttonColumn,
+    onView,
+}: {
+    buttonColumn: string;
+    onView?: CallableFunction;
+}) => {
+    return (
+        <LogsListCard
+            buttonColumn={buttonColumn}
+            headers={["Status", "Date", "View"]}
+            headerColumn={Array(3).fill("1fr")}
+        >
+            {(cdLog, column) =>
+                cdLog.logs?.map((log, index) => (
+                    <TableRow
+                        key={index}
+                        style={{ gridTemplateColumns: column }}
+                        className="hover:bg-background"
+                    >
+                        <div className="capitalize justify-center">
+                            <TypographyStatus
+                                status={
+                                    log.status as
+                                        | "approved"
+                                        | "disapproved"
+                                        | "invalid"
+                                        | "pending"
+                                }
+                            >
+                                {log.status}
+                            </TypographyStatus>
+                        </div>
+                        <div className="justify-center">
+                            {format(log.created_at, "MMMM dd, y")}
+                        </div>
+                        <div className="justify-center">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="size-7"
+                                onClick={() =>
+                                    onView?.(log.details.certificateid)
+                                }
+                            >
+                                <Eye />
+                            </Button>
+                        </div>
+                    </TableRow>
+                ))
+            }
+        </LogsListCard>
+    );
+
+    // return page?.data?.map((log, index) => (
+    //     <TableRow
+    //         key={index}
+    //         style={{ gridTemplateColumns: column }}
+    //         className="hover:bg-background"
+    //     >
+    //         <div className="justify-center">{index + 1}</div>
+    //         <div>{log.details.username}</div>
+    //         <div className="capitalize">
+    //             <TypographyStatus
+    //                 status={
+    //                     log.status as
+    //                         | "approved"
+    //                         | "disapproved"
+    //                         | "invalid"
+    //                         | "pending"
+    //                 }
+    //             >
+    //                 {log.status}
+    //             </TypographyStatus>
+    //         </div>
+    //         <div className="justify-center">
+    //             {format(log.created_at, "MMMM dd, y")}
+    //         </div>
+    //         <div className="justify-center">
+    //             <Button variant="outline" size="icon" className="size-7" onClick={() => onView?.(log.details.certificateid)}>
+    //                 <Eye />
+    //             </Button>
+    //         </div>
+    //     </TableRow>
+    // ));
 };
 
 export default Logs;

@@ -107,7 +107,7 @@ class ServiceRecordController extends Controller
                         'path' => Str::replace('public', '/storage', $destinationPath),
                         'filename' => $file->originalfilename,
                         'from' => $this->parseDate($sr['from']),
-                        'to' => $sr['to'] ? $this->parseDate($sr['to']) : null,
+                        'to' => $sr['to'] ? Carbon::parse($sr['to'])->format('Y-m-d') : null,
                         'credits' => $credits,
                         'session' => $sr['session'],
                         'remainingcredits' => $credits,
@@ -139,7 +139,7 @@ class ServiceRecordController extends Controller
         $request->validate([
             'coc.*.from' => 'required|date',
             'coc.*.to' => 'nullable|date',
-            'coc.*.session' => 'in:halfday,fullday',
+            'coc.*.session' => 'in:halfday,fullday,weekdays',
             'coc.*.numofhours' => ['required_if:session,halfday', 'nullable', 'regex:/^[0-9]+$/'],
         ], [
             'coc.*.numofhours.required' => 'The number of hours field is required',
@@ -180,7 +180,7 @@ class ServiceRecordController extends Controller
                         'dtr' => Str::replace('public', '/storage', $coafilepath),
                         'memo' => Str::replace('public', '/storage', $dtrfilepath),
                         'from' => $this->parseDate($value['from']),
-                        'to' => $value['to'] ? $this->parseDate($value['to']) : null,
+                        'to' => $value['to'] ? Carbon::parse($value['to'])->format('Y-m-d') : null,
                         'numofhours' => $value['numofhours'],
                         'session' => $value['session'],
                         'credits' => $credits,
@@ -277,7 +277,7 @@ class ServiceRecordController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with([
                 'title' => 'Certificate Response',
-                'message' => 'Failed to process respond!',
+                'message' => $th->getMessage(),
                 'status' => 'error'
             ]);
         }

@@ -28,7 +28,7 @@ const ViewCOCLogs = ({ cocid, show, onClose }: Props) => {
 
     return (
         <Modal show={show} onClose={onClose} maxWidth="fit">
-            <div className="w-full flex">
+            <div className="w-full flex mb-3">
                 <Button
                     variant="outline"
                     size="icon"

@@ -70,13 +70,13 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
                 ]);
 
                 LogsReport::create([
+                    'user_id' => $leave->user_id,
                     'type' => 'leave',
                     'status' => $leave->hrstatus,
                     'details' => collect([
                         'leaveid' => $leave->id,
                         'userid' => $user->id,
-                        'username' => $user->full_name,
-                        'useravatar' => $user->avatar
+                        'username' => $user->name,
                     ])->toArray()
                 ]);
 
