@@ -259,10 +259,8 @@ class ServiceRecordController extends Controller
                 if ($personnel->role === "teaching" && $request->response === "approved") {
                     $personnel->credits = floatval(floatval($sr->details['credits']) + floatval($personnel->credits));
 
-
                     $personnel->save();
                 }
-                // dd($personnel->credits);
 
                 if ($personnel->status_updated_at)
                     $sr->saveQuietly();

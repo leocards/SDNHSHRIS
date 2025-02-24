@@ -9,6 +9,7 @@ import AccountInformationForm, {
 import { User } from "@/Types";
 import { useToast } from "@/Hooks/use-toast";
 import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
+import { useEffect } from "react";
 
 type NewPersonnelProps = {
     personnel?: User | null;
@@ -44,8 +45,8 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({ personnel, hasPrincipal, pe
                 datehired: personnel?.hiredate
                     ? new Date(personnel?.hiredate)
                     : undefined,
-                role: personnel?.role ?? personneltype,
-                department: personnel?.department || (personneltype === "non-teaching" ? "accounting" : undefined),
+                role: personnel?.role ?? (!hasPrincipal ? "principal" : personneltype),
+                department: personnel?.department || (personneltype === "non-teaching" ? !hasPrincipal ? "N/A" : "accounting" : undefined),
                 position: personnel?.position || undefined,
                 credits: !personnel && personneltype != "teaching" ? '30' : '0',
                 splcredits: !personnel && personneltype != "teaching" ? '15' : '0',
@@ -80,6 +81,16 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({ personnel, hasPrincipal, pe
             },
         },
     });
+
+    useEffect(() => {
+        if(!hasPrincipal) {
+            toast({
+                title: "No Principal",
+                description: "Create a principal first before creating a new personnel",
+                status: "info"
+            })
+        }
+    }, []);
 
     return (
         <div className="mb-5">
