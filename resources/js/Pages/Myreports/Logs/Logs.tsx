@@ -404,7 +404,7 @@ const LeaveData = ({
     return (
         <LogsListCard
             buttonColumn={buttonColumn}
-            headers={["type", "Status", "Date", "View"]}
+            headers={["Type of leave", "Status", "Date", "View"]}
             headerColumn={Array(4).fill("1fr")}
         >
             {(leaveLog, column) =>
