@@ -90,8 +90,8 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                                 variant="outline"
                                 disabled={props.status !== "approved" || isLoading}
                                 onClick={() => {
-                                    if(props.status !== "approved" || isLoading)
-                                        download_pdf.toPDF();
+                                    if(props.status === "approved" || !isLoading)
+                                       download_pdf.toPDF();
                                 }}
                             >
                                 <DocumentDownload />

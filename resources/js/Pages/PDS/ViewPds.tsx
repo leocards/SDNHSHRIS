@@ -13,6 +13,7 @@ import { useToast } from "@/Hooks/use-toast";
 import TypographySmall from "@/Components/Typography";
 import { cn } from "@/Lib/utils";
 import { router } from "@inertiajs/react";
+import { Margin, usePDF } from "react-to-pdf";
 
 type Props = ModalProps & {
     userid: number | null;
@@ -24,6 +25,12 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [tab, setTab] = useState<PDSTABSTYPE>("C1");
     const [status, setStatus] = useState<APPROVALTYPE>("pending");
+
+    const download_pdf = usePDF({
+                method: "save",
+                filename: "application-for-leave.pdf",
+                page: { format: "A4", margin: Margin.MEDIUM },
+            });
 
     const onRespond = (reponse: APPROVALTYPE) => {
         router.post(
@@ -81,7 +88,11 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
                         className="ml-auto"
                         variant="outline"
                         size="icon"
-                        disabled={status !== "approved"}
+                        disabled={status !== "approved" || isLoading}
+                        onClick={() => {
+                            if(status === "approved" || !isLoading)
+                                download_pdf.toPDF();
+                        }}
                     >
                         <DocumentDownload className="" />
                     </Button>
@@ -90,6 +101,7 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
 
             <div className="mx-auto w-fit">
                 <PDSPDF
+                    ref={download_pdf.targetRef}
                     userid={userid}
                     tab={tab}
                     onStatus={setStatus}

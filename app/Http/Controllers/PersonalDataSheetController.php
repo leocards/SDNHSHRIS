@@ -50,6 +50,7 @@ class PersonalDataSheetController extends Controller
                         $query->withoutGlobalScopes();
                     });
                 })
+                ->whereNotNull('file')
                 ->where(function ($query) use ($search) {
                     $query->whereHas('user', function ($query) use ($search) {
                         $query
