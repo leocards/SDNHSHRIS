@@ -140,8 +140,9 @@ const SelectItem: React.FC<
         className?: string;
         value: string;
         onClick?: CallableFunction;
+        disabled?: boolean;
     }
-> = ({ className, value, children, onClick }) => {
+> = ({ className, value, children, disabled, onClick }) => {
     const { selectedValue, setSelectedValue } = useSelectOption();
     const itemRef = useRef<HTMLDivElement>(null);
 
@@ -167,6 +168,7 @@ const SelectItem: React.FC<
                 setSelectedValue(value)
                 if(onClick) onClick()
             }}
+            disabled={disabled}
         >
             <span className="line-clamp-1">{children}</span>
             {selectedValue == value && <Check className="size-4 ml-auto" />}

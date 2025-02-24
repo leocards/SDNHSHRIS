@@ -230,6 +230,9 @@ const ApplyLeave = () => {
                                                         children={
                                                             LEAVETYPESOBJ[type]
                                                         }
+                                                        disabled={
+                                                            user.gender === "male" && (type === "maternity" || type === "slbw") ? true : user.gender === "female" && type === "paternity" ? true : false
+                                                        }
                                                     />
                                                 )
                                             )}
