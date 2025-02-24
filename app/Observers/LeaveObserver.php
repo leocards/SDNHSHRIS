@@ -77,6 +77,7 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
                         'leaveid' => $leave->id,
                         'userid' => $user->id,
                         'username' => $user->name,
+                        'type' => $leave->type,
                     ])->toArray()
                 ]);
 
@@ -119,29 +120,5 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
                 ])->toArray()
             ]);
         }
-    }
-
-    /**
-     * Handle the Leave "deleted" event.
-     */
-    public function deleted(Leave $leave): void
-    {
-        //
-    }
-
-    /**
-     * Handle the Leave "restored" event.
-     */
-    public function restored(Leave $leave): void
-    {
-        //
-    }
-
-    /**
-     * Handle the Leave "force deleted" event.
-     */
-    public function forceDeleted(Leave $leave): void
-    {
-        //
     }
 }

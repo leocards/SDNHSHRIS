@@ -28,6 +28,7 @@ import {
     AccordionTrigger,
 } from "@/Components/ui/accordion";
 import { cn } from "@/Lib/utils";
+import { LEAVETYPEKEYS, LEAVETYPESOBJ } from "@/Pages/Leave/Types/leavetypes";
 
 type LOGSTYPE = {
     id: number;
@@ -113,7 +114,7 @@ const Main: React.FC<Props> = ({ years, principal }) => {
     }, [type]);
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
             <Header title="Logs">Logs</Header>
 
             <Tabs
@@ -403,7 +404,7 @@ const LeaveData = ({
     return (
         <LogsListCard
             buttonColumn={buttonColumn}
-            headers={["Status", "Date", "View"]}
+            headers={["type", "Status", "Date", "View"]}
             headerColumn={Array(3).fill("1fr")}
         >
             {(leaveLog, column) =>
@@ -413,6 +414,9 @@ const LeaveData = ({
                         style={{ gridTemplateColumns: column }}
                         className="hover:bg-background"
                     >
+                        <div className="justify-center">
+                            {LEAVETYPESOBJ[log.details.type as LEAVETYPEKEYS]}
+                        </div>
                         <div className="capitalize justify-center">
                             <TypographyStatus
                                 status={

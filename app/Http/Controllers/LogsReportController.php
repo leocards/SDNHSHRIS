@@ -86,6 +86,30 @@ class LogsReportController extends Controller
         return response()->json($logs);
     }
 
+    public function getMoreRecords(Request $request, $userId)
+    {
+        $type = $request->query('type') ?? "leave";
+        $status = $request->query('status') ?? "all";
+        $filterYear = $request->query('filterYear') ?? "all";
+        $rows = $request->query('rows') ?? "all";
+
+        $logs = LogsReport::where('user_id', $userId)
+            ->where('type', $type)
+            ->when($status != "all", function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->when($filterYear != "all", function ($query) use ($filterYear) {
+                $query->whereYear('created_at', $filterYear);
+            })
+            ->latest()
+            ->when($rows != "all", function ($query) use ($rows) {
+                $query->take($rows);
+            })
+            ->get();
+
+        return response()->json($logs);
+    }
+
     public function getCOCLogs(ServiceRecord $coc)
     {
         $coc->load(['user']);
