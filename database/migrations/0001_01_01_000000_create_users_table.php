@@ -28,8 +28,8 @@ return new class extends Migration
             $table->enum('role', ['hr', 'principal', 'teaching', 'non-teaching']);
             $table->string('position')->nullable();
             $table->date('hiredate');
-            $table->integer('credits')->nullable();
-            $table->integer('splcredits')->nullable();
+            $table->string('credits')->nullable();
+            $table->string('splcredits')->nullable();
             $table->boolean('enable_email_notification')->default(false);
             $table->boolean('enable_email_message_notification')->default(false);
             $table->boolean('enable_email_announcement_reminder')->default(false);

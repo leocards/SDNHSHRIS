@@ -257,10 +257,12 @@ class ServiceRecordController extends Controller
                 $personnel = User::withoutGlobalScopes()->find($sr->user_id);
 
                 if ($personnel->role === "teaching" && $request->response === "approved") {
-                    $personnel->credits = (floatval($sr->details['credits']) + floatval($personnel->credits));
+                    $personnel->credits = floatval(floatval($sr->details['credits']) + floatval($personnel->credits));
+
 
                     $personnel->save();
                 }
+                // dd($personnel->credits);
 
                 if ($personnel->status_updated_at)
                     $sr->saveQuietly();

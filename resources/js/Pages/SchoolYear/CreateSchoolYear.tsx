@@ -5,7 +5,7 @@ import { Form, FormCalendar } from "@/Components/ui/form";
 import { useToast } from "@/Hooks/use-toast";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { requiredError } from "@/Types/types";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import React, { useEffect } from "react";
 import { z } from "zod";
 
@@ -71,6 +71,8 @@ const CreateSchoolYear: React.FC<ModalProps & { edit: boolean }> = ({ show, edit
 
                 if (page.props.flash.status === "success") {
                     onClose();
+                    setProcess(true);
+                    router.get(route('personnel.create', ['non-teaching']))
                 }
             },
             onError: (error: any) => {

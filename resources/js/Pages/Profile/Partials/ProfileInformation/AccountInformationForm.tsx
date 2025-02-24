@@ -157,11 +157,11 @@ const AccountInformationForm: React.FC<Props> = ({
 
         if(!isProfile) {
             if(watchRole !== "teaching"){
-                form.setValue("personnel.credits", 30);
-                form.setValue("personnel.splcredits", 15);
+                form.setValue("personnel.credits", '30');
+                form.setValue("personnel.splcredits", '15');
             } else {
-                form.setValue("personnel.credits", 0);
-                form.setValue("personnel.splcredits", 0);
+                form.setValue("personnel.credits", '0');
+                form.setValue("personnel.splcredits", '0');
             }
         }
 
