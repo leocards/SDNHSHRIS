@@ -220,7 +220,7 @@ const ViewSearched: React.FC<Props> = ({
                         {attendances.map((att, index) => (
                             <TableRow key={index} className="grid grid-cols-6">
                                 <div>{att?.schoolyear?.schoolyear}</div>
-                                <div>{att?.present}</div>
+                                <div>{att?.month}</div>
                                 <div>{att?.present}</div>
                                 <div>{att?.absent}</div>
                                 <div>{att?.timetardy}</div>
