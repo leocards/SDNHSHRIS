@@ -361,7 +361,7 @@ const PDSData = ({
                         style={{ gridTemplateColumns: column }}
                         className="hover:bg-background"
                     >
-                        <div className="capitalize">
+                        <div className="capitalize justify-center">
                             <TypographyStatus
                                 status={
                                     log.status as
