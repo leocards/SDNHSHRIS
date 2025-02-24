@@ -2,13 +2,11 @@ import Modal, { ModalProps } from "@/Components/Modal";
 import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
 import { Button } from "@/Components/ui/button";
 import { X } from "lucide-react";
-import React, { useRef, useState } from "react";
-import { FilePond, registerPlugin } from "react-filepond";
+import React, { useState } from "react";
 import "filepond/dist/filepond.min.css";
-import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
-import { router, usePage } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 import { useToast } from "@/Hooks/use-toast";
+import FilePondUploader from "@/Components/FilePondUploader";
 
 const allowedMimeTypes = [
     // "application/pdf",
@@ -24,25 +22,11 @@ type Props = ModalProps & {
 const SubmitMedical: React.FC<Props> = ({ leave, show, onClose }) => {
     const { setProcess } = useProcessIndicator();
     const [medical, setMedical] = useState<number | null>(null);
-    const page = usePage();
     const { toast } = useToast();
-    const pondRef = useRef<FilePond | null>(null);
 
-    registerPlugin(
-        FilePondPluginFileValidateType,
-        FilePondPluginFileValidateSize
-    );
 
-    const handleFilepondLoad = (load: any): any => {
-        const response = JSON.parse(load);
-
-        if (response.status === "success") setMedical(response.file.id);
-
-        return null;
-    };
-
-    const handleFilepondError = (error: any) => {
-        // console.log(error)
+    const handleFilepondLoad = (id: number): any => {
+        setMedical(id);
     };
 
     const handleFilePondRemove = () => {
@@ -84,37 +68,29 @@ const SubmitMedical: React.FC<Props> = ({ leave, show, onClose }) => {
             </Button>
 
             <div className="py-10 pb-5">
-                <FilePond
-                    ref={pondRef}
-                    name="file"
-                    maxFiles={1}
-                    className="filepond--pane filepond--drop-label"
-                    credits={false}
-                    maxFileSize={"10mb"}
-                    allowFileTypeValidation
-                    acceptedFileTypes={allowedMimeTypes}
-                    server={{
-                        timeout: 7000,
-                        process: {
-                            url: route("sr.temporary"),
-                            method: "POST",
-                            headers: {
-                                "X-CSRF-TOKEN": page.props.ct,
-                            },
-                            withCredentials: false,
-                            onload: handleFilepondLoad,
-                            onerror: handleFilepondError,
-                        },
-                    }}
-                    onremovefile={handleFilePondRemove}
+                <FilePondUploader
+                    route={route("sr.temporary")}
+                    mimetypes={allowedMimeTypes}
+                    handleLoad={handleFilepondLoad}
+                    handleRemove={handleFilePondRemove}
                 />
             </div>
 
             <div className="flex items-center mt-8 pt-4 border-t border-border">
-                <Button type="button" variant="outline" onClick={() => onClose(false)}>
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onClose(false)}
+                >
                     Cancel
                 </Button>
-                <Button className="ml-auto" disabled={!medical} onClick={() => medical && onSubmitMedical()}>Send Application</Button>
+                <Button
+                    className="ml-auto"
+                    disabled={!medical}
+                    onClick={() => medical && onSubmitMedical()}
+                >
+                    Send Application
+                </Button>
             </div>
         </Modal>
     );
