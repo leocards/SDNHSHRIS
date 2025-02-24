@@ -80,6 +80,8 @@ class User extends Authenticatable
             'enable_email_notification' => 'boolean',
             'enable_email_message_notification' => 'boolean',
             'enable_email_announcement_reminder' => 'boolean',
+            'credits' => 'float',
+            'splcredits' => 'float',
         ];
     }
 

@@ -36,7 +36,7 @@ const COC = z
         from: z.date().nullable().default(null),
         to: z.date().nullable().default(null),
         session: z
-            .enum(["halfday", "fullday"], {
+            .enum(["halfday", "fullday", "weekdays"], {
                 invalid_type_error: requiredError("session"),
             })
             .nullable(),
@@ -100,7 +100,7 @@ const COC = z
                 }
             }
 
-            if(!session)
+            if (!session)
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: requiredError("session"),

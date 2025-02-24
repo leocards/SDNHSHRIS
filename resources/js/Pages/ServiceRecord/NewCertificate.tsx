@@ -16,6 +16,7 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 import { SelectItem } from "@/Components/ui/select";
 import { cn } from "@/Lib/utils";
+import { isWeekend } from "date-fns";
 
 const allowedMimeTypes = [
     "application/pdf",
@@ -32,7 +33,7 @@ const SERVICERECORD = z.object({
     fileid: z.number().nullable(),
     venue: z.string().min(1, requiredError("venue")),
     organizer: z.string().min(1, requiredError("organizer")),
-    session: z.enum(['halfday', 'fullday'], {
+    session: z.enum(['halfday', 'fullday', 'weekdays'], {
         invalid_type_error: requiredError('session')
     }).nullable(),
     from: z.date({ required_error: requiredError("from") }).nullable(),
@@ -240,6 +241,12 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
     useEffect(() => {
         if(watchSession === "halfday") {
             form.setValue(`sr.${index}.to`, null)
+        } else if(watchSession === "weekdays") {
+            if(form.getValues(`sr.${index}.from`) && isWeekend(form.getValues(`sr.${index}.from`))) {
+                form.setValue(`sr.${index}.from`, null)
+                if(isWeekend(form.getValues(`sr.${index}.to`)))
+                    form.setValue(`sr.${index}.to`, null)
+            }
         }
     }, [watchSession])
 
@@ -279,11 +286,12 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
                     form={form}
                     name={`sr.${index}.session`}
                     label="Session"
-                    displayValue={(watchSession === "halfday" ? "Half-day":watchSession==="fullday"?"Whole-day":"")}
+                    displayValue={(watchSession === "halfday" ? "Half-day":watchSession==="fullday"?"Whole-day":watchSession ? "Weekdays":"")}
                     items={
                         <Fragment>
                             <SelectItem value="halfday" children="Half-day" />
                             <SelectItem value="fullday" children="Whole-day" />
+                            <SelectItem value="weekdays" children="Weekdays" />
                         </Fragment>
                     }
                 />
@@ -294,14 +302,20 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
                     form={form}
                     name={`sr.${index}.from`}
                     label="From"
+                    disableDate={(date) => {
+                        return watchSession === "weekdays" && isWeekend(date)
+                    }}
                 />
                 <FormCalendar
                     form={form}
                     name={`sr.${index}.to`}
                     label="To"
                     required={false}
-                    disabled={watchSession === 'halfday'}
+                    disabled={watchSession === 'halfday' || !watchSession}
                     triggerClass="disabled:opacity-100 disabled:text-foreground/20"
+                    disableDate={(date) => {
+                        return watchSession === "weekdays" && isWeekend(date)
+                    }}
                 />
             </div>
 

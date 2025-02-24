@@ -5,7 +5,7 @@ import { DepartmentsType } from "@/Types";
 import { Departments } from "@/Types/types";
 import { usePage } from "@inertiajs/react";
 import { ArrowRight2 } from "iconsax-react";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { defaultLeave, IFormLeave, LEAVESCHEMA } from "./Types/LeaveFormSchema";
 import { useToast } from "@/Hooks/use-toast";
 import {
@@ -19,10 +19,19 @@ import {
 import { SelectItem } from "@/Components/ui/select";
 import { LEAVETYPEKEYSARRAY, LEAVETYPESOBJ } from "./Types/leavetypes";
 import { Button } from "@/Components/ui/button";
-import { eachDayOfInterval, isToday, isTomorrow, isWeekend, isYesterday } from "date-fns";
+import {
+    eachDayOfInterval,
+    isToday,
+    isTomorrow,
+    isWeekend,
+    isYesterday,
+} from "date-fns";
 import { countWeekdaysInRange } from "./Types/Methods";
 import FilePondUploader from "@/Components/FilePondUploader";
 import { cn } from "@/Lib/utils";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
+import { FilePond, registerPlugin } from "react-filepond";
 
 const ApplyLeave = () => {
     const { toast } = useToast();
@@ -60,6 +69,19 @@ const ApplyLeave = () => {
     const watchDatesFrom = form.watch("from");
     const watchDatesTo = form.watch("to");
 
+    registerPlugin(
+        FilePondPluginFileValidateType,
+        FilePondPluginFileValidateSize
+    );
+
+    const handleFilepondLoad = (id: number): any => {
+        form.setValue(`medical`, id, { shouldDirty: true });
+    };
+
+    const handleFilePondRemove = () => {
+        form.setValue(`medical`, null, { shouldDirty: true });
+    };
+
     useEffect(() => {
         form.setValue("details", null);
         form.setValue("detailsinput", "");
@@ -80,11 +102,19 @@ const ApplyLeave = () => {
                 shouldValidate: true,
             });
             form.setValue("to", new Date(dateTo));
-        } else if(watchDatesFrom && !watchDatesTo && watchLeaveType !== "maternity") {
+        } else if (
+            watchDatesFrom &&
+            !watchDatesTo &&
+            watchLeaveType !== "maternity"
+        ) {
             form.setValue("daysapplied", "1", {
                 shouldValidate: true,
             });
-        } else if(watchDatesFrom && watchDatesTo && watchLeaveType !== "maternity") {
+        } else if (
+            watchDatesFrom &&
+            watchDatesTo &&
+            watchLeaveType !== "maternity"
+        ) {
             const weeks = countWeekdaysInRange(
                 new Date(watchDatesFrom),
                 new Date(watchDatesTo)
@@ -99,7 +129,8 @@ const ApplyLeave = () => {
         <div>
             <Header title="Apply Leave">
                 <div className="flex items-center gap-1">
-                    {user.role == "principal" && "My"} Leave <ArrowRight2 className="size-4 [&>path]:stroke-[3]" />{" "}
+                    {user.role == "principal" && "My"} Leave{" "}
+                    <ArrowRight2 className="size-4 [&>path]:stroke-[3]" />{" "}
                     Application for Leave
                 </div>
             </Header>
@@ -350,7 +381,14 @@ const ApplyLeave = () => {
                                                 } else if (
                                                     watchLeaveType == "sick"
                                                 )
-                                                    return isWeekend(date) || !(isYesterday(date) || isToday(date) || isTomorrow(date));
+                                                    return (
+                                                        isWeekend(date) ||
+                                                        !(
+                                                            isYesterday(date) ||
+                                                            isToday(date) ||
+                                                            isTomorrow(date)
+                                                        )
+                                                    );
                                                 else return false;
                                             }}
                                         />
@@ -374,7 +412,9 @@ const ApplyLeave = () => {
                                                     "maternity"
                                                 ) {
                                                     return (
-                                                        isWeekend(date) || toDay.getTime() <= from.getTime()
+                                                        isWeekend(date) ||
+                                                        toDay.getTime() <=
+                                                            from.getTime()
                                                     );
                                                 } else return false;
                                             }}
@@ -420,9 +460,9 @@ const ApplyLeave = () => {
                                 Medical
                             </TypographySmall>
                             <FilePondUploader
-                                route=""
-                                handleLoad={() => {}}
-                                handleRemove={() => {}}
+                                route={route("sr.temporary")}
+                                handleLoad={handleFilepondLoad}
+                                handleRemove={handleFilePondRemove}
                                 mimetypes={[
                                     "image/jpeg",
                                     "image/jpg",

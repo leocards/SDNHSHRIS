@@ -11,6 +11,7 @@ import {
 import { SelectItem } from "@/Components/ui/select";
 import { cn } from "@/Lib/utils";
 import { allowedMimeTypes } from "../NewCOC";
+import { isWeekend } from "date-fns";
 
 type Porps = {
     form: any;
@@ -31,15 +32,30 @@ const COCForm: React.FC<Porps> = ({ form, index }) => {
     }, [watchSession]);
 
     useEffect(() => {
-        if(form.formState.errors && form.formState.errors.coc) {
+        if (form.formState.errors && form.formState.errors.coc) {
             const formErrors = form.formState.errors.coc[index];
             console.log(formErrors);
 
             if (formErrors) {
-                setErrors(formErrors)
+                setErrors(formErrors);
             }
         }
     }, [form.formState.errors]);
+
+    useEffect(() => {
+        if (watchSession === "halfday") {
+            form.setValue(`coc[${index}].to`, null);
+        } else if (watchSession === "weekdays") {
+            if (
+                form.getValues(`coc[${index}].from`) &&
+                isWeekend(form.getValues(`coc.${index}.from`))
+            ) {
+                form.setValue(`coc[${index}].from`, null);
+                if (isWeekend(form.getValues(`coc[${index}].to`)))
+                    form.setValue(`coc[${index}].to`, null);
+            }
+        }
+    }, [watchSession]);
 
     return (
         <Card className={cn("p-3 px-4 pb-1", errors && "border-destructive")}>
@@ -52,7 +68,16 @@ const COCForm: React.FC<Porps> = ({ form, index }) => {
                     placeholder="(Optional)"
                 />
                 <div className="grid [@media(max-width:512px)]:grid-cols-1 grid-cols-2 gap-4">
-                    <FormCalendar form={form} name={`coc[${index}].from`} label="From" />
+                    <FormCalendar
+                        form={form}
+                        name={`coc[${index}].from`}
+                        label="From"
+                        disableDate={(date) => {
+                            return (
+                                watchSession === "weekdays" && isWeekend(date)
+                            );
+                        }}
+                    />
                     <FormCalendar
                         form={form}
                         name={`coc[${index}].to`}
@@ -60,12 +85,23 @@ const COCForm: React.FC<Porps> = ({ form, index }) => {
                         required={false}
                         disabled={watchSession === "halfday" || !watchSession}
                         triggerClass="disabled:opacity-100 disabled:text-foreground/20"
+                        disableDate={(date) => {
+                            return (
+                                watchSession === "weekdays" && isWeekend(date)
+                            );
+                        }}
                     />
                     <FormSelect
                         form={form}
                         name={`coc[${index}].session`}
                         label="Session"
-                        displayValue={(watchSession === "halfday" ? "Half-day":watchSession==="fullday"?"Whole-day":"")}
+                        displayValue={
+                            watchSession === "halfday"
+                                ? "Half-day"
+                                : watchSession === "fullday"
+                                ? "Whole-day"
+                                : watchSession?"Weekdays":""
+                        }
                         items={
                             <Fragment>
                                 <SelectItem
@@ -75,6 +111,10 @@ const COCForm: React.FC<Porps> = ({ form, index }) => {
                                 <SelectItem
                                     value="fullday"
                                     children="Whole-day"
+                                />
+                                <SelectItem
+                                    value="weekdays"
+                                    children="Weekdays"
                                 />
                             </Fragment>
                         }

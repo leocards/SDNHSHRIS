@@ -8,6 +8,7 @@ use App\Models\ServiceRecord;
 use App\Models\User;
 use App\ResponseTrait;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -30,16 +31,16 @@ class ServiceRecordController extends Controller
         $sr = null;
 
         $sr = ServiceRecord::when($role == "hr", function ($query) use ($status) {
-                $query->with(['user' => function ($query) use ($status) {
-                    $query->when($status !== "pending", function ($query) {
-                        $query->withoutGlobalScopes();
-                    });
-                }]);
-            })->whereHas('user', function ($query) use ($status) {
+            $query->with(['user' => function ($query) use ($status) {
                 $query->when($status !== "pending", function ($query) {
                     $query->withoutGlobalScopes();
                 });
-            })
+            }]);
+        })->whereHas('user', function ($query) use ($status) {
+            $query->when($status !== "pending", function ($query) {
+                $query->withoutGlobalScopes();
+            });
+        })
             ->when($role !== "hr", function ($query) use ($request) {
                 $query->where('user_id', $request->user()->id);
             })
@@ -97,7 +98,7 @@ class ServiceRecordController extends Controller
                 } else {
                     $from = Carbon::parse($sr['from']);
                     $to = $sr['to'] ? Carbon::parse($sr['to']) : null;
-                    $credits = $to ? ($from->diffInDays($to) + 1) : ($sr['session'] == "halfday" ? 0.5 : 1);
+                    $credits = $to ? $this->countWeekdays($from, $to, $sr['session']) : ($sr['session'] == "halfday" ? 0.5 : 1);
 
                     $details = collect([
                         'venue' => $sr['venue'],
@@ -168,7 +169,7 @@ class ServiceRecordController extends Controller
 
                 $from = Carbon::parse($value['from']);
                 $to = $value['to'] ? Carbon::parse($value['to']) : null;
-                $credits = $value['session'] == "halfday" ? 0.5 : ($to ? ($from->diffInDays($to) + 1) : 1);
+                $credits = $value['session'] == "halfday" ? 0.5 : ($to ? $this->countWeekdays($from, $to, $value['session']) : 1);
 
                 ServiceRecord::create([
                     'user_id' => $request->user()->id,
@@ -280,5 +281,19 @@ class ServiceRecordController extends Controller
                 'status' => 'error'
             ]);
         }
+    }
+
+    function countWeekdays($startDate, $endDate, $session)
+    {
+        $timezone = "Asia/Manila";
+
+        $period = CarbonPeriod::create(
+            Carbon::parse($startDate, $timezone),
+            Carbon::parse($endDate, $timezone)->{$session === "weekdays" ? 'addDay' : 'endOfDay'}()
+        );
+
+        return $period
+            ->filter(fn(Carbon $date) => $session === "weekdays" ? !$date->isWeekend() : true)
+            ->count();
     }
 }
