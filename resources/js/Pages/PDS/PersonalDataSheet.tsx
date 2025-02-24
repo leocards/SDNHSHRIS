@@ -23,9 +23,12 @@ import { C4TYPE } from "./Types/C4";
 import { APPROVALTYPE } from "@/Types";
 import { cn } from "@/Lib/utils";
 import { DocumentDownload, Export } from "iconsax-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ImportExcelPds from "../Personnel/ImportExcelPds";
 import { usePage } from "@inertiajs/react";
+import PDSPDF from "./PDF/PDSPDF";
+import { PDSTABSTYPE } from "@/Types/types";
+import { Margin, usePDF } from "react-to-pdf";
 
 type PersonalDataSheetProps = {
     status: APPROVALTYPE;
@@ -42,25 +45,33 @@ type PersonalDataSheetProps = {
 };
 
 const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
-    const [showImport, setShowImport] = useState(false);
     const user = usePage().props.auth.user;
+    const [showImport, setShowImport] = useState(false);
+    const [tab, setTab] = useState<PDSTABSTYPE>("C1");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const download_pdf = usePDF({
+            method: "save",
+            filename: "application-for-leave.pdf",
+            page: { format: "A4", margin: Margin.MEDIUM },
+        });
 
     return (
         <div>
             <Header title="PDS" children="Personal Data Sheet" />
 
             <Tabs
-                defaultValue="c1"
+                defaultValue="C1"
                 className="overflow-hidden grow flex flex-col my-5"
-                onValueChange={(value) => {}}
+                onValueChange={(value) => setTab(value as PDSTABSTYPE)}
             >
                 <div className="flex">
                     <div className="flex items-center gap-3 divide-x divide-border">
                         <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal bg-primary/15 text-primary/60">
-                            <TabsTrigger value="c1">C1</TabsTrigger>
-                            <TabsTrigger value="c2">C2</TabsTrigger>
-                            <TabsTrigger value="c3">C3</TabsTrigger>
-                            <TabsTrigger value="c4">C4</TabsTrigger>
+                            <TabsTrigger value="C1">C1</TabsTrigger>
+                            <TabsTrigger value="C2">C2</TabsTrigger>
+                            <TabsTrigger value="C3">C3</TabsTrigger>
+                            <TabsTrigger value="C4">C4</TabsTrigger>
                         </TabsList>
                         <div className="pl-3 flex flex-row-reverse items-center gap-3">
                             <TypographySmall
@@ -77,10 +88,13 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                             <Button
                                 className=""
                                 variant="outline"
-                                disabled={props.status !== "approved"}
+                                disabled={props.status !== "approved" || isLoading}
+                                onClick={() => {
+                                    download_pdf.toPDF();
+                                }}
                             >
                                 <DocumentDownload />
-                                <span>Download</span>
+                                <span>{isLoading ? "Loading" : "Download"}</span>
                             </Button>
                         </div>
                     </div>
@@ -102,7 +116,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                         </Button>
                     </div>
                 </div>
-                <TabsContent value="c1">
+                <TabsContent value="C1">
                     <Tabs
                         defaultValue="I"
                         className="overflow-hidden grow flex flex-col mb-5"
@@ -148,7 +162,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                         </TabsContent>
                     </Tabs>
                 </TabsContent>
-                <TabsContent value="c2">
+                <TabsContent value="C2">
                     <Tabs
                         defaultValue="IV"
                         className="overflow-hidden grow flex flex-col mb-5"
@@ -180,7 +194,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                         </TabsContent>
                     </Tabs>
                 </TabsContent>
-                <TabsContent value="c3">
+                <TabsContent value="C3">
                     <Tabs
                         defaultValue="VI"
                         className="overflow-hidden grow flex flex-col mb-5"
@@ -222,7 +236,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                         </TabsContent>
                     </Tabs>
                 </TabsContent>
-                <TabsContent value="c4">
+                <TabsContent value="C4">
                     <TypographySmall className="text-destructive font-semibold italic">
                         Please save changes before navigating to other tab.
                     </TypographySmall>
@@ -236,6 +250,15 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                 onClose={setShowImport}
                 personal
             />
+
+            <div className="mx-auto w-fit">
+                <PDSPDF
+                    ref={download_pdf.targetRef}
+                    userid={user.id}
+                    tab={tab}
+                    onLoad={setIsLoading}
+                />
+            </div>
         </div>
     );
 };

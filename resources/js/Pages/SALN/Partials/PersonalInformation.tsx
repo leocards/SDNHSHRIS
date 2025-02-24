@@ -118,7 +118,7 @@ const PersonalInformation: React.FC<Props> = ({ form, spouse, spousegoveid }) =>
                 </div>
                 <div className="h-12 flex flex-col">
                     <div className="text-center grow">
-                        <div className="line-clamp-1">{}</div>
+                        <div className="line-clamp-1">{user.email}</div>
                     </div>
                     <hr className="border-black/40" />
                     <div className="text-foreground/40 text-center">

@@ -206,19 +206,21 @@ const ViewSearched: React.FC<Props> = ({
 
                 <TabsContent
                     value="tardiness"
-                    className="max-w-5xl mx-auto w-full p-4"
+                    className="max-w-6xl mx-auto w-full p-4"
                 >
                     <Card className="min-h-[28rem] relative">
-                        <TableHeader className="grid grid-cols-5">
+                        <TableHeader className="grid grid-cols-6">
                             <div>School Year</div>
+                            <div>Month</div>
                             <div>No. of Days Present</div>
                             <div>No. of Days Absent</div>
                             <div>No. of Time Tardy</div>
                             <div>No. of Undertime</div>
                         </TableHeader>
                         {attendances.map((att, index) => (
-                            <TableRow key={index} className="grid grid-cols-5">
+                            <TableRow key={index} className="grid grid-cols-6">
                                 <div>{att?.schoolyear?.schoolyear}</div>
+                                <div>{att?.present}</div>
                                 <div>{att?.present}</div>
                                 <div>{att?.absent}</div>
                                 <div>{att?.timetardy}</div>

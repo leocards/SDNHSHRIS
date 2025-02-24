@@ -292,6 +292,10 @@ class LeaveController extends Controller
 
         DB::beginTransaction();
         try {
+            if(!User::where('role', 'principal')->exists()){
+                throw new Exception("Principal is not yet added.");
+            }
+
             $auth = $request->user();
             $leaveApplicant = $leave->user;
 
@@ -322,7 +326,7 @@ class LeaveController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            return redirect()->back()->with(['title' => $th->getMessage() . 'Application for Leave', 'message' => 'Failed to send response.', 'status' => 'error']);
+            return redirect()->back()->with(['title' => 'Application for Leave', 'message' => $th->getMessage(), 'status' => 'error']);
         }
     }
 
