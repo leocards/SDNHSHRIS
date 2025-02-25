@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DateParserTrait;
 use App\Models\Notification;
+use App\Models\PdsPersonalInformation;
 use App\Models\Saln;
 use App\Models\User;
 use App\ResponseTrait;
@@ -105,7 +106,10 @@ class SalnController extends Controller
             $spouse['govid'] = User::where('lastname')->where('firstname')->first()?->pdsC4()->where('type', 'governmentId')?->value('details');
         }
 
+        $getAddress = PdsPersonalInformation::with('addresses')->where('user_id', $request->user()->id)->first('id');
+
         return Inertia::render('SALN/NewSALN', [
+            'address' => $getAddress ? $this->getPermanentaddress($getAddress->addresses) : "",
             'saln' => $saln,
             'spouse' => $spouse['spousename'],
             'spousegoveid' => $spouse['govid']
@@ -312,15 +316,20 @@ class SalnController extends Controller
         $completeAddress = '';
         if ($address->street) {
             $completeAddress .= $address->street . ' ';
-        } else if ($address->houselotblockno) {
+        }
+        if ($address->houselotblockno) {
             $completeAddress .= $address->houselotblockno . ' ';
-        } else if ($address->subdivision) {
+        }
+        if ($address->subdivision) {
             $completeAddress .= $address->subdivision . ' ';
-        } else if ($address->barangay) {
+        }
+        if ($address->barangay) {
             $completeAddress .= $address->barangay . ' ';
-        } else if ($address->citymunicipality) {
+        }
+        if ($address->citymunicipality) {
             $completeAddress .= $address->citymunicipality . ' ';
-        } else if ($address->province) {
+        }
+        if ($address->province) {
             $completeAddress .= $address->province . ' ';
         }
 

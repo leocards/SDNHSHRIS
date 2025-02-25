@@ -24,6 +24,7 @@ import { IFormC4 } from "../PDS/Types/C4";
 import { cn } from "@/Lib/utils";
 
 type Props = {
+    address: string | null;
     saln: SALNTYPE;
     spouse: SPOUSETYPE | null;
     spousegoveid: IFormC4["governmentids"] | null;
@@ -52,7 +53,7 @@ const getChildren = (data: SALNTYPE["children"]) => {
     return childrens;
 };
 
-const NewSALN: React.FC<Props> = ({ saln, spouse, spousegoveid }) => {
+const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid }) => {
     const { toast } = useToast();
     const form = useFormSubmit<IFormSaln>({
         route: !saln ? route("saln.store") : route("saln.store", [saln?.id]),
@@ -199,6 +200,7 @@ const NewSALN: React.FC<Props> = ({ saln, spouse, spousegoveid }) => {
 
                     <PersonalInformation
                         form={form}
+                        address={address}
                         spouse={spouse}
                         spousegoveid={spousegoveid}
                     />

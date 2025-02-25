@@ -13,11 +13,12 @@ import { SALNTYPE } from "../Types/type";
 
 type Props = {
     form: any;
+    address: string | null;
     spouse: SPOUSETYPE|null;
     spousegoveid: IFormC4['governmentids'] | null
 };
 
-const PersonalInformation: React.FC<Props> = ({ form, spouse, spousegoveid }) => {
+const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegoveid }) => {
     const user = usePage().props.auth.user;
 
     const onJointFiling = (filing: SALNTYPE['isjoint']) => {
@@ -118,7 +119,7 @@ const PersonalInformation: React.FC<Props> = ({ form, spouse, spousegoveid }) =>
                 </div>
                 <div className="h-12 flex flex-col">
                     <div className="text-center grow">
-                        <div className="line-clamp-1">{user.email}</div>
+                        <div className="line-clamp-1">{address}</div>
                     </div>
                     <hr className="border-black/40" />
                     <div className="text-foreground/40 text-center">
