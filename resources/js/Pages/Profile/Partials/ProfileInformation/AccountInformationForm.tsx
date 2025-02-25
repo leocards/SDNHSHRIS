@@ -64,7 +64,7 @@ export const ACCOUNTSCHEMA = z.object({
         ispersonnel: z.boolean().default(true),
         personnelid: z
             .string()
-            .min(1, requiredError("personnel id"))
+            .min(1, requiredError("'DepEd Employee No.'"))
             .default(""),
         datehired: z
             .date({ required_error: requiredError("date hired") })
@@ -341,7 +341,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                 <FormInput
                                     form={form}
                                     name="personnel.personnelid"
-                                    label="Personnel ID"
+                                    label="DepEd Employee No."
                                 />
                                 <FormCalendar
                                     form={form}

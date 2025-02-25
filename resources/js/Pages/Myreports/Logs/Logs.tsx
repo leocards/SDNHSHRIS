@@ -315,7 +315,7 @@ const LogsListCard: React.FC<LogsListCardProps> = ({
 
     return page?.data?.map((log, index) => (
         <AccordionItem value={log.id.toString()} key={index}>
-            <AccordionTrigger className="px-4">
+            <AccordionTrigger className="px-4 py-2.5">
                 <div
                     className="grid"
                     style={{ gridTemplateColumns: buttonColumn }}

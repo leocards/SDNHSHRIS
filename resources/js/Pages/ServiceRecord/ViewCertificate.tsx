@@ -7,7 +7,7 @@ import { ProfilePhoto } from "@/Components/ui/avatar";
 import { Button } from "@/Components/ui/button";
 import { TooltipLabel } from "@/Components/ui/tooltip";
 import { router, usePage } from "@inertiajs/react";
-import { Maximize3 } from "iconsax-react";
+import { Dislike, Like1, Maximize3 } from "iconsax-react";
 import { X } from "lucide-react";
 import React, { Fragment, useEffect, useState } from "react";
 import { CERTIFICATEAPPROVALTYPE } from "./ServiceRecord";
@@ -205,12 +205,14 @@ const ViewCertificate: React.FC<ViewCertificateProps> = ({
                                     className="bg-green-600 hover:bg-green-500"
                                     onClick={() => onRespond("approved")}
                                 >
+                                    <Like1 />
                                     Approve
                                 </Button>
                                 <Button
                                     className="ml-3 bg-destructive hover:bg-destructive/85"
                                     onClick={() => onRespond("invalid")}
                                 >
+                                    <Dislike />
                                     Invalid
                                 </Button>
                             </div>

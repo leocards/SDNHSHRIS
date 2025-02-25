@@ -71,7 +71,7 @@ class PersonnelRequest extends FormRequest
             'personal.birthday' => 'birthday',
             'contact.email' => 'email',
             'contact.mobilenumber' => 'mobilenumber',
-            'personnel.personnelid' => 'personnel ID',
+            'personnel.personnelid' => 'DepEd Employee No.',
             'personnel.datehired' => 'date hired',
             'personnel.role' => 'role',
             'personnel.department' => 'department',

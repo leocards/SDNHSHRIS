@@ -163,7 +163,7 @@ const ViewSearched: React.FC<Props> = ({
 
                             <div className="flex gap-3 items-start">
                                 <TypographySmall className="w-24">
-                                    Staff ID:
+                                    DepEd Employee No.:
                                 </TypographySmall>
 
                                 <TypographySmall className="font-normal">

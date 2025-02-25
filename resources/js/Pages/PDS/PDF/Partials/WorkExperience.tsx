@@ -163,7 +163,7 @@ const WorkExperience: React.FC<Props> = ({ workexperience }) => {
                         <TextCenter>
                             <div
                                 className={cn(
-                                    "font-bold",
+                                    "font-bold leading-3 text-center",
                                     checkIfDownLoad("-mt-3")
                                 )}
                             >
@@ -173,7 +173,7 @@ const WorkExperience: React.FC<Props> = ({ workexperience }) => {
                         <TextCenter>
                             <div
                                 className={cn(
-                                    "font-bold",
+                                    "font-bold leading-3 text-center",
                                     checkIfDownLoad("-mt-3")
                                 )}
                             >

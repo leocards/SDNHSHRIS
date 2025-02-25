@@ -252,7 +252,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                 personal
             />
 
-            <div className="mx-auto w-fit">
+            <div className="w-fit absolute -mr-[50%]">
                 <PDSPDF
                     ref={download_pdf.targetRef}
                     userid={user.id}

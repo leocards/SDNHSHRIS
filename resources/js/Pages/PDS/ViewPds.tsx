@@ -6,7 +6,7 @@ import { Fragment, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { PDSTABSTYPE } from "@/Types/types";
 import { TooltipLabel } from "@/Components/ui/tooltip";
-import { DocumentDownload } from "iconsax-react";
+import { Dislike, DocumentDownload, Like1 } from "iconsax-react";
 import { APPROVALTYPE } from "@/Types";
 import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
 import { useToast } from "@/Hooks/use-toast";
@@ -117,12 +117,14 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
                                 className="bg-green-600 hover:bg-green-500"
                                 onClick={() => onRespond("approved")}
                             >
+                                <Like1 />
                                 Approve
                             </Button>
                             <Button
                                 className="ml-3 bg-destructive hover:bg-destructive/85"
                                 onClick={() => onRespond("disapproved")}
                             >
+                                <Dislike />
                                 Disapprove
                             </Button>
                         </Fragment>

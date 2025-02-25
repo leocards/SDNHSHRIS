@@ -43,7 +43,7 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({ data }) => {
             positiontitle: we.positiontitle,
             department: we.department,
             monthlysalary: we.monthlysalary,
-            salarygrade: we.salarygrade,
+            salarygrade: we.salarygrade??"",
             statusofappointment: we.statusofappointment,
             isgovernment: we.isgovernment,
         })) : [], deletedWE: [] },
