@@ -50,8 +50,8 @@ class IpcrReportController extends Controller
 
             DB::transaction(function () use ($request, $ipcrid) {
                 if($ipcrid) {
-                    $ipcrid->$request->rating;
-                    $request->save();
+                    $ipcrid->rating = $request->rating;
+                    $ipcrid->save();
                 } else {
                     IpcrReport::create([
                         'user_id' => $request->personnel,

@@ -67,6 +67,9 @@ class PersonnelController extends Controller
         DB::beginTransaction();
         try {
 
+
+            $user = User::find($personnelid);
+
             $personnel = User::updateOrCreate(
                 ['id' => $personnelid],
                 [
@@ -83,8 +86,8 @@ class PersonnelController extends Controller
                     'role' => $request->personnel['role'],
                     'position' => $request->personnel['position'],
                     'hiredate' => $this->parseDate($request->personnel['datehired']),
-                    'credits' => $request->personnel['role'] != "teaching" ? $request->personnel['credits'] : 0,
-                    'splcredits' => $request->personnel['role'] != "teaching" ? $request->personnel['splcredits'] : 0,
+                    'credits' => $user ? $user->credits : ($request->personnel['role'] != "teaching" ? $request->personnel['credits'] : 0),
+                    'splcredits' => $request->personnel['role'] != "teaching" ? ($user ? $user->credits : $request->personnel['splcredits']) : 0,
                     'enable_email_notification' => true,
                     'password' => Hash::make($request->password)
                 ]
