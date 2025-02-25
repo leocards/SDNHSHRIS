@@ -44,7 +44,7 @@ return [
             'port' => env('MAIL_PORT', 587),
             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
             'username' => env('MAIL_USERNAME', 'sdnhshris06@gmail.com'),
-            'password' => env('MAIL_PASSWORD', 'uhsb ehyc cukx giic'),
+            'password' => 'uhsb ehyc cukx giic'/*  env('MAIL_PASSWORD', 'uhsb ehyc cukx giic') */,
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'https://sdnhs-hris.site'), PHP_URL_HOST)),
         ],
