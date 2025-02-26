@@ -228,7 +228,7 @@ const SALNPage1 = forwardRef<HTMLDivElement, Props>(({ pagecount, user, saln, sp
 
                 <div className="indent-4 font-bold text-[10pt]">b. Personal Properties*</div>
                 <div className="mt-1">
-                    <PersonalProperties personal={page.personal} saln_totals={page.saln_totals} />
+                    <PersonalProperties asof={saln?.asof} personal={page.personal} saln_totals={page.saln_totals} />
                 </div>
             </div>
             <div className="italic text-[10pt] mt-4">* Additional sheet/s may be used, if necessary.</div>

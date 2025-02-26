@@ -1,13 +1,15 @@
 import React from "react";
 import { SALNTOTALTYPE } from "./SALNSeparatePage";
 import { SALNTYPE } from "../Types/type";
+import { format } from "date-fns";
 
 type Props = {
+    asof: string;
     saln_totals: SALNTOTALTYPE
     personal: SALNTYPE['assets']['personal']
 }
 
-const PersonalProperties: React.FC<Props> = ({ personal, saln_totals }) => {
+const PersonalProperties: React.FC<Props> = ({ asof, personal, saln_totals }) => {
     return (
         <div>
             <div className="grid grid-cols-[1fr,12rem,8rem] bg-black/25 text-[8pt] text-center font-bold [&>div]:py-1.5 divide-x divide-black border border-black">
@@ -17,7 +19,7 @@ const PersonalProperties: React.FC<Props> = ({ personal, saln_totals }) => {
             </div>
             <div className="divide-y divide-black border-b border-x border-black">
                 {personal?.map((p, index) => (
-                    <Card key={index} personal={p} />
+                    <Card asof={asof} key={index} personal={p} />
                 ))}
                 {Array.from({ length: 4 - (personal?.length||0) }).map((_, index) => (
                     <div key={index} className="grid grid-cols-[1fr,12rem,8rem] text-[10pt] divide-x divide-black text-center">
@@ -43,11 +45,12 @@ const PersonalProperties: React.FC<Props> = ({ personal, saln_totals }) => {
     );
 };
 
-const Card: React.FC<{personal?: {
+const Card: React.FC<{asof:string; personal?: {
     description: string;
     yearacquired: string;
     acquisitioncost: string;
 }}> = ({
+    asof,
     personal
 }) => {
     return (
@@ -55,7 +58,7 @@ const Card: React.FC<{personal?: {
             className="grid grid-cols-[1fr,12rem,8rem] text-[8.5pt] divide-x divide-black text-center uppercase"
         >
             <div>{personal? personal.description : "N/A"}</div>
-            <div>{personal? personal.yearacquired : "N/A"}</div>
+            <div>{personal? personal.yearacquired + ('-' + format(asof, 'y')) : "N/A"}</div>
             <div>{personal? !isNaN(parseFloat(personal.acquisitioncost)) ? "P " + Number(personal.acquisitioncost).toLocaleString() : "N/A" : "N/A"}</div>
         </div>
     );

@@ -12,6 +12,7 @@ import TypographySmall from "@/Components/Typography";
 import { User } from "@/Types";
 import { usePage } from "@inertiajs/react";
 import { usePagination } from "@/Components/Provider/paginate-provider";
+import { LEAVETYPEKEYS, LEAVETYPESOBJ } from "@/Pages/Leave/Types/leavetypes";
 
 type Props = ModalProps & {
     type: "coc" | "leave" | "pds" | "certificate";
@@ -36,12 +37,19 @@ const LogsPrint: React.FC<Props> = ({
 
     useEffect(() => {
         if (!loading) {
-            window.axios.get(route("myreports.logs.all", { _query: {
-                type, filterYear: year, status
-            }}))
-            .then((response) => {
-                setLogs(response.data);
-            });
+            window.axios
+                .get(
+                    route("myreports.logs.all", {
+                        _query: {
+                            type,
+                            filterYear: year,
+                            status,
+                        },
+                    })
+                )
+                .then((response) => {
+                    setLogs(response.data);
+                });
         }
     }, [loading]);
 
@@ -142,6 +150,9 @@ const LogsPrint: React.FC<Props> = ({
                                     <tr className="[&>th]:border-black [&>th]:border text-left text-foreground">
                                         <th className="w-12">No.</th>
                                         <th>Personnel</th>
+                                        {type === "leave" && (
+                                            <th className="w-[9rem] text-center">Type of Leave</th>
+                                        )}
                                         <th className="w-28 text-center">
                                             Status
                                         </th>
@@ -158,9 +169,19 @@ const LogsPrint: React.FC<Props> = ({
                                                 className="[&>td]:py-2 [&>td]:border-black [&>td]:border"
                                             >
                                                 <td className="w-12 text-center">
-                                                    {index+1}
+                                                    {index + 1}
                                                 </td>
                                                 <td>{log.details.username}</td>
+                                                {type === "leave" && (
+                                                    <td className="text-center capitalize w-[9rem]">
+                                                        {
+                                                            LEAVETYPESOBJ[
+                                                                log.details
+                                                                    .type as LEAVETYPEKEYS
+                                                            ]
+                                                        }
+                                                    </td>
+                                                )}
                                                 <td className="text-center capitalize">
                                                     {log.status}
                                                 </td>

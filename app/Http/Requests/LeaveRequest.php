@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class LeaveRequest extends FormRequest
 {
@@ -33,7 +34,7 @@ class LeaveRequest extends FormRequest
                     $dateToCarbon = \Carbon\Carbon::parse($value);
 
                     // Check if 'date_to' is within 5 days of 'date_from'
-                    if ($dateFromCarbon->diffInDays($dateToCarbon, false) > 5) {
+                    if (($dateFromCarbon->diffInDays($dateToCarbon, false) + 1) > 5) {
                         $fail("The 'date of filing to' must be within 5 days of the 'date of filing from'.");
                     }
                 }

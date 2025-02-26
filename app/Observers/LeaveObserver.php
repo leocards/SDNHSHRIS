@@ -119,6 +119,18 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
                     'message' => 'has '.$leave->hrstatus.' your application for leave.'
                 ])->toArray()
             ]);
+
+            LogsReport::create([
+                'user_id' => $leave->user_id,
+                'type' => 'leave',
+                'status' => $leave->hrstatus,
+                'details' => collect([
+                    'leaveid' => $leave->id,
+                    'userid' => $user->id,
+                    'username' => $user->name,
+                    'type' => $leave->type,
+                ])->toArray()
+            ]);
         }
     }
 }
