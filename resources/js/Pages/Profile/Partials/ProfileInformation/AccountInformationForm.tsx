@@ -65,6 +65,7 @@ export const ACCOUNTSCHEMA = z.object({
         personnelid: z
             .string()
             .min(1, requiredError("'DepEd Employee No.'"))
+            .max(7, "Maximum required digits is 7")
             .default(""),
         datehired: z
             .date({ required_error: requiredError("date hired") })
@@ -342,6 +343,8 @@ const AccountInformationForm: React.FC<Props> = ({
                                     form={form}
                                     name="personnel.personnelid"
                                     label="DepEd Employee No."
+                                    type="number"
+                                    maxLength={7}
                                 />
                                 <FormCalendar
                                     form={form}
