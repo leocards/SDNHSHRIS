@@ -25,7 +25,7 @@ const Relatives: React.FC<Props> = ({ relatives }) => {
             ))}
 
             {Array.from({ length: 4 - (relatives?.length||0) }).map((__dirname, index) => (
-                <div key={index} className="grid grid-cols-[13rem,9rem,7rem,1fr] divide-x divide-black text-[10pt] text-center [&>div]:px-1">
+                <div key={index} className="grid grid-cols-[13rem,9rem,7rem,1fr] divide-x divide-black text-[9pt] text-center [&>div]:px-1 uppercase">
                     <div>N/A</div>
                     <div>N/A</div>
                     <div>N/A</div>

@@ -80,6 +80,7 @@ class TardinessController extends Controller
                     $query->where('school_year_id', $sy)->where('month', $month);
                 })
                 ->excludeHr()
+                ->whereNot('role', 'principal')
                 ->orderByRaw("CONCAT(lastname, ' ', firstname) ASC")
                 ->get(['id', 'firstname', 'lastname', 'middlename', 'extensionname', 'avatar'])
                 ->map(fn ($user) => collect([

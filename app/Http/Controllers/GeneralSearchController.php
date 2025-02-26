@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 
 class GeneralSearchController extends Controller
@@ -99,11 +100,40 @@ class GeneralSearchController extends Controller
 
     public function view(User $user)
     {
+        $user->load(['pdsPersonalInformation.addresses']);
+        $user['mailingaddress'] = $this->getPermanentaddress($user->pdsPersonalInformation->addresses);
+
         return Inertia::render('GeneralSearch/ViewSearched', [
             "user" => $user,
             "attendances" => $user->tardiness()->with('schoolyear')->get(),
             "certificates" => $user->serviceRecord()->where('status', 'approved')->get(),
             "leavecount" => $user->leave()->where('hrstatus', 'approved')->where('principalstatus', 'approved')->count()
         ]);
+    }
+
+    function getPermanentaddress(Collection $data)
+    {
+        $address = $data->where('type', 'permanent')->first();
+        $completeAddress = '';
+        if ($address->street) {
+            $completeAddress .= $address->street . ' ';
+        }
+        if ($address->houselotblockno) {
+            $completeAddress .= $address->houselotblockno . ' ';
+        }
+        if ($address->subdivision) {
+            $completeAddress .= $address->subdivision . ' ';
+        }
+        if ($address->barangay) {
+            $completeAddress .= $address->barangay . ' ';
+        }
+        if ($address->citymunicipality) {
+            $completeAddress .= $address->citymunicipality . ' ';
+        }
+        if ($address->province) {
+            $completeAddress .= $address->province . ' ';
+        }
+
+        return $completeAddress;
     }
 }

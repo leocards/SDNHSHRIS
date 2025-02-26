@@ -64,6 +64,7 @@ const Assets = ({ form }: Props) => {
                                         </span>
                                     </Fragment>
                                 }
+                                inputClass="uppercase"
                             />
                             <FormInput
                                 form={form}
@@ -78,6 +79,7 @@ const Assets = ({ form }: Props) => {
                                         </span>
                                     </Fragment>
                                 }
+                                inputClass="uppercase"
                             />
                         </div>
 
@@ -86,6 +88,7 @@ const Assets = ({ form }: Props) => {
                                 form={form}
                                 name={`assets.real.${index}.exactlocation`}
                                 label="Exact Location"
+                                inputClass="uppercase"
                             />
                         </div>
 
@@ -94,11 +97,13 @@ const Assets = ({ form }: Props) => {
                                 form={form}
                                 name={`assets.real.${index}.assessedvalue`}
                                 label="Assessed Value"
+                                inputClass="uppercase"
                             />
                             <FormInput
                                 form={form}
                                 name={`assets.real.${index}.currentfairmarketvalue`}
                                 label="Current Fair Market Value"
+                                inputClass="uppercase"
                             />
                         </div>
 
@@ -110,16 +115,19 @@ const Assets = ({ form }: Props) => {
                                 placeholder="YYYY"
                                 type="number"
                                 maxLength={4}
+                                inputClass="uppercase"
                             />
                             <FormInput
                                 form={form}
                                 name={`assets.real.${index}.acquisition.mode`}
                                 label="Acquisition mode"
+                                inputClass="uppercase"
                             />
                             <FormInput
                                 form={form}
                                 name={`assets.real.${index}.acquisitioncost`}
                                 label="Acquisition cost"
+                                inputClass="uppercase"
                             />
                         </div>
                     </div>
@@ -173,6 +181,7 @@ const Assets = ({ form }: Props) => {
                                 form={form}
                                 name={`assets.personal.${index}.description`}
                                 label="Description"
+                                inputClass="uppercase"
                             />
                             <FormInput
                                 form={form}
@@ -181,11 +190,13 @@ const Assets = ({ form }: Props) => {
                                 placeholder="YYYY"
                                 type="number"
                                 maxLength={4}
+                                inputClass="uppercase"
                             />
                             <FormInput
                                 form={form}
                                 name={`assets.personal.${index}.acquisitioncost`}
                                 label="Acquisition cost/amount"
+                                inputClass="uppercase"
                             />
                         </div>
                     </div>

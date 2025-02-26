@@ -55,7 +55,7 @@ const Card: React.FC<{children?: {
 
     return (
         <div
-            className="grid grid-cols-[1fr,12rem,10rem] h-5 gap-4 text-center [&>div]:border-b [&>div]:border-black [&>div]:leading-5"
+            className="grid grid-cols-[1fr,12rem,10rem] h-5 gap-4 text-center text-[9pt] [&>div]:border-b [&>div]:border-black [&>div]:leading-5 uppercase"
         >
             <div>{children?.name||"N/A"}</div>
             <div>{children?.dateofbirth?format(children?.dateofbirth, "MM/dd/y"):"N/A"}</div>

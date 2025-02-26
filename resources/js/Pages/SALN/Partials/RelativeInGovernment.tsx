@@ -52,23 +52,27 @@ const RelativeInGovernment: React.FC<{ form: any }> = ({ form }) => {
                                     form={form}
                                     name={`relativesingovernment.relatives.${index}.name`}
                                     label="Name of relative"
+                                    inputClass="uppercase"
                                 />
                                 <FormInput
                                     form={form}
                                     name={`relativesingovernment.relatives.${index}.relationship`}
                                     label="Relationship"
+                                    inputClass="uppercase"
 
                                 />
                                 <FormInput
                                     form={form}
                                     name={`relativesingovernment.relatives.${index}.position`}
                                     label="Position"
+                                    inputClass="uppercase"
                                 />
 
                                 <FormInput
                                     form={form}
                                     name={`relativesingovernment.relatives.${index}.agencyandaddress`}
                                     label="Name of agency/office and address"
+                                    inputClass="uppercase"
                                 />
                             </div>
                         </div>

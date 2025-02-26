@@ -17,6 +17,7 @@ type Props = Omit<SALNTPRINTYPE, "pages"|"user"> & {
 };
 
 const SALNPage2 = forwardRef<HTMLDivElement, Props>(({ pagecount, saln, spouse, page, declarant }, ref) => {
+    console.log(page?.relatives)
     return (
         <SALNPDFFormat
             ref={ref}
@@ -57,14 +58,14 @@ const SALNPage2 = forwardRef<HTMLDivElement, Props>(({ pagecount, saln, spouse, 
                     (Within the Fourth Degree of Consanguinity or Affinity. Include also Bilas, Balae and Inso)
                 </div>
                 <div className="text-[10pt] flex items-center justify-center gap-2">
-                    {page.relatives && (
-                        !page.relatives.norelative ? <Square className="size-3.5" /> : <SquareCheck className="size-3.5" />
+                    {saln.relativesingovernment && (
+                        !saln.relativesingovernment.norelative ? <Square className="size-3.5" /> : <SquareCheck className="size-3.5" />
                     )}
                     <div>I/We do not know of any relative/s in the government service</div>
                 </div>
 
                 <div className="mt-1">
-                    <Relatives relatives={page.relatives?.relatives} />
+                    <Relatives relatives={saln.relativesingovernment?.relatives} />
                 </div>
             </div>
 

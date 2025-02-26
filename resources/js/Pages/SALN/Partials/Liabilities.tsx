@@ -38,16 +38,19 @@ const Liabilities: React.FC<{ form: any }> = ({ form }) => {
                                 form={form}
                                 name={`liabilities.${index}.nature`}
                                 label="Nature"
+                                inputClass="uppercase"
                             />
                             <FormInput
                                 form={form}
                                 name={`liabilities.${index}.nameofcreditors`}
                                 label="Name of creditors"
+                                inputClass="uppercase"
                             />
                             <FormInput
                                 form={form}
                                 name={`liabilities.${index}.outstandingbalances`}
                                 label="Outstanding balance"
+                                inputClass="uppercase"
                             />
                         </div>
                     </div>

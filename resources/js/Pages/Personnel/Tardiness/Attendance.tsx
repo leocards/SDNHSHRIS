@@ -320,7 +320,7 @@ const Attendance: React.FC<AttendanceProps> = ({
                         >
                             Cancel
                         </Button>
-                        <Button className="[@media(max-width:410px)]:w-full">Submit Attendance</Button>
+                        <Button className="[@media(max-width:410px)]:w-full" disabled={fields.length === 0}>Submit Attendance</Button>
                     </div>
                 </form>
             </Form>
@@ -392,35 +392,6 @@ const AttendanceRow: React.FC<AttendanceRowProps> = ({ form, name, index }) => {
             </CardContent>
         </Card>
     );
-};
-
-const AttendanceRowLoader = () => {
-    function generateRandomWidths(count: number = 6): string[] {
-        const minWidth = 40;
-        const maxWidth = 75;
-
-        const randomWidths = Array.from({ length: count }, () => {
-            const randomWidth =
-                Math.random() * (maxWidth - minWidth) + minWidth;
-            return `${randomWidth.toFixed(2)}%`;
-        });
-
-        return randomWidths;
-    }
-
-    return generateRandomWidths().map((width, index) => (
-        <div key={index} className="flex items-center w-full gap-3">
-            <div>
-                <Skeleton className="size-7 rounded-full" />
-            </div>
-            <div className="h-10 grow flex items-center justify-start">
-                <Skeleton
-                    className="h-3 rounded-full"
-                    style={{ width: width }}
-                />
-            </div>
-        </div>
-    ));
 };
 
 export default Attendance;

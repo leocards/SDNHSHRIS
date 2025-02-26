@@ -59,7 +59,7 @@ const Card: React.FC<{
     };
 }> = ({ liability }) => {
     return (
-        <div className="grid grid-cols-[1fr,1fr,10rem] text-[10pt] divide-x divide-black text-center [&>div]:">
+        <div className="grid grid-cols-[1fr,1fr,10rem] text-[9pt] divide-x divide-black text-center uppercase">
             <div>{liability.nature}</div>
             <div>{liability.nameofcreditors}</div>
             <div>{"P " + Number(liability.outstandingbalances).toLocaleString()}</div>

@@ -119,10 +119,10 @@ class SalnController extends Controller
     public function store(Request $request, Saln $saln = null)
     {
         $request->validate([
-            'assets.real.*.acquisition.year' => 'required|numeric',
+            'assets.real.*.acquisition.year' => ['required', 'regex:/^(n\/a|\d+)$/i'],
             'assets.personal.*.yearacquired' => 'nullable|numeric',
         ], [
-            'assets.real.*.acquisition.year.numeric' => 'Acquisition year must be a number representation of year.',
+            'assets.real.*.acquisition.year.regex' => 'Acquisition year must be a number representation of year.',
             'assets.personal.*.yearacquired.numeric' => 'Year acquired must be a number representation of year.',
         ]);
 

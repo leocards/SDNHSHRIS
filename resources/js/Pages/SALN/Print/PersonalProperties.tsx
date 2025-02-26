@@ -52,7 +52,7 @@ const Card: React.FC<{personal?: {
 }) => {
     return (
         <div
-            className="grid grid-cols-[1fr,12rem,8rem] text-[10pt] divide-x divide-black text-center"
+            className="grid grid-cols-[1fr,12rem,8rem] text-[8.5pt] divide-x divide-black text-center uppercase"
         >
             <div>{personal? personal.description : "N/A"}</div>
             <div>{personal? personal.yearacquired : "N/A"}</div>

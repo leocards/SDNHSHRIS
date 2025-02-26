@@ -89,7 +89,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                 <div className="grid grid-cols-3 gap-2.5 sm:gap-4 [&>div]:h-12 [&>div]:flex [&>div]:flex-col">
                     <div>
                         <div className="text-center grow">
-                            <div className="line-clamp-1">{user.lastname}</div>
+                            <div className="line-clamp-1 uppercase">{user.lastname}</div>
                         </div>
                         <hr className="border-black/40" />
                         <div className="text-foreground/40 text-center">
@@ -98,7 +98,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                     </div>
                     <div>
                         <div className="text-center grow">
-                            <div className="line-clamp-1">{user.firstname}</div>
+                            <div className="line-clamp-1 uppercase">{user.firstname}</div>
                         </div>
                         <hr className="border-black/40" />
                         <div className="text-foreground/40 text-center">
@@ -107,7 +107,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                     </div>
                     <div>
                         <div className="text-center grow">
-                            <div className="line-clamp-1">
+                            <div className="line-clamp-1 uppercase">
                                 {user.middlename?.charAt(0)}
                             </div>
                         </div>
@@ -119,7 +119,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                 </div>
                 <div className="h-12 flex flex-col">
                     <div className="text-center grow">
-                        <div className="line-clamp-1">{address}</div>
+                        <div className="line-clamp-1 uppercase">{address}</div>
                     </div>
                     <hr className="border-black/40" />
                     <div className="text-foreground/40 text-center">
@@ -129,7 +129,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                 <div className="grid grid-cols-3 gap-2.5 sm:gap-4 [&>div]:h-12 [&>div]:flex [&>div]:flex-col">
                     <div>
                         <div className="text-center grow">
-                            <div className="line-clamp-1">{user.position}</div>
+                            <div className="line-clamp-1 uppercase">{user.position}</div>
                         </div>
                         <hr className="border-black/40" />
                         <div className="text-foreground/40 text-center">
@@ -169,18 +169,21 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                         name="spouse.familyname"
                         label="Family Name"
                         required={false}
+                        inputClass="uppercase"
                     />
                     <FormInput
                         form={form}
                         name="spouse.firstname"
                         label="First Name"
                         required={false}
+                        inputClass="uppercase"
                     />
                     <FormInput
                         form={form}
                         name="spouse.middleinitial"
                         label="M.I."
                         required={false}
+                        inputClass="uppercase"
                     />
                 </div>
                 <div className="grid sm:grid-cols-3 gap-2.5 sm:gap-4">
@@ -189,18 +192,21 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                         name="spouse.position"
                         label="Position"
                         required={false}
+                        inputClass="uppercase"
                     />
                     <FormInput
                         form={form}
                         name="spouse.office"
                         label="Agency/Office/School"
                         required={false}
+                        inputClass="uppercase"
                     />
                     <FormInput
                         form={form}
                         name="spouse.officeaddress"
                         label="Office address"
                         required={false}
+                        inputClass="uppercase"
                     />
                 </div>
 
@@ -210,18 +216,21 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                         name="spouse.governmentissuedid"
                         label="Government Issued Id"
                         required={false}
+                        inputClass="uppercase"
                     />
                     <FormInput
                         form={form}
                         name="spouse.idno"
                         label="ID No"
                         required={false}
+                        inputClass="uppercase"
                     />
                     <FormCalendar
                         form={form}
                         name="spouse.dateissued"
                         label="Date Issued"
                         required={false}
+                        triggerClass="uppercase"
                     />
                 </div>
             </div>

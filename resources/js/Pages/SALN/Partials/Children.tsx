@@ -65,6 +65,7 @@ const Children = ({ form }: Props) => {
                                         form={form}
                                         name={`children.${index}.name`}
                                         label="Name"
+                                        inputClass="uppercase"
                                     />
                                 </div>
                                 <div className="">
@@ -73,6 +74,7 @@ const Children = ({ form }: Props) => {
                                         name={`children.${index}.dateofbirth`}
                                         required={false}
                                         label="Date of birth"
+                                        triggerClass="uppercase"
                                     />
                                 </div>
                                 <div className="space-y-1.5 text-center">

@@ -63,16 +63,19 @@ const BusinessInterectFinancialConnections: React.FC<{ form: any }> = ({
                                     form={form}
                                     name={`biandfc.bifc.${index}.name`}
                                     label="Name of entity/business enterprise"
+                                    inputClass="uppercase"
                                 />
                                 <FormInput
                                     form={form}
                                     name={`biandfc.bifc.${index}.address`}
                                     label="Business address"
+                                    inputClass="uppercase"
                                 />
                                 <FormInput
                                     form={form}
                                     name={`biandfc.bifc.${index}.nature`}
                                     label="Nature of business interest &/or financial connection"
+                                    inputClass="uppercase"
                                 />
 
                                 <FormCalendar
@@ -80,6 +83,7 @@ const BusinessInterectFinancialConnections: React.FC<{ form: any }> = ({
                                     name={`biandfc.bifc.${index}.date`}
                                     label="Date of acquisition of interest or connection"
                                     required={false}
+                                    triggerClass="uppercase"
                                 />
                             </div>
                         </div>
