@@ -20,10 +20,10 @@ import { useMessage } from "@/Components/Provider/message-provider";
 import { cn } from "@/Lib/utils";
 import { useSidebar } from "@/Components/ui/sidebar";
 import useWindowSize from "@/Hooks/useWindowResize";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "@/Components/ui/select";
+import { PERSONALINFORMATIONTYPE } from "../PDS/Types/PersonalInformation";
 
 type Props = {
-    user: User;
+    user: User & {mailingaddress: string; pds_personal_information: PERSONALINFORMATIONTYPE};
     leavecount: number;
     attendances: any[];
     certificates: any[];
@@ -40,7 +40,7 @@ const ViewSearched: React.FC<Props> = ({
     const [pdsTab, setPdsTab] = useState<PDSTABSTYPE>("C1");
     const { setProcess } = useProcessIndicator();
     const { selectConversation } = useMessage();
-    const { state, isMobile } = useSidebar();
+    const { state } = useSidebar();
     const { width } = useWindowSize();
 
     const columns = ["1fr", "10rem", "10rem", "4rem"].join(" ");
@@ -86,8 +86,8 @@ const ViewSearched: React.FC<Props> = ({
                     value="details"
                     className="p-4 [@media(max-width:456px)]:px-0 max-w-3xl mx-auto w-full"
                 >
-                    <div className="flex gap-4 [@media(max-width:1040px)]:flex-col" data-sidebarstate={state}>
-                        <div className="flex [@media(max-width:521px)]:flex-col [@media(min-width:1040px)]:flex-col [@media(max-width:1040px)]:w-full items-center [@media(min-width:1040px)]:w-60 shrink-0 gap-3">
+                    <div className="" data-sidebarstate={state}>
+                        <div className="flex items-center gap-3">
                             <ProfilePhoto
                                 src={user.avatar}
                                 className="size-24"
@@ -103,7 +103,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
                             </div>
 
-                            <div className="mt-4 [@media(max-width:1040px)]:ml-auto [@media(max-width:521px)]:mr-auto">
+                            <div className="ml-auto">
                                 <Button
                                     className=""
                                     variant="secondary"
@@ -116,95 +116,28 @@ const ViewSearched: React.FC<Props> = ({
                                 </Button>
                             </div>
                         </div>
-                        <Card className="p-4 w-full space-y-4">
-                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
-                                <TypographySmall className="w-24">
-                                    User Role:
-                                </TypographySmall>
-
-                                <TypographySmall className="font-normal capitalize">
-                                    {user?.role}
-                                </TypographySmall>
+                        <Card className="p-4 w-full mt-5 space-y-3">
+                            <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3">
+                                <DetailsCard label="Gender" value={{male:"Male",female:"Female"}[user?.gender]} />
+                                <DetailsCard label="Date of Birth" value={format(user?.birthday, "MMMM d, y")} />
+                                <DetailsCard label="Mobile No." value={user?.mobilenumber} />
+                                <DetailsCard label="Email" value={user?.email} valueClass=" overflow-hidden text-ellipsis whitespace-nowrap" />
                             </div>
-
-                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
-                                <TypographySmall className="w-24">
-                                    Gender:
-                                </TypographySmall>
-
-                                <TypographySmall className="font-normal capitalize">
-                                    {user?.gender}
-                                </TypographySmall>
+                            <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 mt-2 gap-3">
+                                <DetailsCard label="Home Address / Mailing Address" valueClass="capitalize" value={user?.mailingaddress.toLowerCase()} />
+                                <DetailsCard label="School / Detailed" value={"Southern Davao National High School"} />
                             </div>
-
-                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
-                                <TypographySmall className="w-24">
-                                    Date of Birth:
-                                </TypographySmall>
-
-                                <TypographySmall className="font-normal">
-                                    {format(user?.birthday, "MMMM dd, y")}
-                                </TypographySmall>
+                            <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3 mb-2">
+                                <DetailsCard label="GSIS No./BP No." value={user?.pds_personal_information?.gsis??""} />
+                                <DetailsCard label="PAG-IBIG No." value={user?.pds_personal_information?.pagibig??""} />
+                                <DetailsCard label="PHILHEALTH No." value={user?.pds_personal_information?.philhealth??""} />
+                                <DetailsCard label="BIR (TIN No.)" value={user?.pds_personal_information?.tin??""} />
                             </div>
-
-                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
-                                <TypographySmall className="w-24">
-                                    Email:
-                                </TypographySmall>
-
-                                <TypographySmall className="font-normal">
-                                    {user?.email}
-                                </TypographySmall>
-                            </div>
-
-                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
-                                <TypographySmall className="w-24">
-                                    Mobile no.:
-                                </TypographySmall>
-
-                                <TypographySmall className="font-normal">
-                                    {user?.mobilenumber}
-                                </TypographySmall>
-                            </div>
-
-                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
-                                <TypographySmall className="w-24">
-                                    DepEd Employee No.:
-                                </TypographySmall>
-
-                                <TypographySmall className="font-normal">
-                                    {user?.personnelid}
-                                </TypographySmall>
-                            </div>
-
-                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
-                                <TypographySmall className="w-24">
-                                    Date Hired:
-                                </TypographySmall>
-
-                                <TypographySmall className="font-normal">
-                                    {format(user?.hiredate, "MMMM, d y")}
-                                </TypographySmall>
-                            </div>
-
-                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
-                                <TypographySmall className="w-24">
-                                    Department:
-                                </TypographySmall>
-
-                                <TypographySmall className="font-normal">
-                                    {Departments[user?.department]}
-                                </TypographySmall>
-                            </div>
-
-                            <div className="flex gap-3 items-center">
-                                <TypographySmall className="w-24 !leading-5">
-                                    Approved Leave:
-                                </TypographySmall>
-
-                                <TypographySmall className="font-normal">
-                                    {leavecount ?? "0"}
-                                </TypographySmall>
+                            <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3">
+                                <DetailsCard label="DepEd Employee No." value={user?.personnelid} />
+                                <DetailsCard label="Date Hired" value={format(user?.hiredate, "MMMM, d y")} />
+                                <DetailsCard label="Department" value={Departments[user?.department]} />
+                                <DetailsCard label="Approved Leave" value={leavecount?.toString()??"0"} />
                             </div>
                         </Card>
                     </div>
@@ -339,5 +272,19 @@ const ViewSearched: React.FC<Props> = ({
         </div>
     );
 };
+
+const DetailsCard = ({label, value, valueClass}:{
+    label: string;
+    value: string;
+    valueClass?: string;
+}) => {
+    return <div>
+        <TypographySmall className="font-semibold">
+            {label}
+        </TypographySmall>
+
+        <div className={cn(valueClass)}>{value}</div>
+    </div>
+}
 
 export default ViewSearched;

@@ -26,22 +26,23 @@ const ViewSaln = ({ pages, saln, declarant, spouse, address, user }: Props) => {
     const { toast } = useToast();
 
     const onResponse = (action: "approved" | "disapproved") => {
-        router.post(
-            route("myapproval.saln.approval", [saln.id]),
-            {
-                action,
-            },
-            {
-                onBefore: () => setProcess(true),
-                onSuccess: (page) => {
-                    toast({
-                        title: page.props.flash.title,
-                        description: page.props.flash.message,
-                        status: page.props.flash.status,
-                    });
+        if(!user?.status_updated_at)
+            router.post(
+                route("myapproval.saln.approval", [saln.id]),
+                {
+                    action,
                 },
-            }
-        );
+                {
+                    onBefore: () => setProcess(true),
+                    onSuccess: (page) => {
+                        toast({
+                            title: page.props.flash.title,
+                            description: page.props.flash.message,
+                            status: page.props.flash.status,
+                        });
+                    },
+                }
+            );
     };
 
     return (
@@ -117,7 +118,7 @@ const ViewSaln = ({ pages, saln, declarant, spouse, address, user }: Props) => {
             </div>
 
             <div className="flex gap-4 justify-end mt-7 border-t border-border pt-4 pb-10">
-                {saln?.status === "pending" && (
+                {(saln?.status === "pending" && !user?.status_updated_at) && (
                     <>
                         <TooltipLabel label="Approve">
                             <Button

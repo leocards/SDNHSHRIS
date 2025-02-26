@@ -10,6 +10,7 @@ import TypographySmall from "@/Components/Typography";
 import { TableHeader, TableRow } from "@/Components/Header";
 import { cn } from "@/Lib/utils";
 import { format } from "date-fns";
+import useWindowSize from "@/Hooks/useWindowResize";
 
 type Props = {
     certificates: any[];
@@ -18,15 +19,16 @@ type Props = {
 const PersonnelServiceRecords: React.FC<Props> = ({ certificates }) => {
     const [selectedCertificate, setSelectedCertificate] = useState(0);
     const [viewCertificate, setViewCertificate] = useState(false);
+    const { width } = useWindowSize()
 
-    const columns = ["1fr", "10rem", "10rem", "4rem"].join(" ");
+    const columns = `1fr ${width <= 456 ? '' : '8rem'} ${width <= 640 ? '' : '10rem'} 4rem`;
 
     return (
         <TabsContent
             value="sr"
-            className="max-w-4xl min-w-[35rem] w-full mx-auto"
+            className="sm:max-w-4xl sm:min-w-[35rem] w-full mx-auto"
         >
-            <Card className="min-h-[28rem] relative p-2 space-y-1 mt-5">
+            <Card className="min-h-[28rem] relative space-y-1 mt-5">
                 <Deferred
                     data="certificates"
                     fallback={
@@ -53,8 +55,8 @@ const PersonnelServiceRecords: React.FC<Props> = ({ certificates }) => {
 
                         <TableHeader style={{ gridTemplateColumns: columns }}>
                             <div>Certificate Name</div>
-                            <div>Type</div>
-                            <div>Date modified</div>
+                            <div className="[@media(max-width:456px)]:!hidden">Type</div>
+                            <div className="max-sm:!hidden">Date modified</div>
                             <div></div>
                         </TableHeader>
 
@@ -72,7 +74,7 @@ const PersonnelServiceRecords: React.FC<Props> = ({ certificates }) => {
                                     {data?.details?.name ?? "N/A"}
                                 </div>
                                 <div
-                                    className={cn(
+                                    className={cn("[@media(max-width:456px)]:!hidden",
                                         data?.type === "coc"
                                             ? "uppercase"
                                             : "capitalize"
@@ -80,7 +82,7 @@ const PersonnelServiceRecords: React.FC<Props> = ({ certificates }) => {
                                 >
                                     {data?.type}
                                 </div>
-                                <div>{format(data?.updated_at, "MMMM dd, y")}</div>
+                                <div className="max-sm:!hidden">{format(data?.updated_at, "MMMM dd, y")}</div>
                                 <Button className="ml-auto" variant={"link"}>
                                     <Eye />
                                 </Button>

@@ -85,6 +85,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/personnel-status/{user}', 'updatePersonnelStatus')->middleware(['role:hr'])->name('personnel.status.update');
         });
 
+        Route::get('/personnel-archive/saln/view/{saln}', [SalnController::class, 'view'])->middleware(['role:hr'])->name('personnel.archive.saln.view');
+
         // Tardiness routes
         Route::controller(TardinessController::class)->group(function () {
             Route::get('/tardiness', 'index')->name('personnel.tardiness');

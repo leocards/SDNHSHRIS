@@ -17,6 +17,8 @@ import { ProfilePhoto } from "@/Components/ui/avatar";
 import { format } from "date-fns";
 import { usePage } from "@inertiajs/react";
 import useWindowSize from "@/Hooks/useWindowResize";
+import ViewAttendance from "./ViewAttendance";
+import { useSidebar } from "@/Components/ui/sidebar";
 
 export type TARDINESSTYPE = {
     id: number;
@@ -55,7 +57,8 @@ const Tardiness: React.FC<TardinessProps> = ({ ...props }) => {
 const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
     const { page, onQuery } = usePagination<TARDINESSTYPE>();
     const { props } = usePage();
-    const { width } = useWindowSize()
+    const { width } = useWindowSize();
+    const { state } = useSidebar()
 
     const [filterSy, setFilterSy] = useState<{
         id: number;
@@ -67,6 +70,7 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
     const [filterMonth, setFilterMonth] = useState(format(new Date(), "MMMM"));
     const [showAttendace, setShowAttendance] = useState(false);
     const [attendance, setAttendance] = useState<TARDINESSTYPE | null>(null);
+    const [viewAttendance, setViewAttendance] = useState(false);
 
     return (
         <div>
@@ -167,13 +171,17 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                 <TableDataSkeletonLoader
                     data={["tardinesses"]}
                     length={8}
-                    columns={width <= 710 ? ['1fr', '7rem'] : [
-                        "minmax(6rem,1fr)",
-                        ...Array.from({ length: 4 }).map(
-                            () => "minmax(7rem,12rem)"
-                        ),
-                        "5rem",
-                    ]}
+                    columns={
+                        width <= 710
+                            ? ["1fr", "7rem"]
+                            : state === "expanded" && width <= 920 ? ["1fr", "7rem"] : [
+                                  "minmax(6rem,1fr)",
+                                  ...Array.from({ length: 4 }).map(
+                                      () => "minmax(7rem,12rem)"
+                                  ),
+                                  "5rem",
+                              ]
+                    }
                 >
                     {(column) => (
                         <Fragment>
@@ -182,12 +190,24 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                                 className=""
                             >
                                 <div>Name</div>
-                                <div className="[@media(max-width:710px)]:!hidden">No. of Days Present</div>
-                                <div className="[@media(max-width:710px)]:!hidden">No. of Days Absent</div>
-                                <div className="[@media(max-width:710px)]:!hidden">No. of Time Tardy</div>
-                                <div className="[@media(max-width:710px)]:!hidden">No. of Undertime</div>
-                                <div className="justify-center [@media(max-width:710px)]:!hidden">Edit</div>
-                                <div className="justify-center [@media(min-width:710px)]:!hidden">Action</div>
+                                <div className="[@media(max-width:711px)]:!hidden data-[sidebarstate=expanded]:[@media(max-width:920px)]:!hidden" data-sidebarstate={state}>
+                                    No. of Days Present
+                                </div>
+                                <div className="[@media(max-width:711px)]:!hidden data-[sidebarstate=expanded]:[@media(max-width:920px)]:!hidden" data-sidebarstate={state}>
+                                    No. of Days Absent
+                                </div>
+                                <div className="[@media(max-width:711px)]:!hidden data-[sidebarstate=expanded]:[@media(max-width:920px)]:!hidden" data-sidebarstate={state}>
+                                    No. of Time Tardy
+                                </div>
+                                <div className="[@media(max-width:711px)]:!hidden data-[sidebarstate=expanded]:[@media(max-width:920px)]:!hidden" data-sidebarstate={state}>
+                                    No. of Undertime
+                                </div>
+                                <div className="justify-center [@media(max-width:711px)]:!hidden data-[sidebarstate=expanded]:[@media(max-width:920px)]:!hidden" data-sidebarstate={state}>
+                                    Edit
+                                </div>
+                                <div className="justify-center [@media(min-width:711px)]:!hidden data-[sidebarstate=expanded]:[@media(max-width:920px)]:!flex" data-sidebarstate={state}>
+                                    Action
+                                </div>
                             </TableHeader>
                             {page?.data.length === 0 && (
                                 <div className="flex flex-col items-center absolute inset-0 justify-center">
@@ -196,7 +216,9 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                                         src={empty}
                                     />
                                     <div className="text-sm font-medium text-foreground/50 mt-1 text-center">
-                                        No recorded personnel tardiness <br /> for the month of {filterMonth.toLowerCase()}.
+                                        No recorded personnel tardiness <br />{" "}
+                                        for the month of{" "}
+                                        {filterMonth.toLowerCase()}.
                                     </div>
                                 </div>
                             )}
@@ -214,13 +236,19 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                                             {tardiness?.user?.name}
                                         </div>
                                     </div>
-                                    <div className="[@media(max-width:710px)]:!hidden">{tardiness?.present}</div>
-                                    <div className="[@media(max-width:710px)]:!hidden">{tardiness?.absent}</div>
-                                    <div className="[@media(max-width:710px)]:!hidden">
+                                    <div className="[@media(max-width:711px)]:!hidden data-[sidebarstate=expanded]:[@media(max-width:920px)]:!hidden" data-sidebarstate={state}>
+                                        {tardiness?.present}
+                                    </div>
+                                    <div className="[@media(max-width:711px)]:!hidden data-[sidebarstate=expanded]:[@media(max-width:920px)]:!hidden" data-sidebarstate={state}>
+                                        {tardiness?.absent}
+                                    </div>
+                                    <div className="[@media(max-width:711px)]:!hidden data-[sidebarstate=expanded]:[@media(max-width:920px)]:!hidden" data-sidebarstate={state}>
                                         {tardiness?.timetardy}
                                     </div>
-                                    <div className="[@media(max-width:710px)]:!hidden">{tardiness?.undertime}</div>
-                                    <div className="justify-center [@media(max-width:710px)]:gap-2">
+                                    <div className="[@media(max-width:711px)]:!hidden data-[sidebarstate=expanded]:[@media(max-width:920px)]:!hidden" data-sidebarstate={state}>
+                                        {tardiness?.undertime}
+                                    </div>
+                                    <div className="justify-center [@media(max-width:711px)]:gap-2 data-[sidebarstate=expanded]:[@media(max-width:920px)]:gap-2" data-sidebarstate={state}>
                                         <Button
                                             className="size-8"
                                             variant="outline"
@@ -235,7 +263,16 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                                             <Edit className="!size-4" />
                                         </Button>
 
-                                        <Button size="icon" variant="outline" className="size-8 [@media(min-width:710px)]:hidden">
+                                        <Button
+                                            size="icon"
+                                            variant="outline"
+                                            className="size-8 data-[sidebarstate=collapsed]:[@media(min-width:711px)]:hidden data-[sidebarstate=expanded]:[@media(min-width:920px)]:hidden"
+                                            data-sidebarstate={state}
+                                            onClick={() => setViewAttendance(true)}
+                                            onMouseOver={() =>
+                                                setAttendance(tardiness)
+                                            }
+                                        >
                                             <Eye />
                                         </Button>
                                     </div>
@@ -258,7 +295,15 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                         setAttendance(null);
                     }, 500);
                 }}
-                onSuccess={() => onQuery({ sy: filterSy.id, month: filterMonth })}
+                onSuccess={() =>
+                    onQuery({ sy: filterSy.id, month: filterMonth })
+                }
+            />
+
+            <ViewAttendance
+                show={viewAttendance}
+                onClose={setViewAttendance}
+                attendance={attendance}
             />
         </div>
     );

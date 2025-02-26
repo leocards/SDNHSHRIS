@@ -7,14 +7,17 @@ import { Back, Eye } from "iconsax-react";
 import React, { Fragment, useState } from "react";
 import PersonnelLeaveView from "./PersonnelLeaveView";
 import { LeaveViewProps } from "@/Pages/Leave/LeaveView";
-import { useToast } from "@/Hooks/use-toast";
-import { LEAVETYPEKEYSARRAY, LEAVETYPESOBJ } from "@/Pages/Leave/Types/leavetypes";
+import {
+    LEAVETYPEKEYSARRAY,
+    LEAVETYPESOBJ,
+} from "@/Pages/Leave/Types/leavetypes";
+import emptyData from "@/Assets/empty-file.svg";
 
 type Props = {
     leaves: Array<{
         id: number;
         user_id: number;
-        type: typeof LEAVETYPEKEYSARRAY[number];
+        type: (typeof LEAVETYPEKEYSARRAY)[number];
     }>;
 };
 
@@ -34,7 +37,10 @@ const PersonnelLeave: React.FC<Props> = ({ leaves }) => {
     };
 
     return (
-        <TabsContent value="leave" className="max-w-4xl mx-auto min-w-[35rem]">
+        <TabsContent
+            value="leave"
+            className="sm:max-w-4xl mx-auto sm:min-w-[35rem] w-full"
+        >
             <Deferred
                 data="leaves"
                 fallback={
@@ -54,9 +60,13 @@ const PersonnelLeave: React.FC<Props> = ({ leaves }) => {
                                 Please wait a moment...
                             </TypographySmall>
                         </div>
-                    ) : leaveData ?
+                    ) : leaveData ? (
                         <Fragment>
-                            <Button variant="outline" className="my-5" onClick={() => setLeaveData(null)}>
+                            <Button
+                                variant="outline"
+                                className="my-5"
+                                onClick={() => setLeaveData(null)}
+                            >
                                 <Back />
                                 <div>Back</div>
                             </Button>
@@ -67,8 +77,19 @@ const PersonnelLeave: React.FC<Props> = ({ leaves }) => {
                                 principal={leaveData?.principal}
                             />
                         </Fragment>
-                    : (
-                        <Card className="min-h-[28rem] p-2 space-y-1 mt-5">
+                    ) : (
+                        <Card className="min-h-[28rem] p-2 space-y-1 mt-5 relative">
+                            {leaves?.length === 0 && (
+                                <div className="flex flex-col items-center absolute inset-0 justify-center pointer-events-none">
+                                    <img
+                                        className="size-24 opacity-40 dark:opacity-65"
+                                        src={emptyData}
+                                    />
+                                    <div className="text-sm font-medium text-foreground/50 mt-1">
+                                        No recorded leave application.
+                                    </div>
+                                </div>
+                            )}
                             {leaves?.map((leave, index) => (
                                 <div
                                     key={index}

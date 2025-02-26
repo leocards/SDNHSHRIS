@@ -20,6 +20,7 @@ import NotificationTrigger from "../Notifications/NotificationTrigger";
 import { useAccount } from "@/Components/Provider/auth-account-provider";
 import SchoolYear from "@/Pages/SchoolYear/SchoolYear";
 import { useProcessIndicator } from "../Provider/process-indicator-provider";
+import { useState } from "react";
 
 interface Props {}
 
@@ -28,6 +29,7 @@ const HeaderNavigationBar: React.FC<Props> = ({}) => {
     const { user } = usePage().props.auth;
     const { setLogout } = useAccount();
     const { setProcess } = useProcessIndicator();
+    const [syState, setSYState] = useState<"create"|"edit"|"close">("close")
 
     return (
         <div className="header-nav">
@@ -44,7 +46,7 @@ const HeaderNavigationBar: React.FC<Props> = ({}) => {
             <div className="border-l border-border mx-3 h-7" />
 
             <div className="flex items-center max-sm:hidden">
-                <SchoolYear />
+                <SchoolYear create={(syState === "create")} edit={(syState === "edit")} onSelectMenu={setSYState} />
 
                 <div className="border-l border-border mx-3 h-7" />
 
@@ -158,11 +160,11 @@ const HeaderNavigationBar: React.FC<Props> = ({}) => {
                         <MenubarSub>
                             <MenubarSubTrigger>SY 2024-2025</MenubarSubTrigger>
                             <MenubarSubContent className="[@media_(max-width:360px)]:!-mr-[8rem] [@media_(max-width:360px)]:mt-9" alignOffset={-15}>
-                                <MenubarItem className="space-x-2">
+                                <MenubarItem className="space-x-2" onClick={() => setSYState("create")}>
                                     <Plus />
                                     <div>New School Year</div>
                                 </MenubarItem>
-                                <MenubarItem className="space-x-2">
+                                <MenubarItem className="space-x-2" onClick={() => setSYState("edit")}>
                                     <SquarePen />
                                     <div>Edit School Year</div>
                                 </MenubarItem>

@@ -43,7 +43,7 @@ const PersonnelAttendance: React.FC<Props> = ({ tardinesses }) => {
                         {Object.entries(tardinesses ?? {}).map(
                             ([key, value]) => (
                                 <AccordionItem value={key}  key={key}>
-                                    <AccordionTrigger className="px-4">
+                                    <AccordionTrigger className="px-4 py-2.5">
                                         School Year {key}
                                     </AccordionTrigger>
                                     <AccordionContent className="group-data-[state=open]/accordion:border-border border-transparent border-t">

@@ -12,10 +12,12 @@ import CreateSchoolYear from "./CreateSchoolYear";
 import { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
 
-const SchoolYear = () => {
+const SchoolYear = ({ create, edit, onSelectMenu }:{
+    create: boolean;
+    edit: boolean;
+    onSelectMenu: (value: "create"|"edit"|"close") => void
+}) => {
     const { schoolyear } = usePage().props;
-    const [show, setShow] = useState(!schoolyear?true:false);
-    const [edit, setEdit] = useState(false);
 
     return (
         <div>
@@ -34,14 +36,11 @@ const SchoolYear = () => {
                         alignOffset={0}
                         className="min-w-[10.5rem]"
                     >
-                        <MenubarItem className="space-x-2" onClick={() => setShow(true)}>
+                        <MenubarItem className="space-x-2" onClick={() => onSelectMenu("create")}>
                             <Add />
                             <div>New School Year</div>
                         </MenubarItem>
-                        <MenubarItem className="space-x-2" onClick={() => {
-                            setShow(true)
-                            setEdit(true)
-                        }}>
+                        <MenubarItem className="space-x-2" onClick={() => onSelectMenu("edit")}>
                             <Edit />
                             <div>Edit School Year</div>
                         </MenubarItem>
@@ -49,10 +48,7 @@ const SchoolYear = () => {
                 </MenubarMenu>
             </Menubar>
 
-            <CreateSchoolYear onClose={(close: boolean) => {
-                setShow(close)
-                setTimeout(() => setEdit(close), 500)
-            }} show={show} edit={edit} />
+            <CreateSchoolYear onClose={() => onSelectMenu("close")} show={create || edit} edit={edit} />
         </div>
     );
 };

@@ -8,14 +8,14 @@ import { TabsContent } from "@/Components/ui/tabs";
 
 const PersonnelDetails = ({ user, servicecredits }: { user: User; servicecredits: number }) => {
     return (
-        <TabsContent value="details" className="p-4 max-w-3xl mx-auto w-full">
+        <TabsContent value="details" className="[@media(max-width:796px)]:px-0 p-4 max-w-3xl mx-auto w-full">
             <Card className="p-4 flex [@media(max-width:540px)]:flex-col gap-5 max-w-[37rem]">
                 <ProfilePhoto
                     src={user.avatar}
                     className="size-24 !rounded-xl"
                     fallbackSize={40}
                 />
-                <div className="space-y-4 [&>div]:flex-col [&>div]:gap-1">
+                <div className="space-y-4 [ &>div]:flex-col [&>div]:gap-1">
                     <div className="flex gap-3 items-start">
                         <TypographySmall className="w-24">
                             Name:
