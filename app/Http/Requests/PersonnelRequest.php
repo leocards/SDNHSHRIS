@@ -37,7 +37,7 @@ class PersonnelRequest extends FormRequest
             'personnel.personnelid' => ['required', 'string', Rule::unique(User::class, 'personnelid')->ignore($this->route('personnelid'))],
             'personnel.datehired' => ['required', 'date'],
             'personnel.role' => ['required', 'in:hr,principal,teaching,non-teaching'],
-            'personnel.department' => ['required', 'in:junior,senior,accounting,N/A'],
+            'personnel.department' => ['required', 'in:junior,senior,accounting,N/A,deped'],
             'personnel.position' => ['required', 'string', Rule::in([
                 "Teacher I",
                 "Teacher II",
