@@ -148,7 +148,7 @@ const IPCR = ({ schoolyears, ipcr, principal, hr }: Props) => {
                                 "minmax(5rem,7rem)",
                                 "minmax(5rem,12rem)",
                                 "5rem",
-                            ]}
+                            ].join(" ")}
                             length={10}
                         />
                     }
@@ -239,7 +239,7 @@ const IPCR = ({ schoolyears, ipcr, principal, hr }: Props) => {
                                     "minmax(5rem,7rem)",
                                     "minmax(5rem,12rem)",
                                     "5rem",
-                                ]}
+                                ].join(" ")}
                                 length={10}
                             />
                         )}
