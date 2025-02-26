@@ -141,7 +141,7 @@ const AccountInformationForm: React.FC<Props> = ({
 
     useEffect(() => {
         if (watchRole === "principal") {
-            form.setValue("personnel.department", "N/A");
+            form.setValue("personnel.department", "deped");
             setPositions([...PersonnelPosition].slice(10, 15));
         } else if (watchRole === "non-teaching") {
             form.setValue("personnel.department", "accounting");

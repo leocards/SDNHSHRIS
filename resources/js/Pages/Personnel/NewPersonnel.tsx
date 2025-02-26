@@ -46,7 +46,7 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({ personnel, hasPrincipal, pe
                     ? new Date(personnel?.hiredate)
                     : undefined,
                 role: personnel?.role ?? (!hasPrincipal ? "principal" : personneltype),
-                department: personnel?.department || (personneltype === "non-teaching" ? !hasPrincipal ? "N/A" : "accounting" : undefined),
+                department: personnel?.department || (personneltype === "non-teaching" ? (!hasPrincipal ? "deped" : "accounting") : undefined),
                 position: personnel?.position || undefined,
                 credits: !personnel && personneltype != "teaching" ? '30' : '0',
                 splcredits: !personnel && personneltype != "teaching" ? '15' : '0',
