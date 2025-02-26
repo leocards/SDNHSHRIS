@@ -172,7 +172,7 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Type</div>
-                                <div>Date</div>
+                                <div>Date Created</div>
                                 <div>HR Status</div>
                                 <div>Principal Status</div>
                                 <div className="justify-center">Action</div>

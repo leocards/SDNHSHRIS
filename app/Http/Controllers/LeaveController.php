@@ -212,7 +212,9 @@ class LeaveController extends Controller
                 "commutation" => $request->commutation,
                 "details" => $request->details,
                 "detailsinput" => $request->detailsinput,
-                "principalstatus" => $auth->role == "principal" ? "approved" : "pending"
+                "principalstatus" => $auth->role == "principal" ? "approved" : "pending",
+                "principal_id" => $auth->role == "principal" ? $auth->id : User::where('role', 'principal')->value('id'),
+                "hr_id" => User::where('role', 'hr')->value('id'),
             ]);
 
             if ($leave) {
@@ -302,7 +304,6 @@ class LeaveController extends Controller
             if ($auth->role == 'hr') {
                 $leave->hrstatus = $request->response;
                 $leave->hrdisapprovedmsg = $request->message;
-                $leave->hr_id = $auth->id;
 
                 // deduct credits for principal that applies leave
                 if ($leave->user->role === "principal") {
@@ -311,7 +312,6 @@ class LeaveController extends Controller
             } else if ($auth->role == 'principal') {
                 $leave->principalstatus = $request->response;
                 $leave->principaldisapprovedmsg = $request->message;
-                $leave->principal_id = $auth->id;
 
                 if ($leave->type !== "maternity" && $request->response == "approved") {
                     $this->processCreditDeduction($leaveApplicant, $leave);

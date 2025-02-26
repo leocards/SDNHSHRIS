@@ -17,6 +17,9 @@ import { SearchNormal1 } from "iconsax-react";
 import { X } from "lucide-react";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import empty from "@/Assets/empty-personnel.svg";
+import useWindowSize from "@/Hooks/useWindowResize";
+import { useSidebar } from "@/Components/ui/sidebar";
+import { cn } from "@/Lib/utils";
 
 type GENERALSEARCHTYPE = User & { sr: number | null};
 
@@ -42,6 +45,9 @@ const Main = () => {
     const searchRef = useRef<HTMLInputElement>(null);
     const [search, setSearch] = useState("");
     const debouncedSearch = useDebounce(search, 700);
+
+    const { width } = useWindowSize()
+    const { state, isMobile } = useSidebar()
 
     useEffect(() => {
         onQuery({ search });
@@ -81,7 +87,7 @@ const Main = () => {
             <Card className="min-h-[27rem] relative">
                 <TableDataSkeletonLoader
                     data="user"
-                    columns={["1fr", "9rem", "12rem", "6rem", "5rem"]}
+                    columns={`1fr ${state === "expanded" ? (width <= 485 ? "":"9rem") : "9rem"} ${state === "expanded" ? (width <= 1012 ? "":"12rem 6rem") : (width > 1012 ? "12rem 6rem": width <= 856 ? "" : "12rem 6rem")} 5rem`}
                     length={8}
                 >
                     {(column) => (
@@ -90,9 +96,9 @@ const Main = () => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Personnel Name</div>
-                                <div className="justify-center">Position</div>
-                                <div className="justify-center">Department</div>
-                                <div className="justify-center">Credits</div>
+                                <div className="justify-center data-[sidebarstate=expanded]:[@media(max-width:485px)]:!hidden data-[sidebarstate=collapsed]:[@media(max-width:485px)]:!hidden" data-sidebarstate={state}>Position</div>
+                                <div className="justify-center data-[sidebarstate=expanded]:[@media(max-width:1012px)]:!hidden data-[sidebarstate=collapsed]:[@media(max-width:856px)]:!hidden" data-sidebarstate={state}>Department</div>
+                                <div className="justify-center data-[sidebarstate=expanded]:[@media(max-width:1012px)]:!hidden data-[sidebarstate=collapsed]:[@media(max-width:856px)]:!hidden" data-sidebarstate={state}>Credits</div>
                                 <div></div>
                             </TableHeader>
                             {page?.data.length === 0 && (
@@ -112,15 +118,15 @@ const Main = () => {
                                     style={{ gridTemplateColumns: column }}
                                 >
                                     <div className="uppercase">{data.name}</div>
-                                    <div className="justify-center">
+                                    <div className="justify-center data-[sidebarstate=expanded]:[@media(max-width:485px)]:!hidden data-[sidebarstate=collapsed]:[@media(max-width:485px)]:!hidden" data-sidebarstate={state}>
                                         {data.position}
                                     </div>
-                                    <div className="justify-center">
+                                    <div className="justify-center data-[sidebarstate=expanded]:[@media(max-width:1012px)]:!hidden data-[sidebarstate=collapsed]:[@media(max-width:856px)]:!hidden" data-sidebarstate={state}>
                                         {data.department == "N/A"
                                             ? "-"
                                             : Departments[data.department]}
                                     </div>
-                                    <div className="justify-center">
+                                    <div className="justify-center data-[sidebarstate=expanded]:[@media(max-width:1012px)]:!hidden data-[sidebarstate=collapsed]:[@media(max-width:856px)]:!hidden" data-sidebarstate={state}>
                                         {data.credits + (data.role != 'teaching' ? (data.sr??0) : 0)}
                                     </div>
                                     <div className="justify-center">

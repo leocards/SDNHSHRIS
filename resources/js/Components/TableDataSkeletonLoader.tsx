@@ -5,7 +5,7 @@ import { usePagination } from "./Provider/paginate-provider";
 
 type TableDataSkeletonLoaderProps = {
     children: (column: string) => ReactElement | number | string;
-    columns: Array<string> | number;
+    columns: Array<string> | number | string;
     data: string | Array<string>;
     length?: number;
 };
@@ -19,8 +19,8 @@ const TableDataSkeletonLoader: React.FC<TableDataSkeletonLoaderProps> = ({
     const { loading } = usePagination();
     const gridtemplatecolumns =
         typeof columns == "number"
-            ? Array.from({ length: columns }).map(() => "1fr")
-            : columns;
+            ? Array.from({ length: columns }).map(() => "1fr").join(" ")
+            : typeof columns === "string" ? columns : columns.join(" ");
 
     return (
         <Deferred
@@ -29,20 +29,20 @@ const TableDataSkeletonLoader: React.FC<TableDataSkeletonLoaderProps> = ({
         >
             {loading ? (
                 <Loader gridtemplatecolumns={gridtemplatecolumns} length={length} />
-            ) : children(gridtemplatecolumns.join(" "))}
+            ) : children(gridtemplatecolumns)}
         </Deferred>
     );
 };
 
-export const Loader: React.FC<{ gridtemplatecolumns: Array<string>, length: number }> = ({
+export const Loader: React.FC<{ gridtemplatecolumns: string, length: number }> = ({
     gridtemplatecolumns, length
 }) => (
     <div className="">
         <div
             className="grid gap-2 px-2 h-14 border-b border-border"
-            style={{ gridTemplateColumns: gridtemplatecolumns.join(" ") }}
+            style={{ gridTemplateColumns: gridtemplatecolumns }}
         >
-            {Array.from({ length: gridtemplatecolumns.length }).map(
+            {Array.from({ length: gridtemplatecolumns.split(" ").length }).map(
                 (_, index) => (
                     <div key={index} className="py-2.5">
                         <Skeleton className="size-full rounded-full" />
@@ -56,10 +56,10 @@ export const Loader: React.FC<{ gridtemplatecolumns: Array<string>, length: numb
                 key={index}
                 className="grid gap-2 px-2 h-12"
                 style={{
-                    gridTemplateColumns: gridtemplatecolumns.join(" "),
+                    gridTemplateColumns: gridtemplatecolumns,
                 }}
             >
-                {Array.from({ length: gridtemplatecolumns.length }).map(
+                {Array.from({ length: gridtemplatecolumns.split(" ").length }).map(
                     (_, index) => (
                         <div key={index} className="py-2.5">
                             <Skeleton className="size-full rounded-full" />

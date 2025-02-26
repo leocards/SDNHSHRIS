@@ -56,7 +56,7 @@ class LeaveRequest extends FormRequest
                 }
             ],
             'from' => ['required', 'date'],
-            'to' => ['required', 'nullable', 'date'],
+            'to' => ['nullable', 'date'],
             'commutation' => ['required'],
             'medical' => ['required_if:type,maternity']
         ];

@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
+        User::createQuietly([
             'firstname' => 'Floramie',
             'lastname' => 'Lopez',
             'birthday' => '2000-02-23',

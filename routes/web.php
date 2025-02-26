@@ -216,7 +216,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::prefix('tardiness')->middleware(['role:teaching,non-teaching,principal'])->group(function () {
+    Route::prefix('tardiness')->middleware(['role:teaching,non-teaching'])->group(function () {
         Route::controller(TardinessController::class)->group(function () {
             Route::get('/', 'index')->name('tardiness');
         });

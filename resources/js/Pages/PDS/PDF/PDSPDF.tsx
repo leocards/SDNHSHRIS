@@ -264,7 +264,7 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
                         )}
                     </Fragment>
                 ) : (
-                    <div className="text-center w-full py-10">No PDS added</div>
+                    <div className="sm:text-center w-full py-10 min-h-[8.10in]">No PDS added</div>
                 )
             )}
         </div>

@@ -18,6 +18,9 @@ import { router } from "@inertiajs/react";
 import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
 import { useMessage } from "@/Components/Provider/message-provider";
 import { cn } from "@/Lib/utils";
+import { useSidebar } from "@/Components/ui/sidebar";
+import useWindowSize from "@/Hooks/useWindowResize";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/Components/ui/select";
 
 type Props = {
     user: User;
@@ -37,6 +40,8 @@ const ViewSearched: React.FC<Props> = ({
     const [pdsTab, setPdsTab] = useState<PDSTABSTYPE>("C1");
     const { setProcess } = useProcessIndicator();
     const { selectConversation } = useMessage();
+    const { state, isMobile } = useSidebar();
+    const { width } = useWindowSize();
 
     const columns = ["1fr", "10rem", "10rem", "4rem"].join(" ");
 
@@ -68,6 +73,7 @@ const ViewSearched: React.FC<Props> = ({
             <Tabs
                 className="overflow-hidden grow flex flex-col my-5"
                 defaultValue="details"
+                onValueChange={(value) => console.log(value)}
             >
                 <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60">
                     <TabsTrigger value="details">Details</TabsTrigger>
@@ -78,10 +84,10 @@ const ViewSearched: React.FC<Props> = ({
 
                 <TabsContent
                     value="details"
-                    className="p-4 max-w-3xl mx-auto w-full"
+                    className="p-4 [@media(max-width:456px)]:px-0 max-w-3xl mx-auto w-full"
                 >
-                    <div className="flex gap-4">
-                        <div className="flex flex-col items-center w-60 shrink-0 gap-3">
+                    <div className="flex gap-4 [@media(max-width:1040px)]:flex-col" data-sidebarstate={state}>
+                        <div className="flex [@media(max-width:521px)]:flex-col [@media(min-width:1040px)]:flex-col [@media(max-width:1040px)]:w-full items-center [@media(min-width:1040px)]:w-60 shrink-0 gap-3">
                             <ProfilePhoto
                                 src={user.avatar}
                                 className="size-24"
@@ -97,7 +103,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
                             </div>
 
-                            <div className="mt-4">
+                            <div className="mt-4 [@media(max-width:1040px)]:ml-auto [@media(max-width:521px)]:mr-auto">
                                 <Button
                                     className=""
                                     variant="secondary"
@@ -111,7 +117,7 @@ const ViewSearched: React.FC<Props> = ({
                             </div>
                         </div>
                         <Card className="p-4 w-full space-y-4">
-                            <div className="flex gap-3 items-start">
+                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
                                 <TypographySmall className="w-24">
                                     User Role:
                                 </TypographySmall>
@@ -121,7 +127,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
                             </div>
 
-                            <div className="flex gap-3 items-start">
+                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
                                 <TypographySmall className="w-24">
                                     Gender:
                                 </TypographySmall>
@@ -131,7 +137,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
                             </div>
 
-                            <div className="flex gap-3 items-start">
+                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
                                 <TypographySmall className="w-24">
                                     Date of Birth:
                                 </TypographySmall>
@@ -141,7 +147,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
                             </div>
 
-                            <div className="flex gap-3 items-start">
+                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
                                 <TypographySmall className="w-24">
                                     Email:
                                 </TypographySmall>
@@ -151,7 +157,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
                             </div>
 
-                            <div className="flex gap-3 items-start">
+                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
                                 <TypographySmall className="w-24">
                                     Mobile no.:
                                 </TypographySmall>
@@ -161,7 +167,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
                             </div>
 
-                            <div className="flex gap-3 items-start">
+                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
                                 <TypographySmall className="w-24">
                                     DepEd Employee No.:
                                 </TypographySmall>
@@ -171,7 +177,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
                             </div>
 
-                            <div className="flex gap-3 items-start">
+                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
                                 <TypographySmall className="w-24">
                                     Date Hired:
                                 </TypographySmall>
@@ -181,7 +187,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
                             </div>
 
-                            <div className="flex gap-3 items-start">
+                            <div className="flex [@media(max-width:521px)]:flex-col [@media(max-width:521px)]:gap-1 gap-3 items-start">
                                 <TypographySmall className="w-24">
                                     Department:
                                 </TypographySmall>
@@ -206,7 +212,7 @@ const ViewSearched: React.FC<Props> = ({
 
                 <TabsContent
                     value="tardiness"
-                    className="max-w-6xl mx-auto w-full p-4"
+                    className="max-w-6xl mx-auto w-full p-4 [@media(max-width:456px)]:px-0"
                 >
                     <Card className="min-h-[28rem] relative">
                         <TableHeader className="grid grid-cols-6">
@@ -243,7 +249,7 @@ const ViewSearched: React.FC<Props> = ({
 
                 <TabsContent
                     value="sr"
-                    className="max-w-4xl mx-auto w-full p-4"
+                    className="max-w-4xl mx-auto w-full p-4 [@media(max-width:456px)]:px-0"
                 >
                     <Card className="min-h-[28rem] relative p-2 space-y-1">
                         <TableHeader style={{ gridTemplateColumns: columns }}>
@@ -303,10 +309,10 @@ const ViewSearched: React.FC<Props> = ({
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="pds" className="w-fit mx-auto">
+                <TabsContent value="pds" className="w-fit max-sm:w-full sm:mx-auto">
                     <Tabs
                         defaultValue={pdsTab}
-                        className="overflow-hidden rounded-md grow flex flex-col my-4 mb-2 mx-auto w-fit"
+                        className="overflow-hidden rounded-md grow flex flex-col my-4 mb-2 sm:mx-auto w-fit"
                         onValueChange={(value) =>
                             setPdsTab(value as PDSTABSTYPE)
                         }
@@ -319,7 +325,15 @@ const ViewSearched: React.FC<Props> = ({
                         </TabsList>
                     </Tabs>
 
-                    <PDSPDF userid={user?.id} tab={pdsTab} />
+                    <div className={cn("overflow-x-auto min-h-[8.11in]",
+                        width > 630 && "data-[sidebarstate=expanded]:[@media(max-width:1162px)]:max-w-2xl data-[sidebarstate=expanded]:[@media(max-width:810px)]:max-w-xl",
+                        width > 630 && "data-[sidebarstate=collapsed]:[@media(max-width:1020px)]:max-w-2xl data-[sidebarstate=collapsed]:[@media(max-width:810px)]:max-w-xl",
+                        width <= 630 && "max-w-[91vw]",
+                        width <= 500 && "max-w-[91vw]",
+                        width <= 490 && "max-w-[85vw]",
+                    )} data-sidebarstate={state}>
+                        <PDSPDF userid={user?.id} tab={pdsTab} />
+                    </div>
                 </TabsContent>
             </Tabs>
         </div>
