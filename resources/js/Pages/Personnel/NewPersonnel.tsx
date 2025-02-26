@@ -14,16 +14,23 @@ import { useEffect } from "react";
 type NewPersonnelProps = {
     personnel?: User | null;
     hasPrincipal: boolean;
-    personneltype: "teaching"|"non-teaching";
+    personneltype: "teaching" | "non-teaching";
 };
 
-const NewPersonnel: React.FC<NewPersonnelProps> = ({ personnel, hasPrincipal, personneltype }) => {
+const NewPersonnel: React.FC<NewPersonnelProps> = ({
+    personnel,
+    hasPrincipal,
+    personneltype,
+}) => {
     const { toast } = useToast();
     const { setLabel } = useProcessIndicator();
 
     const form = useFormSubmit<IFormAccount>({
         schema: ACCOUNTSCHEMA,
-        route: route("personnel.store", {personnelid: personnel?.id, _query: { pt: personneltype }}),
+        route: route("personnel.store", {
+            personnelid: personnel?.id,
+            _query: { pt: personneltype },
+        }),
         method: "post",
         async: true,
         values: {
@@ -33,7 +40,9 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({ personnel, hasPrincipal, pe
                 middlename: personnel?.middlename ?? "",
                 extensionname: personnel?.extensionname ?? "",
                 gender: personnel?.gender ?? undefined,
-                birthday: personnel?.birthday ? new Date(personnel?.birthday) : undefined,
+                birthday: personnel?.birthday
+                    ? new Date(personnel?.birthday)
+                    : undefined,
             },
             contact: {
                 email: personnel?.email ?? "",
@@ -45,18 +54,28 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({ personnel, hasPrincipal, pe
                 datehired: personnel?.hiredate
                     ? new Date(personnel?.hiredate)
                     : undefined,
-                role: personnel?.role ?? (!hasPrincipal ? "principal" : personneltype),
-                department: personnel?.department || (personneltype === "non-teaching" ? (!hasPrincipal ? "deped" : "accounting") : undefined),
+                role:
+                    personnel?.role ??
+                    (!hasPrincipal ? "principal" : personneltype),
+                department:
+                    personnel?.department ||
+                    (personneltype === "non-teaching"
+                        ? !hasPrincipal
+                            ? "deped"
+                            : "accounting"
+                        : !hasPrincipal
+                        ? "deped"
+                        : undefined),
                 position: personnel?.position || undefined,
-                credits: !personnel && personneltype != "teaching" ? '30' : '0',
-                splcredits: !personnel && personneltype != "teaching" ? '15' : '0',
+                credits: !personnel && personneltype != "teaching" ? "30" : "0",
+                splcredits:
+                    !personnel && personneltype != "teaching" ? "15" : "0",
             },
-            password: "12345678"
+            password: "12345678",
         },
         callback: {
             onBefore: () => {
-                if(personnel)
-                    setLabel("Updating...")
+                if (personnel) setLabel("Updating...");
             },
             onSuccess: (page: any) => {
                 toast({
@@ -83,12 +102,13 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({ personnel, hasPrincipal, pe
     });
 
     useEffect(() => {
-        if(!hasPrincipal) {
+        if (!hasPrincipal) {
             toast({
                 title: "No Principal",
-                description: "Create a principal first before creating a new personnel",
-                status: "info"
-            })
+                description:
+                    "Create a principal first before creating a new personnel",
+                status: "info",
+            });
         }
     }, []);
 

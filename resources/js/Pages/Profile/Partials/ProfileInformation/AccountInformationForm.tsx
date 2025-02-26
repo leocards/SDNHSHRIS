@@ -165,7 +165,6 @@ const AccountInformationForm: React.FC<Props> = ({
                 form.setValue("personnel.splcredits", '0');
             }
         }
-
     }, [watchRole]);
 
     return (
@@ -331,10 +330,12 @@ const AccountInformationForm: React.FC<Props> = ({
                                             <SelectItem
                                                 value="teaching"
                                                 children="Teaching"
+                                                disabled={!hasPrincipal}
                                             />
                                             <SelectItem
                                                 value="non-teaching"
                                                 children="Non-teaching"
+                                                disabled={!hasPrincipal}
                                             />
                                         </>
                                     }
