@@ -78,7 +78,7 @@ export const ACCOUNTSCHEMA = z.object({
             required_error: requiredError("user role"),
         }),
         department: z
-            .enum(["junior", "senior", "accounting", "N/A"], {
+            .enum(["junior", "senior", "accounting", "N/A", "deped"], {
                 required_error: requiredError("department"),
             })
             .optional()
