@@ -24,7 +24,8 @@ export const Departments = {
     "junior": "Junior High School",
     "senior": "Senior High School",
     "accounting": "Accounting",
-    "N/A": "N/A"
+    "N/A": "N/A",
+    "deped": "DepEd"
 }
 
 export const requiredError = (field: string) => `The ${field} field is required.`;

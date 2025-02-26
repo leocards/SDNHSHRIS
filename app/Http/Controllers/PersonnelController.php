@@ -67,7 +67,6 @@ class PersonnelController extends Controller
         DB::beginTransaction();
         try {
 
-
             $user = User::find($personnelid);
 
             $personnel = User::updateOrCreate(

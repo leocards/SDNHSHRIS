@@ -30,7 +30,7 @@ export interface User {
     status_updated_at: string | null;
 }
 
-export type DepartmentsType = "junior"|"senior"|"accounting"|"N/A"
+export type DepartmentsType = "junior"|"senior"|"accounting"|"N/A"|"deped"
 
 export interface Flash {
     message: string;
