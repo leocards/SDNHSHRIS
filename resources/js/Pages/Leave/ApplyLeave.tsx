@@ -2,7 +2,7 @@ import Header from "@/Components/Header";
 import TypographySmall, { TypographyLarge } from "@/Components/Typography";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { DepartmentsType } from "@/Types";
-import { Departments } from "@/Types/types";
+import { convertToAbbreviation, Departments } from "@/Types/types";
 import { usePage } from "@inertiajs/react";
 import { ArrowRight2 } from "iconsax-react";
 import { Fragment, PropsWithChildren, useEffect, useRef } from "react";
@@ -196,7 +196,7 @@ const ApplyLeave = () => {
                             <div className="space-y-1.5">
                                 <TypographySmall>Position</TypographySmall>
                                 <div className="rounded-md border border-border shadow-sm h-10 px-3 text-sm flex items-center text-muted-foreground dark:bg-white/5">
-                                    {user.position}
+                                    {convertToAbbreviation(user.position)}
                                 </div>
                             </div>
                             <FormInput
