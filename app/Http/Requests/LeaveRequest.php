@@ -42,10 +42,10 @@ class LeaveRequest extends FormRequest
             'salary' => ['required'],
             'type' => ['required', 'in:vacation,mandatory,sick,maternity,paternity,spl,solo,study,vowc,rehabilitation,slbw,emergency,adoption,others'],
             'others' => ['required_if:type,others'],
-            'details' => ['required'],
+            'details' => ['required_if:type,sick,study,vacation,spl'],
             'detailsinput' => [
                 function ($attribute, $value, $fail) {
-                    $detailsConditions = ['vphilippines', 'vabroad', 'shospital', 'spatient'];
+                    $detailsConditions = ['vabroad', 'shospital', 'spatient'];
                     $typeConditions = ['slbw'];
 
                     if (

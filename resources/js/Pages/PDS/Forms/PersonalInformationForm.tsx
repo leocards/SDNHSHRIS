@@ -402,6 +402,7 @@ const PersonalInformationForm: React.FC<{
                                 label="Philhealth No."
                                 inputClass="uppercase"
                                 type="number"
+                                maxLength={12}
                             />
                             <FormInput
                                 form={form}

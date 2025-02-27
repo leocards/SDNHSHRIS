@@ -27,7 +27,7 @@ export const LEAVESCHEMA = z.object({
 }).superRefine((leave, ctx) => {
     if(leave.type) {
         if(!leave.details) {
-            if(!['mandatory', 'maternity', 'solo', 'vowc', 'rehabilitation', 'emergency', 'adoption', 'paternity', 'others'].includes(leave.type))
+            if(!['mandatory', 'maternity', 'solo', 'vowc', 'rehabilitation', 'emergency', 'adoption', 'paternity', 'slbw', 'others'].includes(leave.type))
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: "Please choose details of leave.",
@@ -35,7 +35,7 @@ export const LEAVESCHEMA = z.object({
                 })
         }
 
-        if(!leave.detailsinput && ((leave.details && ['vphilippines', 'vabroad', 'shospital', 'spatient'].includes(leave.details)) || leave.type === "slbw"))
+        if(!leave.detailsinput && ((leave.details && ['vabroad', 'shospital', 'spatient'].includes(leave.details)) || leave.type === "slbw"))
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: "This field is required.",

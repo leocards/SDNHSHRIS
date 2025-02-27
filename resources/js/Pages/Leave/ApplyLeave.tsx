@@ -86,6 +86,8 @@ const ApplyLeave = () => {
     useEffect(() => {
         form.setValue("details", null);
         form.setValue("detailsinput", "");
+        if(!['vacation', 'sick', 'spl', 'study'].includes(watchLeaveType??''))
+            form.clearErrors("details")
     }, [watchLeaveType]);
 
     useEffect(() => {
@@ -167,7 +169,7 @@ const ApplyLeave = () => {
                                 ? "Middle Name"
                                 : "Office/Department"}
                         </TypographySmall>
-                        <div className="rounded-md border border-border shadow-sm h-10 px-3 text-sm flex items-center text-muted-foreground">
+                        <div className="rounded-md border border-border shadow-sm h-10 px-3 text-sm flex items-center text-muted-foreground dark:bg-white/5">
                             {name}
                         </div>
                     </div>
@@ -193,7 +195,7 @@ const ApplyLeave = () => {
                             /> */}
                             <div className="space-y-1.5">
                                 <TypographySmall>Position</TypographySmall>
-                                <div className="rounded-md border border-border shadow-sm h-10 px-3 text-sm flex items-center text-muted-foreground">
+                                <div className="rounded-md border border-border shadow-sm h-10 px-3 text-sm flex items-center text-muted-foreground dark:bg-white/5">
                                     {user.position}
                                 </div>
                             </div>
@@ -239,31 +241,16 @@ const ApplyLeave = () => {
                                                         }
                                                         disabled={
                                                             type ===
-                                                                "maternity" ||
+                                                                "paternity" ||
                                                             (user.gender ===
                                                                 "male" &&
-                                                                type ===
-                                                                    "slbw") ||
-                                                            (user.gender ===
-                                                                "female" &&
-                                                                type ===
-                                                                    "paternity") ||
-                                                            (type ===
-                                                                "vacation" &&
+                                                                (type ===
+                                                                    "slbw" || type ===
+                                                                    "maternity")) ||
+                                                            ((type ===
+                                                                "vacation" || type === "spl") &&
                                                                 user.role ===
                                                                     "teaching")
-                                                            // user.gender ===
-                                                            //     "male" &&
-                                                            // (type ===
-                                                            //     "maternity" ||
-                                                            //     type === "slbw")
-                                                            //     ? true
-                                                            //     : user.gender ===
-                                                            //           "female" &&
-                                                            //       type ===
-                                                            //           "paternity"
-                                                            //     ? true
-                                                            //     : false
                                                         }
                                                     />
                                                 )
@@ -378,6 +365,7 @@ const ApplyLeave = () => {
                                             "slbw",
                                             "vacation",
                                             "sick",
+                                            "spl"
                                         ].includes(watchLeaveType ?? "") && (
                                             <FormInput
                                                 form={form}
@@ -389,7 +377,7 @@ const ApplyLeave = () => {
                                                 labelClass="italic"
                                                 itemClass="max-w-96"
                                                 disabled={
-                                                    (!["vabroad", "shospital", "spatient", ].includes( watchDetails ?? "" ) &&
+                                                    (!["vabroad", "shospital", "spatient"].includes( watchDetails ?? "" ) &&
                                                     watchLeaveType !== "slbw")
                                                 }
                                             />

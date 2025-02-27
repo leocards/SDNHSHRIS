@@ -70,7 +70,7 @@ const Main = () => {
                         );
                     }}
                 >
-                    Upload SALN
+                    Add SALN
                 </Button>
             </Tabs>
 
