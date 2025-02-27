@@ -433,7 +433,7 @@ class PersonalDataSheetController extends Controller
                 'civilstatus' => collect(["status" => null, "others" => ""])->toArray(),
                 'height' => $c1['personalInfo']['height'],
                 'weight' => $c1['personalInfo']['weight'],
-                'bloodtype' => $this->getDigitsOrNA($c1['personalInfo']['bloodtype']),
+                'bloodtype' => $c1['personalInfo']['bloodtype'],
                 'gsis' => $this->getDigitsOrNA($c1['personalInfo']['gsis']),
                 'pagibig' => $this->getDigitsOrNA($c1['personalInfo']['pagibig']),
                 'philhealth' => $this->getDigitsOrNA($c1['personalInfo']['philhealth']),

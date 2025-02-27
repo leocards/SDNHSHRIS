@@ -45,7 +45,7 @@ return new class extends Migration
             $table->text('principaldisapprovedmsg')->nullable();
             $table->enum('hrstatus', ['disapproved', 'approved', 'pending'])->default('pending');
             $table->text('hrdisapprovedmsg')->nullable();
-            $table->enum('details', ['vphilippines', 'vabroad', 'shospital', 'spatient', 'degree', 'examreview', 'monitization', 'terminal']);
+            $table->enum('details', ['vphilippines', 'vabroad', 'shospital', 'spatient', 'degree', 'examreview', 'monitization', 'terminal'])->nullable();
             $table->string('detailsinput', 1000)->nullable();
             $table->boolean('notifiedDueMedical')->nullable();
             $table->json('approvedfor')->nullable();
@@ -63,3 +63,6 @@ return new class extends Migration
         Schema::dropIfExists('leaves');
     }
 };
+
+ALTER TABLE leaves
+MODIFY COLUMN details ENUM('vphilippines', 'vabroad', 'shospital', 'spatient', 'degree', 'examreview', 'monitization', 'terminal') NULL;
