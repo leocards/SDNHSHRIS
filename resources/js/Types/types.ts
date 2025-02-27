@@ -153,6 +153,7 @@ export function formatDateToCustomISO(date: Date) {
 }
 
 export function extractDate(str: string): string | null {
+    if(!str) return null
     // Regex for common date formats like YYYY-MM-DD|YYYY/MM/DD or MM/DD/YYYY|MM-DD-YYYY or MM-DD-YY|MM/DD/YY
     const datePattern = /(\d{4}-\d{2}-\d{2})|(\d{4}\/\d{2}\/\d{2})|(\d{2}\/\d{2}\/\d{4})|(\d{2}-\d{2}-\d{4})|(\d{2}-\d{2}-\d{2})|(\d{2}\/\d{2}\/\d{2})/;
     const match = str.match(datePattern);
