@@ -5,7 +5,7 @@ import { z } from "zod";
 export const DETAILS = ['vphilippines', 'vabroad', 'shospital', 'spatient', 'degree', 'examreview', 'monitization', 'terminal'] as const
 
 export const LEAVESCHEMA = z.object({
-    filingfrom: z.date({ required_error: requiredError("date of filing") }).nullable(),
+    filingfrom: z.date({ required_error: requiredError("date of filing") }),
     filingto: z.date().optional().nullable(),
     salary: z.string().min(1, requiredError("salary")).default(""),
     type: z.enum(LEAVETYPEKEYSARRAY, {
@@ -26,12 +26,14 @@ export const LEAVESCHEMA = z.object({
     medical: z.number().optional().nullable().default(null)
 }).superRefine((leave, ctx) => {
     if(leave.type) {
-        if(!leave.details)
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Please choose details of leave.",
-                path: ['details']
-            })
+        if(!leave.details) {
+            if(!['mandatory', 'maternity', 'solo', 'vowc', 'rehabilitation', 'emergency', 'adoption', 'paternity', 'others'].includes(leave.type))
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Please choose details of leave.",
+                    path: ['details']
+                })
+        }
 
         if(!leave.detailsinput && ((leave.details && ['vphilippines', 'vabroad', 'shospital', 'spatient'].includes(leave.details)) || leave.type === "slbw"))
             ctx.addIssue({
@@ -84,7 +86,7 @@ export const LEAVESCHEMA = z.object({
 export type IFormLeave = z.infer<typeof LEAVESCHEMA>
 
 export const defaultLeave = {
-    filingfrom: null,
+    filingfrom: new Date(),
     filingto: null,
     salary: "",
     type: null,

@@ -19,7 +19,6 @@ type Props = Omit<SALNTPRINTYPE, "pages"|"user"> & {
 };
 
 const SALNPage2 = forwardRef<HTMLDivElement, Props>(({ pagecount, saln, spouse, page, declarant }, ref) => {
-    console.log(page?.relatives)
     return (
         <SALNPDFFormat
             ref={ref}

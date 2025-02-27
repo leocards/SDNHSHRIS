@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announcement;
 use App\ResponseTrait;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,7 +14,11 @@ class AnnouncementController extends Controller
 
     public function index(Request $request)
     {
-        return response()->json(Announcement::all());
+        $announcement = Announcement::whereDate('details->date', '>=', now('Asia/Manila')->format('Y-m-d'))
+            ->orWhereDate('created_at', '=', now('Asia/Manila')->format('Y-m-d'))
+            ->get();
+
+        return response()->json($announcement);
     }
 
     public function store(Request $request, $id = null)
@@ -21,9 +26,12 @@ class AnnouncementController extends Controller
 
         $request->validate([
             'title' => 'required|max:255',
+            'venue' => 'required',
             'description' => 'required',
             'date' => 'nullable|date',
             'time' => 'nullable|string',
+        ], [
+            'description.required' => 'The subject field is required.'
         ]);
 
         DB::beginTransaction();
@@ -34,6 +42,7 @@ class AnnouncementController extends Controller
             ], [
                 'title' => $request->title,
                 'details' => collect([
+                    'venue' => $request->venue,
                     'description' => $request->description,
                     'date' => $request->date,
                     'time' => $request->time

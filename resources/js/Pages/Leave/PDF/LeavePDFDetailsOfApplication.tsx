@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { Square, SquareCheck } from "lucide-react";
 import React from "react";
 import { APPLICATIONFORLEAVETYPES } from "./type";
-import { LEAVETYPEKEYSARRAY, LEAVETYPESOBJ } from "../Types/leavetypes";
+import { LEAVETYPEKEYSARRAY, LEAVETYPESOBJ, LEAVETYPESSECTIONOBJ } from "../Types/leavetypes";
 import { User } from "@/Types";
 
 type Props = {
@@ -54,7 +54,7 @@ const LeavePDFDetailsOfApplication = (
                                     )}
                                 </div>
                                 <div className={cn(isDownload && "-mt-3")}>
-                                    {LEAVETYPESOBJ[leavetype]}
+                                    {LEAVETYPESOBJ[leavetype]} <span className="text-[5.4pt]">{LEAVETYPESSECTIONOBJ[leavetype]}</span>
                                 </div>
                             </div>
                         ))}
@@ -112,7 +112,7 @@ const LeavePDFDetailsOfApplication = (
                                 </div>
                             </div>
                         </div>
-                        <div className="mt-0.5">
+                        <div className={cn(!isDownload && "mt-1")}>
                             <div className="text-[10px] italic ml-2">
                                 In case of Sick Leave:
                             </div>
@@ -140,26 +140,29 @@ const LeavePDFDetailsOfApplication = (
                                 ) : (
                                     <Square className="size-4" />
                                 )}
-                                <div className={cn(isDownload && "-mt-1.5")}>
+                                <div className={cn(isDownload && "-mt-1.5", "grow w-full flex")}>
                                     Out Patient (Specify Illness)
-                                    <span className="underline pl-1 font-medium">
-                                        {details === "spatient" && detailsinput}
+                                    <span className="pl-1 font-medium border-b grow mr-2 border-black">
+
                                     </span>
                                 </div>
                             </div>
+                            <div className={cn("right-2 border-b mr-2 border-black h-4 text-center", isDownload && "-mt-1 !h-5")}>
+                                <span className={cn(isDownload && "-mt-2")}>{details === "spatient" && detailsinput}</span>
+                            </div>
                         </div>
-                        <div className="mt-0.5">
+                        <div className={cn(!isDownload && "mt-1")}>
                             <div className="text-[10px] italic ml-2">
                                 In case of Special Leave Benefits for Women:
                             </div>
                             <div className="flex">
                                 <div>(Specify illness)</div>
-                                <span className="underline pl-1 font-medium">
+                                <span className="underline pl-1 font-medium border-b grow mr-2 border-black">
                                     {type === "slbw" && detailsinput}
                                 </span>
                             </div>
                         </div>
-                        <div className="mt-1.5">
+                        <div className="mt-1">
                             <div className="text-[10px] italic ml-2">
                                 In case of study leave:
                             </div>
@@ -189,7 +192,7 @@ const LeavePDFDetailsOfApplication = (
                                 </div>
                             </div>
                         </div>
-                        <div className="mt-0.5">
+                        <div className={cn(!isDownload && "mt-1")}>
                             <div className="text-[10px] italic ml-2">
                                 Other puspose:
                             </div>

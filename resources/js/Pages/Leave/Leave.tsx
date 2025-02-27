@@ -19,7 +19,7 @@ import {
     LEAVETYPES,
     LEAVETYPESOBJ,
 } from "@/Pages/Leave/Types/leavetypes";
-import { Eye } from "iconsax-react";
+import { Add, Eye } from "iconsax-react";
 import { Button } from "@/Components/ui/button";
 import TableDataSkeletonLoader from "@/Components/TableDataSkeletonLoader";
 import empty from "@/Assets/empty-file.svg";
@@ -91,7 +91,7 @@ const Main: React.FC<LeaveProps> = ({}) => {
                         })
                     }
                 >
-                    Apply for Leave
+                    <Add /> Apply
                 </Button>
             </Tabs>
 

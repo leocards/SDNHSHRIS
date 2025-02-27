@@ -98,7 +98,7 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
     return (
         <div className="inline-flex gap-4 w-[calc(900px-20pt)] overflow-hidden !bg-white gray-50">
             {loading ? (
-                <div className="flex flex-col items-center gap-4 mx-auto">
+                <div className="flex flex-col items-center gap-4 mx-auto py-5">
                     <div className="loading loading-spinner loading-md"></div>
                     <TypographySmall>Please wait a moment...</TypographySmall>
                 </div>

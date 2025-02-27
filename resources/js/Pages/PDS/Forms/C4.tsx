@@ -614,6 +614,8 @@ const C4: React.FC<C4Props> = ({ data }) => {
                                 form={form}
                                 name="governmentids.licensepassportid"
                                 label="ID/License/Passport No.:"
+                                type="number"
+                                maxLength={7}
                             />
                             <FormInput
                                 form={form}

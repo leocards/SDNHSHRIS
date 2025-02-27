@@ -2,7 +2,7 @@ import { cn } from "@/Lib/utils";
 import { User } from "@/Types";
 import { format } from "date-fns";
 import { APPLICATIONFORLEAVETYPES } from "./type";
-import { Departments, formatDateRange } from "@/Types/types";
+import { convertToAbbreviation, Departments, formatDateRange } from "@/Types/types";
 
 const LeavePDFApplicant = ({
     leave,
@@ -11,7 +11,7 @@ const LeavePDFApplicant = ({
     isDownload?: boolean;
     leave: APPLICATIONFORLEAVETYPES;
 }) => {
-    const { firstname, lastname, middlename, position, department, salary, filingfrom, filingto } = leave
+    const { firstname, lastname, middlename, position, role, salary, filingfrom, filingto } = leave
     return (
         <>
             <div className="grid grid-cols-[15rem,auto] uppercase p-[1pt] pb-1.5">
@@ -19,7 +19,7 @@ const LeavePDFApplicant = ({
                     <div className={cn(isDownload && "print:mt-auto -mt-1.5")}>
                         1. Office/department
                     </div>
-                    <div className="mt-0.5 pl-3">{Departments[department]??"N/A"}</div>
+                    <div className="mt-0.5 pl-3">{role === "principal" ? "DEPED" : "SOUTHERN DAVAO NHS"}</div>
                 </div>
                 <div className="flex flex-col">
                     <div className="grid grid-cols-[3.5rem,1fr]">
@@ -75,7 +75,7 @@ const LeavePDFApplicant = ({
                     <div className={cn(isDownload && "-mt-1.5")}>
                         4. Position
                     </div>
-                    <div className="pl-3">{position}</div>
+                    <div className="pl-3">{convertToAbbreviation(position)}</div>
                 </div>
                 <div className="">
                     <div className={cn(isDownload && "-mt-1.5")}>5. Salary</div>

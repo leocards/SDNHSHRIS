@@ -24,7 +24,7 @@ class LeaveRequest extends FormRequest
     {
         return [
             'filingfrom' => ['required', 'date'],
-            'filingto' => [
+            /* 'filingto' => [
                 'nullable',
                 'date',
                 'after_or_equal:filingfrom',
@@ -38,7 +38,7 @@ class LeaveRequest extends FormRequest
                         $fail("The 'date of filing to' must be within 5 days of the 'date of filing from'.");
                     }
                 }
-            ],
+            ], */
             'salary' => ['required'],
             'type' => ['required', 'in:vacation,mandatory,sick,maternity,paternity,spl,solo,study,vowc,rehabilitation,slbw,emergency,adoption,others'],
             'others' => ['required_if:type,others'],
@@ -66,7 +66,7 @@ class LeaveRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'filingfrom' => 'date of filing from',
+            'filingfrom' => 'date of filing',
             'filingto' => 'date of filing to',
             'type' => 'type of leave',
             'details' => 'details of leave',

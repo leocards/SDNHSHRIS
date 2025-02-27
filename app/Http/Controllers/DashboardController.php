@@ -54,7 +54,9 @@ class DashboardController extends Controller
                         ->whereNull('to');
                 })
                 ->get(['id', 'user_id', 'type', 'from', 'to']),
-            "announcements" => Announcement::all(),
+            "announcements" => Announcement::whereDate('details->date', '>=', now('Asia/Manila')->format('Y-m-d'))
+                ->orWhereDate('created_at', '=', now('Asia/Manila')->format('Y-m-d'))
+                ->get(),
             "schoolyears" => SchoolYear::all(),
             "personnelperformance" => $user->role === 'hr' ? [] : IpcrReport::with('schoolyear')
                 ->where('user_id', $user->id)

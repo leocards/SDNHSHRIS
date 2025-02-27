@@ -267,7 +267,7 @@ const LeavePDFDetailsOfActionOnApplication = (props: Props) => {
                                 <div className="border-b border-black grow mx-2"></div>
                             </div>
 
-                            <div className="absolute -bottom-5 w-[90.5%] right-2 border-b border-black"></div>
+                            <div className="absolute -bottom-4 w-[90.5%] right-2 border-b border-black"></div>
                         </div>
 
                         <div
@@ -285,7 +285,7 @@ const LeavePDFDetailsOfActionOnApplication = (props: Props) => {
                                     {applicant?.role === "principal" ? <>
                                         <div>Basilio P. Mana-ay, Jr. Ceso VI</div>
                                     </> : <>
-                                        <div>{principal?.name}</div>
+                                        <div>{principal?.full_name}</div>
                                         <div className="capitalize font-normal">
                                             {principal?.position}
                                         </div>

@@ -7,6 +7,7 @@ import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { useToast } from "@/Hooks/use-toast";
 import { Form, FormCalendar, FormInput, FormTextArea } from "@/Components/ui/form";
 import { Button } from "@/Components/ui/button";
+import { isFuture, isToday } from "date-fns";
 
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?$/;
 
@@ -16,7 +17,12 @@ const ANNOUNCEMENTSCHEMA = z.object({
         .min(1, requiredError("title"))
         .max(255, "Title must not exceed 255 characters.")
         .default(""),
-    description: z.string().min(1, requiredError("description")).default(""),
+    description: z.string().min(1, requiredError("subject")).default(""),
+    venue: z
+        .string()
+        .min(1, requiredError("venue"))
+        .max(255, "Venue must not exceed 255 characters.")
+        .default(""),
     date: z.date().nullable().default(null),
     time: z
         .string()
@@ -40,6 +46,7 @@ const NewAnnouncement: React.FC<Props> = ({ announcement, show, onClose }) => {
         defaultValues: {
             title: "",
             description: "",
+            venue: "",
             date: null,
             time: "",
         },
@@ -86,11 +93,17 @@ const NewAnnouncement: React.FC<Props> = ({ announcement, show, onClose }) => {
         <Modal show={show} onClose={onClose} title={(announcement ? "Update" : "New") + " Announcement"} maxWidth="lg">
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
-                    <div className="space-y-4 min-h-40">
+                    <div className="space-y-3 min-h-40">
                         <FormInput
                             form={form}
                             name="title"
                             label="Title"
+                        />
+
+                        <FormInput
+                            form={form}
+                            name="venue"
+                            label="Venue"
                         />
 
                         <div className="flex gap-4 [&>div]:w-full">
@@ -99,6 +112,9 @@ const NewAnnouncement: React.FC<Props> = ({ announcement, show, onClose }) => {
                                 name="date"
                                 label="Date"
                                 required={false}
+                                disableDate={(date) => {
+                                    return !isToday(date) && !isFuture(date)
+                                }}
                             />
 
                             <FormInput
@@ -113,9 +129,9 @@ const NewAnnouncement: React.FC<Props> = ({ announcement, show, onClose }) => {
                         <FormTextArea
                             form={form}
                             name="description"
-                            label="Description"
+                            label="Subject"
                             maxHeight={1000}
-                            minHeight={200}
+                            minHeight={100}
                         />
                     </div>
 

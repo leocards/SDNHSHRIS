@@ -385,36 +385,47 @@ const PersonalInformationForm: React.FC<{
                                 name="gsis"
                                 label="GSIS No."
                                 inputClass="uppercase"
+                                type="number"
+                                maxLength={8}
                             />
                             <FormInput
                                 form={form}
                                 name="pagibig"
                                 label="Pag-ibig No."
                                 inputClass="uppercase"
+                                type="number"
+                                maxLength={12}
                             />
                             <FormInput
                                 form={form}
                                 name="philhealth"
                                 label="Philhealth No."
                                 inputClass="uppercase"
+                                type="number"
                             />
                             <FormInput
                                 form={form}
                                 name="sss"
                                 label="SSS No."
                                 inputClass="uppercase"
+                                type="number"
+                                maxLength={9}
                             />
                             <FormInput
                                 form={form}
                                 name="tin"
                                 label="TIN No."
                                 inputClass="uppercase"
+                                type="number"
+                                maxLength={12}
                             />
                             <FormInput
                                 form={form}
                                 name="agencyemployee"
                                 label="Agency Employee No."
                                 inputClass="uppercase"
+                                type="number"
+                                maxLength={9}
                             />
                         </div>
 
@@ -781,6 +792,8 @@ const Address: React.FC<{
                     label="ZIP code"
                     inputClass="uppercase"
                     disabled={disabled}
+                    type="number"
+                    maxLength={4}
                 />
             </div>
         </div>

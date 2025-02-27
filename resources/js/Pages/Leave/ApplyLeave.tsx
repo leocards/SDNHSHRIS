@@ -5,7 +5,7 @@ import { DepartmentsType } from "@/Types";
 import { Departments } from "@/Types/types";
 import { usePage } from "@inertiajs/react";
 import { ArrowRight2 } from "iconsax-react";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, PropsWithChildren, useEffect, useRef } from "react";
 import { defaultLeave, IFormLeave, LEAVESCHEMA } from "./Types/LeaveFormSchema";
 import { useToast } from "@/Hooks/use-toast";
 import {
@@ -21,6 +21,7 @@ import { LEAVETYPEKEYSARRAY, LEAVETYPESOBJ } from "./Types/leavetypes";
 import { Button } from "@/Components/ui/button";
 import {
     eachDayOfInterval,
+    isBefore,
     isToday,
     isTomorrow,
     isWeekend,
@@ -65,7 +66,7 @@ const ApplyLeave = () => {
     });
 
     const watchLeaveType = form.watch("type");
-    const watchDateFiledFrom = form.watch("filingfrom");
+    const watchDetails = form.watch("details");
     const watchDatesFrom = form.watch("from");
     const watchDatesTo = form.watch("to");
 
@@ -125,6 +126,14 @@ const ApplyLeave = () => {
         }
     }, [watchDatesFrom, watchDatesTo]);
 
+    useEffect(() => {
+        if (
+            !["shospital", "spatient", "vabroad"].includes(watchDetails ?? "")
+        ) {
+            form.setValue("detailsinput", "");
+        }
+    }, [watchDetails]);
+
     return (
         <div>
             <Header title="Apply Leave">
@@ -146,7 +155,7 @@ const ApplyLeave = () => {
                     user.lastname,
                     user.firstname,
                     user.middlename ?? "N/A",
-                    user.department,
+                    (user.role === "principal" ? 'DEPED' : 'SOUTHERN DAVAO NHS'),
                 ].map((name, index) => (
                     <div key={index} className="space-y-1.5">
                         <TypographySmall>
@@ -159,9 +168,7 @@ const ApplyLeave = () => {
                                 : "Office/Department"}
                         </TypographySmall>
                         <div className="rounded-md border border-border shadow-sm h-10 px-3 text-sm flex items-center text-muted-foreground">
-                            {index < 3
-                                ? name
-                                : Departments[name as DepartmentsType]}
+                            {name}
                         </div>
                     </div>
                 ))}
@@ -174,16 +181,16 @@ const ApplyLeave = () => {
                             <FormCalendar
                                 form={form}
                                 name="filingfrom"
-                                label="Date of filing from"
+                                label="Date of filing"
                             />
-                            <FormCalendar
+                            {/* <FormCalendar
                                 form={form}
                                 name="filingto"
                                 label="Date of filing to"
                                 required={false}
                                 disabled={!watchDateFiledFrom}
                                 triggerClass="disabled:!opacity-100 disabled:text-foreground/40"
-                            />
+                            /> */}
                             <div className="space-y-1.5">
                                 <TypographySmall>Position</TypographySmall>
                                 <div className="rounded-md border border-border shadow-sm h-10 px-3 text-sm flex items-center text-muted-foreground">
@@ -231,7 +238,32 @@ const ApplyLeave = () => {
                                                             LEAVETYPESOBJ[type]
                                                         }
                                                         disabled={
-                                                            user.gender === "male" && (type === "maternity" || type === "slbw") ? true : user.gender === "female" && type === "paternity" ? true : false
+                                                            type ===
+                                                                "maternity" ||
+                                                            (user.gender ===
+                                                                "male" &&
+                                                                type ===
+                                                                    "slbw") ||
+                                                            (user.gender ===
+                                                                "female" &&
+                                                                type ===
+                                                                    "paternity") ||
+                                                            (type ===
+                                                                "vacation" &&
+                                                                user.role ===
+                                                                    "teaching")
+                                                            // user.gender ===
+                                                            //     "male" &&
+                                                            // (type ===
+                                                            //     "maternity" ||
+                                                            //     type === "slbw")
+                                                            //     ? true
+                                                            //     : user.gender ===
+                                                            //           "female" &&
+                                                            //       type ===
+                                                            //           "paternity"
+                                                            //     ? true
+                                                            //     : false
                                                         }
                                                     />
                                                 )
@@ -264,84 +296,89 @@ const ApplyLeave = () => {
                                         className="uppercase"
                                     />
 
-                                    <div className="mt-3 space-y-4">
+                                    <div className="mt-2 space-y-4">
                                         {watchLeaveType !== "slbw" && (
                                             <FormRadioGroup
                                                 form={form}
                                                 name="details"
-                                                label={
-                                                    "In case of Vacation/Special Privilege Leave:"
-                                                }
+                                                label={""}
+                                                required={false}
                                                 labelClass="italic"
+                                                position="vertical"
                                             >
-                                                {watchLeaveType ==
-                                                    "vacation" && (
-                                                    <FormRadioItem
-                                                        value="vphilippines"
-                                                        label="Whithin the Philippines"
-                                                    />
+                                                {/* Vacation Leave */}
+                                                {(watchLeaveType == "vacation" || watchLeaveType == "spl") && (
+                                                    <DetailsOFLeaveItems
+                                                        label="In case of Vacation/Special Privilege Leave:"
+                                                    >
+                                                        <div className="flex gap-10">
+                                                            <FormRadioItem
+                                                                value="vphilippines"
+                                                                label="Whithin the Philippines"
+                                                            />
+                                                            <FormRadioItem
+                                                                value="vabroad"
+                                                                label="Abroad (specify)"
+                                                            />
+                                                        </div>
+                                                    </DetailsOFLeaveItems>
                                                 )}
-                                                {watchLeaveType ==
-                                                    "vacation" && (
-                                                    <FormRadioItem
-                                                        value="vabroad"
-                                                        label="Abroad (specify)"
-                                                    />
-                                                )}
+
+                                                {/* Sick Leave */}
                                                 {watchLeaveType == "sick" && (
-                                                    <FormRadioItem
-                                                        value="shospital"
-                                                        label="In Hospital (Specify Illness)"
-                                                    />
+                                                    <DetailsOFLeaveItems label="In case of Sick Leave:">
+                                                        <div className="flex gap-10">
+                                                            <FormRadioItem
+                                                                value="shospital"
+                                                                label="In Hospital (Specify Illness)"
+                                                            />
+                                                            <FormRadioItem
+                                                                value="spatient"
+                                                                label="Out Patient (Specify Illness)"
+                                                            />
+                                                        </div>
+                                                    </DetailsOFLeaveItems>
                                                 )}
-                                                {watchLeaveType == "sick" && (
-                                                    <FormRadioItem
-                                                        value="spatient"
-                                                        label="Out Patient (Specify Illness)"
-                                                    />
+
+                                                {/* Study Leave */}
+                                                {(watchLeaveType == "study" || (watchLeaveType == "others" && user.role != "teaching")) && (
+                                                    <DetailsOFLeaveItems label="In case of Study Leave:" required={watchLeaveType != "others"}>
+                                                        <div className="flex gap-10">
+                                                            <FormRadioItem
+                                                                value="degree"
+                                                                label="Completion of Master's Degree"
+                                                            />
+                                                            <FormRadioItem
+                                                                value="examreview"
+                                                                label="BAR/Board Examination Review"
+                                                            />
+                                                        </div>
+                                                    </DetailsOFLeaveItems>
                                                 )}
-                                                {watchLeaveType == "study" && (
-                                                    <FormRadioItem
-                                                        value="degree"
-                                                        label="Completion of Master's Degree"
-                                                    />
-                                                )}
-                                                {watchLeaveType == "study" && (
-                                                    <FormRadioItem
-                                                        value="examreview"
-                                                        label="BAR/Board Examination Review"
-                                                    />
-                                                )}
-                                                {![
-                                                    "vacation",
-                                                    "sick",
-                                                    "study",
-                                                ].includes(
-                                                    watchLeaveType ?? ""
-                                                ) && (
-                                                    <FormRadioItem
-                                                        value="monitization"
-                                                        label="Monetization of Leave Credits"
-                                                    />
-                                                )}
-                                                {![
-                                                    "vacation",
-                                                    "sick",
-                                                    "study",
-                                                ].includes(
-                                                    watchLeaveType ?? ""
-                                                ) && (
-                                                    <FormRadioItem
-                                                        value="terminal"
-                                                        label="Terminal Leave"
-                                                    />
+
+                                                {/* Other Purposes */}
+                                                {!["vacation", "sick", "study", "spl"].includes(watchLeaveType ?? "") && (
+                                                    <DetailsOFLeaveItems label="Other purpose:" required={false}>
+                                                        <div className="flex gap-10">
+                                                            <FormRadioItem
+                                                                value="monitization"
+                                                                label="Monetization of Leave Credits"
+                                                            />
+                                                            <FormRadioItem
+                                                                value="terminal"
+                                                                label="Terminal Leave"
+                                                            />
+                                                        </div>
+                                                    </DetailsOFLeaveItems>
                                                 )}
                                             </FormRadioGroup>
                                         )}
 
-                                        {["slbw", "vacation", "sick"].includes(
-                                            watchLeaveType ?? ""
-                                        ) && (
+                                        {[
+                                            "slbw",
+                                            "vacation",
+                                            "sick",
+                                        ].includes(watchLeaveType ?? "") && (
                                             <FormInput
                                                 form={form}
                                                 name="detailsinput"
@@ -351,10 +388,15 @@ const ApplyLeave = () => {
                                                 }
                                                 labelClass="italic"
                                                 itemClass="max-w-96"
+                                                disabled={
+                                                    (!["vabroad", "shospital", "spatient", ].includes( watchDetails ?? "" ) &&
+                                                    watchLeaveType !== "slbw")
+                                                }
                                             />
                                         )}
                                     </div>
                                 </div>
+
                                 <div className="!mt-7">
                                     <TypographySmall
                                         children="Inclusive Dates"
@@ -387,9 +429,12 @@ const ApplyLeave = () => {
                                                     return (
                                                         isWeekend(date) ||
                                                         !(
-                                                            isYesterday(date) ||
-                                                            isToday(date) ||
-                                                            isTomorrow(date)
+                                                            // isYesterday(date) ||
+                                                            (
+                                                                isToday(date) ||
+                                                                toDay.getTime() <
+                                                                    now.getTime()
+                                                            )
                                                         )
                                                     );
                                                 else return false;
@@ -430,6 +475,7 @@ const ApplyLeave = () => {
                                         />
                                     </div>
                                 </div>
+
                                 <div className="!mt-7">
                                     <FormRadioGroup
                                         form={form}
@@ -486,6 +532,19 @@ const ApplyLeave = () => {
                     </div>
                 </form>
             </Form>
+        </div>
+    );
+};
+
+const DetailsOFLeaveItems = ({
+    label,
+    children,
+    required = true,
+}: PropsWithChildren & { label: string; required?: boolean }) => {
+    return (
+        <div className={cn("space-y-2")}>
+            <TypographySmall className={cn(required && "required")}>{label}</TypographySmall>
+            {children}
         </div>
     );
 };

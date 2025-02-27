@@ -202,7 +202,7 @@ class LeaveController extends Controller
                 "user_id" => $auth->id,
                 "schoolyearid" => $sy->id,
                 "filingfrom" => Carbon::parse($request->filingfrom)->format('Y-m-d'),
-                "filingto" => $request->filingto ? Carbon::parse($request->filingto)->format('Y-m-d') : null,
+                "filingto" => /* $request->filingto ? Carbon::parse($request->filingto)->format('Y-m-d') : */ null,
                 "salary" => $request->salary,
                 "type" => $request->type,
                 "others" => $request->others,
@@ -254,7 +254,7 @@ class LeaveController extends Controller
         $leave->firstname = $user->firstname;
         $leave->lastname = $user->lastname;
         $leave->middlename = $user->middlename;
-        $leave->department = $user->department;
+        $leave->role = $user->role;
         $leave->position = $user->position;
         $leave->avatar = $user->avatar;
         $leave->medical = $medical?->path ?? null;

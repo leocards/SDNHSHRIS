@@ -46,8 +46,24 @@ const ViewAnnouncements = ({ announcement, show, onClose }: Porps) => {
                     </TypographySmall>
                 </div>
             )}
+            {announcement?.details?.venue && (
+                <div className="flex items-center gap-2">
+                    <TypographySmall className="text-base">
+                        Venue
+                    </TypographySmall>
+                    :
+                    <TypographySmall>
+                        {announcement?.details.venue}
+                    </TypographySmall>
+                </div>
+            )}
 
             <div className="bg-secondary p-3 whitespace-pre break-words mt-5 rounded-lg">
+                <div className="mb-3">
+                <TypographySmall className="text-foreground/40 italic">
+                    Subject:
+                </TypographySmall>
+                </div>
                 {announcement?.details.description}
             </div>
         </Modal>

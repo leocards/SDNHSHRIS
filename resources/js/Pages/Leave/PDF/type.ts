@@ -8,7 +8,7 @@ export type PRINCIPAL = {
     position: string
 }
 
-export type APPLICATIONFORLEAVETYPES = Pick<User, "firstname"|"lastname"|"middlename"|"position"|"department"|"avatar"> & {
+export type APPLICATIONFORLEAVETYPES = Pick<User, "firstname"|"lastname"|"middlename"|"position"|"role"|"avatar"> & {
     id: number;
     filingfrom: string;
     filingto: string;

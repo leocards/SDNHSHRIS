@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 
 export const PersonnelPosition = [
     "Teacher I",
@@ -154,13 +154,33 @@ export function formatDateToCustomISO(date: Date) {
 
 export function extractDate(str: string): string | null {
     if(!str) return null
-    // Regex for common date formats like YYYY-MM-DD|YYYY/MM/DD or MM/DD/YYYY|MM-DD-YYYY or MM-DD-YY|MM/DD/YY
-    const datePattern = /(\d{4}-\d{2}-\d{2})|(\d{4}\/\d{2}\/\d{2})|(\d{2}\/\d{2}\/\d{4})|(\d{2}-\d{2}-\d{4})|(\d{2}-\d{2}-\d{2})|(\d{2}\/\d{2}\/\d{2})/;
+    // Regex to match:
+    // - Numeric formats: YYYY-MM-DD, YYYY/MM/DD, MM/DD/YYYY, MM-DD-YYYY, MM-DD-YY, MM/DD/YY
+    // - Textual formats: Feb. 23, 2025, February 23, 2025, Feb-23-25, etc.
+    const datePattern = /(\d{4}[-\/]\d{2}[-\/]\d{2})|(\d{2}[-\/]\d{2}[-\/]\d{4})|(\d{2}[-\/]\d{2}[-\/]\d{2})|((Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[.\- ]?\s?\d{1,2}[,.\- ]\s?\d{2,4})/i;
+
     const match = str.match(datePattern);
 
     if (match) {
-        // Return the first matched date
         return match[0];
     }
-    return null; // No valid date found
+    return null;
+}
+
+export function convertToAbbreviation(input: string) {
+    const patterns = [
+        { regex: /^Teacher (\w+)$/i, prefix: "T" },
+        { regex: /^Master Teacher (\w+)$/i, prefix: "MT" },
+        { regex: /^ADAS (\w+)$/i, prefix: "ADAS" },
+        { regex: /^Principal (\w+)$/i, prefix: "P" }
+    ];
+
+    for (const { regex, prefix } of patterns) {
+        const match = input.match(regex);
+        if (match) {
+            return `${prefix}-${match[1].toUpperCase()}`;
+        }
+    }
+
+    return input; // Return the original input if no match is found
 }

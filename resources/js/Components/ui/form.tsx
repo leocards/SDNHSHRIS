@@ -463,6 +463,7 @@ const FormCalendar: React.FC<
         withPresent?: boolean;
         withNA?: boolean;
         onCancel?: () => void;
+        noFutureDates?: boolean
     }
 > = ({
     form,
@@ -588,6 +589,7 @@ const FormCalendar: React.FC<
                                                         : field.value
                                                     : field.value
                                             }
+                                            toYear={(new Date().getFullYear() + (props.noFutureDates ? 0 : 2))}
                                         />
                                         <div className="flex items-center">
                                             <Button
@@ -650,14 +652,15 @@ const FormCalendar: React.FC<
 };
 FormCalendar.displayName = "FormCalendar";
 
-const FormRadioItem: React.FC<{ value: string; label: string }> = ({
+const FormRadioItem: React.FC<{ value: string; label: string; disabled?: boolean }> = ({
     value,
     label,
+    disabled,
 }) => {
     return (
         <FormItem className="flex items-center space-x-3 space-y-0">
             <FormControl>
-                <RadioGroupItem value={value} />
+                <RadioGroupItem value={value} disabled={disabled} />
             </FormControl>
             <FormLabel className="font-normal">{label}</FormLabel>
         </FormItem>

@@ -19,6 +19,7 @@ import { X } from "lucide-react";
 import { useFieldArray } from "react-hook-form";
 import React from "react";
 import { useToast } from "@/Hooks/use-toast";
+import { isFuture } from "date-fns";
 
 type FamilyBackgroundFormProps = {
     data: FAMILYBACKGROUNDTYPE | null
@@ -31,6 +32,7 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
         const family = data?.find((f) => f.type === type)
 
         if(family) {
+            
             return family.details
         } else {
             return familyBackgroundDefaults[type]
@@ -201,6 +203,8 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
                                     label="Telephone No."
                                     inputClass="uppercase"
                                     required={false}
+                                    type="number"
+                                    maxLength={11}
                                 />
                             </div>
                         </div>
@@ -228,6 +232,8 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
                                                 name={`children.${index}.dateofbirth`}
                                                 label="Date of Birth"
                                                 triggerClass="uppercase"
+                                                noFutureDates
+                                                disableDate={(date) => isFuture(date)}
                                             />
 
                                             <Button

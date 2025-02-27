@@ -32,6 +32,23 @@ export const LEAVETYPESOBJ = {
     others: "Others",
 } as const;
 
+export const LEAVETYPESSECTIONOBJ = {
+    vacation: "(Sec. 51, Rule XV, Omnibus Rules Implementing E.O. No. 292)",
+    mandatory: "(Sec. 25, Rule XV, Omnibus Rules Implementing E.O. No. 292)",
+    sick: "(Sec. 43, Rule XV, Omnibus Rules Implementing E.O. No. 292)",
+    maternity: "(R.A. No. 11210/IRR issued by CSC, DOLE and SSS)",
+    paternity: "(R.A. No. 8187/CSC MC No. 71, s. 1998, as amended)",
+    spl: "(Sec. 21, Rule XV, Omnibus Rules Implementing E.O. No. 292)",
+    solo: "(R.A. No. 8972/CSC MC No. 8, s. 2004)",
+    study: "(Sec. 68, Rule XV, Omnibus Rules Implementing E.O. No. 292)",
+    vowc: "(R.A. No. 9262/CSC MC No. 15, s. 2005)",
+    rehabilitation: "(Sec. 56, Rule XV, Omnibus Rules Implementing E.O. No. 292)",
+    slbw: "(R.A. No. 9710/CSC MC No. 25, s. 2010)",
+    emergency: "(CSC MC No. 2, s. 2012, as amended)",
+    adoption: "(R.A. No. 8552)",
+    others: "",
+} as const;
+
 export type LEAVETYPEKEYS = keyof typeof LEAVETYPESOBJ;
 
 export const LEAVETYPEKEYSARRAY = [

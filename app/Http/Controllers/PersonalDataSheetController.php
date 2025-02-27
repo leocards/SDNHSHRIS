@@ -433,15 +433,15 @@ class PersonalDataSheetController extends Controller
                 'civilstatus' => collect(["status" => null, "others" => ""])->toArray(),
                 'height' => $c1['personalInfo']['height'],
                 'weight' => $c1['personalInfo']['weight'],
-                'bloodtype' => $c1['personalInfo']['bloodtype'],
-                'gsis' => $c1['personalInfo']['gsis'],
-                'pagibig' => $c1['personalInfo']['pagibig'],
-                'philhealth' => $c1['personalInfo']['philhealth'],
-                'sss' => $c1['personalInfo']['sss'],
-                'tin' => $c1['personalInfo']['tin'],
+                'bloodtype' => $this->getDigitsOrNA($c1['personalInfo']['bloodtype']),
+                'gsis' => $this->getDigitsOrNA($c1['personalInfo']['gsis']),
+                'pagibig' => $this->getDigitsOrNA($c1['personalInfo']['pagibig']),
+                'philhealth' => $this->getDigitsOrNA($c1['personalInfo']['philhealth']),
+                'sss' => $this->getDigitsOrNA($c1['personalInfo']['sss']),
+                'tin' => $this->getDigitsOrNA($c1['personalInfo']['tin']),
                 'agencyemployee' => $c1['personalInfo']['agencyemployee'],
-                'telephone' => $c1['personalInfo']['telephone'],
-                'mobile' => $c1['personalInfo']['mobile'],
+                'telephone' => $this->getDigitsOrNA($c1['personalInfo']['telephone']),
+                'mobile' => $this->getDigitsOrNA($c1['personalInfo']['mobile']),
                 'email' => $c1['personalInfo']['email'],
                 'citizenship' => collect(["citizen" => null, "dual" => collect(["by" => null, "country" => ""])->toArray()])->toArray(),
             ]);
@@ -481,7 +481,7 @@ class PersonalDataSheetController extends Controller
                     'occupation' => $c1['family']['spouse']['occupation'] ?? '',
                     'employerbusiness' => $c1['family']['spouse']['employerbusiness'] ?? '',
                     'businessaddress' => $c1['family']['spouse']['businessaddress'] ?? '',
-                    'telephone' => $c1['family']['spouse']['telephone'] ?? ''
+                    'telephone' => $this->getDigitsOrNA($c1['family']['spouse']['telephone'])
                 ])->toArray(),
             ]);
 
@@ -930,9 +930,16 @@ class PersonalDataSheetController extends Controller
             'type' => 'governmentId',
             'details' => collect([
                 'governmentissuedid' => $c4['governmentId'],
-                'licensepassportid' => $c4['idNo'],
+                'licensepassportid' => $this->getDigitsOrNA($c4['idNo']),
                 'issued' => $c4['issuance'],
             ])->toArray()
         ]);
+    }
+
+    function getDigitsOrNA($string) {
+        if(!$string) return 'N/A';
+
+        $digits = preg_replace('/[^0-9]/', '', $string);
+        return empty($digits) ? 'N/A' : $digits;
     }
 }
