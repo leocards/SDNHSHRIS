@@ -22,6 +22,7 @@ import { useToast } from "@/Hooks/use-toast";
 import { SPOUSETYPE } from "../PDS/Types/FamilyBackground";
 import { IFormC4 } from "../PDS/Types/C4";
 import { cn } from "@/Lib/utils";
+import { extractDate } from "@/Types/types";
 
 type Props = {
     address: string | null;
@@ -55,6 +56,9 @@ const getChildren = (data: SALNTYPE["children"]) => {
 
 const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid }) => {
     const { toast } = useToast();
+
+    const spousedateIssuedId = extractDate(saln?.spouse?.dateissued);
+
     const form = useFormSubmit<IFormSaln>({
         route: !saln ? route("saln.store") : route("saln.store", [saln?.id]),
         method: "post",
@@ -72,11 +76,11 @@ const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid }) => {
                 officeaddress: saln?.spouse?.officeaddress ?? "",
                 governmentissuedid: saln?.spouse?.governmentissuedid ?? "",
                 idno: saln?.spouse?.idno ?? "",
-                dateissued:
-                    ((saln?.spouse?.dateissued &&
-                        new Date(saln?.spouse?.dateissued)) ||
-                        null) ??
-                    null,
+                dateissued: saln?.spouse?.dateissued
+                    ? spousedateIssuedId
+                        ? new Date(spousedateIssuedId)
+                        : null
+                    : null,
             },
             children: getChildren(saln?.children),
             assets: {
