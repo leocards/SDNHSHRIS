@@ -151,3 +151,15 @@ export function formatDateToCustomISO(date: Date) {
     const microseconds = "000000"; // JS only provides milliseconds, so manually add microseconds
     return isoString.replace(/\.\d+Z$/, `.${microseconds}Z`);
 }
+
+export function extractDate(str: string): string | null {
+    // Regex for common date formats like YYYY-MM-DD|YYYY/MM/DD or MM/DD/YYYY|MM-DD-YYYY or MM-DD-YY|MM/DD/YY
+    const datePattern = /(\d{4}-\d{2}-\d{2})|(\d{4}\/\d{2}\/\d{2})|(\d{2}\/\d{2}\/\d{4})|(\d{2}-\d{2}-\d{4})|(\d{2}-\d{2}-\d{2})|(\d{2}\/\d{2}\/\d{2})/;
+    const match = str.match(datePattern);
+
+    if (match) {
+        // Return the first matched date
+        return match[0];
+    }
+    return null; // No valid date found
+}

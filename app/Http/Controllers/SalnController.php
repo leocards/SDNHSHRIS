@@ -272,6 +272,7 @@ class SalnController extends Controller
         }
 
         $address = $saln->user->load(['pdsPersonalInformation.addresses']);
+        // dd($saln->user->pdsC4->where('type', 'governmentId')->first()?->details);
 
         if($request->user()->role === "hr") {
             return Inertia::render('Myapproval/SALN/ViewSaln', [
@@ -279,7 +280,7 @@ class SalnController extends Controller
                 "user" => $saln->user,
                 "address" => $address->pdsPersonalInformation?$this->getPermanentaddress($address->pdsPersonalInformation['addresses']):null,
                 "spouse" => $spouse,
-                "declarannt" => $saln->user->pdsC4->where('type', 'governmentId')->first()?->details,
+                "declarant" => $saln->user->pdsC4->where('type', 'governmentId')->first()?->details,
                 "pages" => $pages
             ]);
         }
@@ -289,7 +290,7 @@ class SalnController extends Controller
             "user" => $saln->user,
             "address" => $address->pdsPersonalInformation?$this->getPermanentaddress($address->pdsPersonalInformation['addresses']):null,
             "spouse" => $spouse,
-            "declarannt" => $saln->user->pdsC4->where('type', 'governmentId')->first()?->details,
+            "declarant" => $saln->user->pdsC4->where('type', 'governmentId')->first()?->details,
             "pages" => $pages
         ]);
     }

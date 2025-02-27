@@ -7,6 +7,8 @@ import Relatives from "./Relatives";
 import { User } from "@/Types";
 import { SALNTOTALTYPE } from "./SALNSeparatePage";
 import { PAGE, SALNTPRINTYPE } from "../Types/type";
+import { format } from "date-fns";
+import { extractDate, isValidDate } from "@/Types/types";
 
 type Props = Omit<SALNTPRINTYPE, "pages"|"user"> & {
     pagecount: {
@@ -97,7 +99,7 @@ const SALNPage2 = forwardRef<HTMLDivElement, Props>(({ pagecount, saln, spouse, 
                         </div>
                         <div className="grid grid-cols-[9rem,1fr] text-[8pt] text-left">
                             <div className="">Date Issued:</div>
-                            <div className="border-b border-black">{declarant?.issued?.split('/')[0]}</div>
+                            <div className="border-b border-black">{declarant?.issued?extractDate(declarant?.issued):""}</div>
                         </div>
                     </div>
                 </div>
@@ -115,7 +117,7 @@ const SALNPage2 = forwardRef<HTMLDivElement, Props>(({ pagecount, saln, spouse, 
                         </div>
                         <div className="grid grid-cols-[9rem,1fr] text-[8pt] text-left">
                             <div className="">Date Issued:</div>
-                            <div className="border-b border-black">{spouse?.dateissued}</div>
+                            <div className="border-b border-black">{spouse?.dateissued?extractDate(spouse?.dateissued):""}</div>
                         </div>
                     </div>
                 </div>
