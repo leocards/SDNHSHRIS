@@ -2,6 +2,7 @@ import { Button } from "@/Components/ui/button";
 import { FormCalendar, FormInput } from "@/Components/ui/form";
 import { Label } from "@/Components/ui/label";
 import { cn } from "@/Lib/utils";
+import { isFuture } from "date-fns";
 import { Add, Trash } from "iconsax-react";
 import { X } from "lucide-react";
 import React from "react";
@@ -75,6 +76,8 @@ const Children = ({ form }: Props) => {
                                         required={false}
                                         label="Date of birth"
                                         triggerClass="uppercase"
+                                        noFutureDates
+                                        disableDate={(date) => isFuture(date)}
                                     />
                                 </div>
                                 <div className="space-y-1.5 text-center">
