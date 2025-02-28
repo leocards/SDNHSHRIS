@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DateParserTrait;
 use App\Models\Notification;
+use App\Models\PdsFamilyBackground;
 use App\Models\PdsPersonalInformation;
 use App\Models\Saln;
 use App\Models\User;
@@ -107,12 +108,20 @@ class SalnController extends Controller
         }
 
         $getAddress = PdsPersonalInformation::with('addresses')->where('user_id', $request->user()->id)->first('id');
+        $children = $request->user()
+            ->pdsFamilyBackground()
+            ->where('type', 'child')
+            ->whereJsonContains('details', function ($query) {
+                $query->whereDate('dateofbirth', '<', Carbon::now()->subYears(18));
+            })
+            ->value('details');
 
         return Inertia::render('SALN/NewSALN', [
             'address' => $getAddress ? $this->getPermanentaddress($getAddress->addresses) : "",
             'saln' => $saln,
             'spouse' => $spouse['spousename'],
-            'spousegoveid' => $spouse['govid']
+            'spousegoveid' => $spouse['govid'],
+            'children' => $children
         ]);
     }
 

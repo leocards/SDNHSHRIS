@@ -12,32 +12,33 @@ import {
 } from "./Types/type";
 import { Form, FormCalendar } from "@/Components/ui/form";
 import PersonalInformation from "./Partials/PersonalInformation";
-import Children from "./Partials/Children";
+import Children, { calculateAge } from "./Partials/Children";
 import Assets from "./Partials/Assets";
 import Liabilities from "./Partials/Liabilities";
 import BusinessInterectFinancialConnections from "./Partials/BusinessInterectFinancialConnections";
 import RelativeInGovernment from "./Partials/RelativeInGovernment";
 import { Button } from "@/Components/ui/button";
 import { useToast } from "@/Hooks/use-toast";
-import { SPOUSETYPE } from "../PDS/Types/FamilyBackground";
+import { FAMILYBACKGROUNDTYPE, SPOUSETYPE } from "../PDS/Types/FamilyBackground";
 import { IFormC4 } from "../PDS/Types/C4";
 import { cn } from "@/Lib/utils";
 import { extractDate } from "@/Types/types";
 
 type Props = {
     address: string | null;
-    saln: SALNTYPE;
+    saln: SALNTYPE | null;
     spouse: SPOUSETYPE | null;
     spousegoveid: IFormC4["governmentids"] | null;
+    children: SALNTYPE["children"]
 };
 
-const getChildren = (data: SALNTYPE["children"]) => {
+const getChildren = (data: SALNTYPE["children"] | null, defaultChildren: SALNTYPE["children"]|null|undefined) => {
     let childrens: Array<{
         name: string;
         dateofbirth: Date | null;
-    }> = [{ name: "", dateofbirth: null }];
+    }> = [{ name: "N/A", dateofbirth: null }];
 
-    if (data)
+    if (data) {
         if (data.length > 0) {
             childrens = [];
 
@@ -50,14 +51,30 @@ const getChildren = (data: SALNTYPE["children"]) => {
                 });
             });
         }
+    } else if(defaultChildren) {
+        if(defaultChildren.length > 0) {
+            childrens = [];
 
+            defaultChildren.forEach((child) => {
+                if((child.name && child.name.toLowerCase() != 'n/a') && calculateAge(new Date(child.dateofbirth)) < 18) {
+                    childrens.push({
+                        name: child.name ?? "",
+                        dateofbirth: !child.name
+                            ? null
+                            : new Date(child.dateofbirth),
+                    });
+                }
+            })
+        }
+    }
+    console.log(childrens)
     return childrens;
 };
 
-const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid }) => {
+const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid, children }) => {
     const { toast } = useToast();
 
-    const spousedateIssuedId = extractDate(saln?.spouse?.dateissued);
+    const spousedateIssuedId = extractDate(saln?.spouse?.dateissued??'');
 
     const form = useFormSubmit<IFormSaln>({
         route: !saln ? route("saln.store") : route("saln.store", [saln?.id]),
@@ -82,7 +99,7 @@ const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid }) => {
                         : null
                     : null,
             },
-            children: getChildren(saln?.children),
+            children: getChildren(saln?.children??null, children),
             assets: {
                 real: saln?.assets?.real ?? [
                     {

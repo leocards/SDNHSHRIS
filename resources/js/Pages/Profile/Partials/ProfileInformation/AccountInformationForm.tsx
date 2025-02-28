@@ -15,6 +15,7 @@ import {
     PersonnelPosition,
     requiredError,
 } from "@/Types/types";
+import { isFuture } from "date-fns";
 import { PasswordCheck } from "iconsax-react";
 import { AtSign } from "lucide-react";
 import React, { Fragment, useEffect, useState } from "react";
@@ -269,6 +270,8 @@ const AccountInformationForm: React.FC<Props> = ({
                                             : undefined
                                     )
                                 }
+                                noFutureDates
+                                disableDate={(date) => isFuture(date)}
                             />
                         </div>
                     </div>

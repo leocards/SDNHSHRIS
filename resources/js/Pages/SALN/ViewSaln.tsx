@@ -32,7 +32,7 @@ const ViewSaln = ({ pages, saln, declarant, spouse, address, user }: Props) => {
                 </Button>
             </div>
 
-            <div className="overflow-y-auto rounded-scrollbar flex flex-col items-center p-4 bg-gray-200 rounded-md">
+            <div className="overflow-y-auto rounded-scrollbar flex flex-col items-center p-4 bg-gray-200 dark:bg-zinc-800 rounded-md">
                 <div ref={contentRef} className="space-y-3 print:space-y-0">
                     {pages.map((page, index) =>
                         index === 0 ? (

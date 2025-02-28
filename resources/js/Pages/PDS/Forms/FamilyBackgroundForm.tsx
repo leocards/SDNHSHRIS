@@ -32,7 +32,7 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
         const family = data?.find((f) => f.type === type)
 
         if(family) {
-            
+
             return family.details
         } else {
             return familyBackgroundDefaults[type]
@@ -40,7 +40,7 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
     }
 
     const form = useFormSubmit<IFormFamilyBackground>({
-        route: data ? route("pds.update.fb") : route("pds.store.fb"),
+        route: data && data.length > 0 ? route("pds.update.fb") : route("pds.store.fb"),
         method: "post",
         schema: FAMILYBACKGROUNDSCHEMA,
         defaultValues: {

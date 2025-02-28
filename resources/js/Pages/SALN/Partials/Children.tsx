@@ -12,7 +12,7 @@ type Props = {
     form: any;
 };
 
-function calculateAge(birthdate: Date): number {
+export function calculateAge(birthdate: Date): number {
     const today = new Date();
     const birthYear = birthdate.getFullYear();
     const birthMonth = birthdate.getMonth();

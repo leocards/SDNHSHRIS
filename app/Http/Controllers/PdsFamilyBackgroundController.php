@@ -141,8 +141,8 @@ class PdsFamilyBackgroundController extends Controller
                 "details" => $request->mother
             ]);
 
-            $request->user()->pdsFamilyBackground()->where('type', 'chldren')->update([
-                "type" => "chldren",
+            $request->user()->pdsFamilyBackground()->where('type', 'child')->update([
+                "type" => "child",
                 "details" => $request->children
             ]);
 
