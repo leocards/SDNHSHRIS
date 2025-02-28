@@ -106,7 +106,7 @@ const SelectTrigger = forwardRef<
         <MenubarTrigger
             disabled={disabled}
             className={cn(
-                "group justify-between min-w-32 data-[state=open]:bg-background focus:bg-background hover:!bg-background dark:hover:!bg-white/5 ",
+                "group justify-between min-w-32 data-[state=open]:bg-background focus:bg-background hover:!bg-background dark:hover:!bg-white//[0.08] dark:!bg-white/[0.08]",
                 "disabled:opacity-100 disabled:text-muted-foreground/80",
                 className
             )}

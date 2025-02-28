@@ -431,7 +431,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
                                 <SelectTrigger
                                     ref={(ref) => field.ref(ref)}
                                     className={cn(
-                                        "formSelect bg-background dark:bg-white/5 hover:text-foreground w-full !font-normal focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-fuchsia-500 focus-visible:border-fuchsia-700",
+                                        "formSelect bg-background hover:text-foreground w-full !font-normal focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-fuchsia-500 focus-visible:border-fuchsia-700",
                                         triggerClass
                                     )}
                                     placeholder={placeholder}

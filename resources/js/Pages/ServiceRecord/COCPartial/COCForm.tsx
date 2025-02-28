@@ -68,29 +68,6 @@ const COCForm: React.FC<Porps> = ({ form, index }) => {
                     placeholder="(Optional)"
                 />
                 <div className="grid [@media(max-width:512px)]:grid-cols-1 grid-cols-2 gap-4">
-                    <FormCalendar
-                        form={form}
-                        name={`coc[${index}].from`}
-                        label="From"
-                        disableDate={(date) => {
-                            return (
-                                watchSession === "weekdays" && isWeekend(date)
-                            );
-                        }}
-                    />
-                    <FormCalendar
-                        form={form}
-                        name={`coc[${index}].to`}
-                        label="To"
-                        required={false}
-                        disabled={watchSession === "halfday" || !watchSession}
-                        triggerClass="disabled:opacity-100 disabled:text-foreground/20"
-                        disableDate={(date) => {
-                            return (
-                                watchSession === "weekdays" && isWeekend(date)
-                            );
-                        }}
-                    />
                     <FormSelect
                         form={form}
                         name={`coc[${index}].session`}
@@ -118,6 +95,29 @@ const COCForm: React.FC<Porps> = ({ form, index }) => {
                                 />
                             </Fragment>
                         }
+                    />
+                    <FormCalendar
+                        form={form}
+                        name={`coc[${index}].from`}
+                        label="From"
+                        disableDate={(date) => {
+                            return (
+                                watchSession === "weekdays" && isWeekend(date)
+                            );
+                        }}
+                    />
+                    <FormCalendar
+                        form={form}
+                        name={`coc[${index}].to`}
+                        label="To"
+                        required={false}
+                        disabled={watchSession === "halfday" || !watchSession}
+                        triggerClass="disabled:opacity-100 disabled:text-foreground/20"
+                        disableDate={(date) => {
+                            return (
+                                watchSession === "weekdays" && isWeekend(date)
+                            );
+                        }}
                     />
                     <FormInput
                         form={form}

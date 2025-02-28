@@ -169,7 +169,7 @@
     }
 
     .filepond--panel-root {
-        @apply border border-border shadow-sm bg-background dark:bg-white/5 !important;
+        @apply border border-border shadow-sm bg-background dark:!bg-red-400/5 !important;
     }
 
     .filepond--panel .filepond--panel-root {
@@ -177,6 +177,5 @@
     }
 
     .filepond--drop-label {
-        @apply dark:text-white/70 !important;
     }
 }

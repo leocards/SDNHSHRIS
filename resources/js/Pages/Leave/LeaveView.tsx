@@ -164,38 +164,40 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal, applicant }
                 </div>
             </div>
 
-            <div className="overflow-hidden overflow-x-auto h-auto py-2">
-                <div className="mx-auto border overflow-hidden w-[790px] flex gap-2">
-                    <LeavePDF
-                        ref={(ref) => {
-                            contentRef.current = ref;
-                            targetRef.current = ref;
-                        }}
-                        leave={leave}
-                        hr={hr}
-                        principal={
-                            principal ?? {
-                                name: "No principal",
-                                full_name: "No principal",
-                                position: "No principal",
+            <div className="">
+                <div className="overflow-hidden overflow-x-auto h-auto py-2">
+                    <div className="mx-auto border overflow-hidden w-[790px] flex gap-2">
+                        <LeavePDF
+                            ref={(ref) => {
+                                contentRef.current = ref;
+                                targetRef.current = ref;
+                            }}
+                            leave={leave}
+                            hr={hr}
+                            principal={
+                                principal ?? {
+                                    name: "No principal",
+                                    full_name: "No principal",
+                                    position: "No principal",
+                                }
                             }
-                        }
-                        applicant={applicant}
-                    />
-                    <LeavePDF
-                        ref={download_pdf.targetRef}
-                        isDownload
-                        leave={leave}
-                        hr={hr}
-                        principal={
-                            principal ?? {
-                                name: "No principal",
-                                full_name: "No principal",
-                                position: "No principal",
+                            applicant={applicant}
+                        />
+                        <LeavePDF
+                            ref={download_pdf.targetRef}
+                            isDownload
+                            leave={leave}
+                            hr={hr}
+                            principal={
+                                principal ?? {
+                                    name: "No principal",
+                                    full_name: "No principal",
+                                    position: "No principal",
+                                }
                             }
-                        }
-                        applicant={applicant}
-                    />
+                            applicant={applicant}
+                        />
+                    </div>
                 </div>
             </div>
 
