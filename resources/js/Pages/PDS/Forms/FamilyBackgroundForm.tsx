@@ -226,6 +226,7 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
                                                 name={`children.${index}.name`}
                                                 label="Name"
                                                 itemClass="col-span-2"
+                                                inputClass="uppercase"
                                             />
                                             <FormCalendar
                                                 form={form}
