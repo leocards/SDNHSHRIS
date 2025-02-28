@@ -63,6 +63,3 @@ return new class extends Migration
         Schema::dropIfExists('leaves');
     }
 };
-
-ALTER TABLE leaves
-MODIFY COLUMN details ENUM('vphilippines', 'vabroad', 'shospital', 'spatient', 'degree', 'examreview', 'monitization', 'terminal') NULL;
