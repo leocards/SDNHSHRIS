@@ -240,8 +240,9 @@ const ApplyLeave = () => {
                                                             LEAVETYPESOBJ[type]
                                                         }
                                                         disabled={
-                                                            type ===
-                                                                "paternity" ||
+                                                            (type ===
+                                                                "paternity" && user.gender ===
+                                                                "female") ||
                                                             (user.gender ===
                                                                 "male" &&
                                                                 (type ===
