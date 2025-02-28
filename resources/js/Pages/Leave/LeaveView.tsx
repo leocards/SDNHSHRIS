@@ -122,12 +122,12 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal, applicant }
                             className=""
                             size="icon"
                             variant="outline"
-                            // disabled={getResponse(leave)}
+                            disabled={getResponse(leave)}
                             onClick={() => {
-                                // if (
-                                //     leave.hrstatus === "approved" &&
-                                //     leave.principalstatus === "approved"
-                                // )
+                                if (
+                                    leave.hrstatus === "approved" &&
+                                    leave.principalstatus === "approved"
+                                )
                                     download_pdf.toPDF();
                             }}
                         >
