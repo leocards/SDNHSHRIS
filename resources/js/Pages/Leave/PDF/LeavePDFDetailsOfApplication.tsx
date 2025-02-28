@@ -264,7 +264,7 @@ const LeavePDFDetailsOfApplication = (
                             {from ? formatDateRange({
                                 from: from,
                                 to: to,
-                            }) : 'N/A'}
+                            }) : ''}
                         </div>
                     </div>
                 </div>
