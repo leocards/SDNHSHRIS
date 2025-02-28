@@ -42,7 +42,7 @@ export const LEAVESCHEMA = z.object({
                 path: ['detailsinput']
             })
 
-        if(!leave.from)
+        if(!leave.from && !['monitization','terminal'].includes(leave.details??''))
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: requiredError('"from"'),

@@ -56,8 +56,9 @@ class LeaveRequest extends FormRequest
                     }
                 }
             ],
-            'from' => ['required', 'date'],
+            'from' => ['required_unless:details,monitization,terminal', 'nullable', 'date'],
             'to' => ['nullable', 'date'],
+            'daysapplied' => ['required'],
             'commutation' => ['required'],
             'medical' => ['required_if:type,maternity']
         ];
@@ -71,6 +72,7 @@ class LeaveRequest extends FormRequest
             'type' => 'type of leave',
             'details' => 'details of leave',
             'detailsinput' => 'details',
+            'daysapplied' => 'number of days applies'
         ];
     }
 }

@@ -140,7 +140,7 @@ class LeaveController extends Controller
 
             if ($request->type !== "maternity" && $request->type !== "sick") {
                 if ($request->type == "vacation" || $request->type == "mandatory") {
-                    if (!$this->verifyDateFiveDaysAhead($request->filingfrom, $request->from)) {
+                    if (!in_array($request->daysapplied, ['monitization', 'terminal']) && !$this->verifyDateFiveDaysAhead($request->filingfrom, $request->from)) {
                         throw new Exception("You must send application 5 days ahead.", 1);
                     }
                 }
@@ -207,7 +207,7 @@ class LeaveController extends Controller
                 "type" => $request->type,
                 "others" => $request->others,
                 "daysapplied" => (int) $request->daysapplied,
-                "from" => Carbon::parse($request->from)->format('Y-m-d'),
+                "from" => $request->from ? Carbon::parse($request->from)->format('Y-m-d') : null,
                 "to" => $request->to ? Carbon::parse($request->to)->format('Y-m-d') : null,
                 "commutation" => $request->commutation,
                 "details" => $request->details,

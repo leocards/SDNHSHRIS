@@ -209,6 +209,7 @@ const FormInput: React.FC<
         itemClass?: string;
         type?: React.HTMLInputTypeAttribute;
         maxLength?: number;
+        isStrictNumber?: boolean;
     }
 > = ({
     form,
@@ -272,6 +273,7 @@ const FormInput: React.FC<
                                     placeholder={placeholder}
                                     disabled={disabled}
                                     maxLength={props.maxLength}
+                                    data-strictnumber={props.isStrictNumber?true:undefined}
                                 />
                             )}
                         </FormControl>

@@ -28,7 +28,9 @@ const NumberInput = React.forwardRef<
     const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
         let strInput = String(e.target.value).trim();
 
-        if(strInput.toLowerCase() === 'n/a' || strInput.toLowerCase() === 'n') {
+        const strictNumber = "strictnumber" in e.target.dataset
+
+        if((strInput.toLowerCase() === 'n/a' || strInput.toLowerCase() === 'n') && !strictNumber) {
             e.target.value = 'N/A'
         } else {
             strInput = e.target.value.replace(/[^0-9.]/g, ''); // Allow digits and periods

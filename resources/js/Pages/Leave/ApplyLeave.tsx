@@ -393,74 +393,79 @@ const ApplyLeave = () => {
                                     />
 
                                     <div className="mt-3 grid grid-cols-3 gap-4">
-                                        <FormCalendar
-                                            form={form}
-                                            name="from"
-                                            label="From"
-                                            disableDate={(date) => {
-                                                let toDay = date;
-                                                let now = new Date();
-                                                toDay.setHours(0, 0, 0, 0);
-                                                now.setHours(0, 0, 0, 0);
-                                                if (
-                                                    watchLeaveType !==
-                                                        "maternity" &&
-                                                    watchLeaveType != "sick"
-                                                ) {
-                                                    return (
-                                                        isWeekend(date) ||
-                                                        toDay.getTime() <
-                                                            now.getTime()
-                                                    );
-                                                } else if (
-                                                    watchLeaveType == "sick"
-                                                )
-                                                    return (
-                                                        isWeekend(date) ||
-                                                        !(
-                                                            // isYesterday(date) ||
-                                                            (
-                                                                isToday(date) ||
-                                                                toDay.getTime() <
-                                                                    now.getTime()
+                                        {!['monitization', 'terminal'].includes(watchDetails??'') && <>
+                                            <FormCalendar
+                                                form={form}
+                                                name="from"
+                                                label="From"
+                                                disableDate={(date) => {
+                                                    let toDay = date;
+                                                    let now = new Date();
+                                                    toDay.setHours(0, 0, 0, 0);
+                                                    now.setHours(0, 0, 0, 0);
+                                                    if (
+                                                        watchLeaveType !==
+                                                            "maternity" &&
+                                                        watchLeaveType != "sick"
+                                                    ) {
+                                                        return (
+                                                            isWeekend(date) ||
+                                                            toDay.getTime() <
+                                                                now.getTime()
+                                                        );
+                                                    } else if (
+                                                        watchLeaveType == "sick"
+                                                    )
+                                                        return (
+                                                            isWeekend(date) ||
+                                                            !(
+                                                                // isYesterday(date) ||
+                                                                (
+                                                                    isToday(date) ||
+                                                                    toDay.getTime() <
+                                                                        now.getTime()
+                                                                )
                                                             )
-                                                        )
-                                                    );
-                                                else return false;
-                                            }}
-                                        />
-                                        <FormCalendar
-                                            form={form}
-                                            name="to"
-                                            label="To"
-                                            required={false}
-                                            triggerClass="disabled:!opacity-100 disabled:text-muted-foreground"
-                                            disabled={!watchDatesFrom}
-                                            disableDate={(date) => {
-                                                let toDay = date;
-                                                let from = watchDatesFrom!;
-                                                let now = new Date();
-                                                toDay.setHours(0, 0, 0, 0);
-                                                now.setHours(0, 0, 0, 0);
-                                                from.setHours(0, 0, 0, 0);
+                                                        );
+                                                    else return false;
+                                                }}
+                                            />
+                                            <FormCalendar
+                                                form={form}
+                                                name="to"
+                                                label="To"
+                                                required={false}
+                                                triggerClass="disabled:!opacity-100 disabled:text-muted-foreground"
+                                                disabled={!watchDatesFrom}
+                                                disableDate={(date) => {
+                                                    let toDay = date;
+                                                    let from = watchDatesFrom!;
+                                                    let now = new Date();
+                                                    toDay.setHours(0, 0, 0, 0);
+                                                    now.setHours(0, 0, 0, 0);
+                                                    from.setHours(0, 0, 0, 0);
 
-                                                if (
-                                                    watchLeaveType !==
-                                                    "maternity"
-                                                ) {
-                                                    return (
-                                                        isWeekend(date) ||
-                                                        toDay.getTime() <=
-                                                            from.getTime()
-                                                    );
-                                                } else return false;
-                                            }}
-                                        />
+                                                    if (
+                                                        watchLeaveType !==
+                                                        "maternity"
+                                                    ) {
+                                                        return (
+                                                            isWeekend(date) ||
+                                                            toDay.getTime() <=
+                                                                from.getTime()
+                                                        );
+                                                    } else return false;
+                                                }}
+                                            />
+                                        </>}
                                         <FormInput
                                             form={form}
                                             name="daysapplied"
                                             label="Number of days applied"
-                                            disabled
+                                            disabled={!['monitization', 'terminal'].includes(watchDetails??'')}
+                                            type="number"
+                                            maxLength={5}
+                                            isStrictNumber
                                         />
                                     </div>
                                 </div>

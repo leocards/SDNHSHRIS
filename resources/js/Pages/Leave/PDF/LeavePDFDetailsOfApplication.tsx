@@ -58,12 +58,21 @@ const LeavePDFDetailsOfApplication = (
                                 </div>
                             </div>
                         ))}
-                        <div className="mt-3">Others:</div>
+                        <div className="flex gap-1 mt-3" style={{ alignItems: "center" }}>
+                        <div className="">
+                                    {type === "others" ? (
+                                        <SquareCheck className="size-4" />
+                                    ) : (
+                                        <Square className="size-4" />
+                                    )}
+                                </div>
+                        <div className={cn(isDownload && "-mt-3")}>Others:</div>
+                        </div>
                         <div
                             className={cn(
                                 "h-4 w-[70%]",
                                 others
-                                    ? "underline"
+                                    ? "border-b text-center"
                                     : ("border-b " + (isDownload ? "border-black" : "dark:border-border border-black"))
                             )}
                         >
@@ -251,11 +260,11 @@ const LeavePDFDetailsOfApplication = (
                             isDownload ? "border-black" : "dark:border-border border-black"
                         )}
                     >
-                        <div className={cn(isDownload && "mb-1.5 mt-1")}>
-                            {formatDateRange({
+                        <div className={cn(isDownload && "mb-1.5 mt-1", !from && "h-")}>
+                            {from ? formatDateRange({
                                 from: from,
                                 to: to,
-                            })}
+                            }) : 'N/A'}
                         </div>
                     </div>
                 </div>
