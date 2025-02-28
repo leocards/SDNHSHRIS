@@ -173,7 +173,7 @@ class LeaveController extends Controller
                     }
                 }
             } else if ($request->type == "maternity") {
-                if (Carbon::parse($auth->datehired)->greaterThan(Carbon::now()->subMonths(3))) {
+                if (Carbon::parse($auth->hiredate)->greaterThan(Carbon::now()->subMonths(3)->startOfMonth())) {
                     throw new Exception("You are not yet allowed to use this type of leave.", 1);
                 }
             } else {
