@@ -11,7 +11,7 @@ const SALNPDFFormat = forwardRef<HTMLDivElement, Props>((props, ref) => {
     return (
         <div
             ref={ref}
-            className="w-[8.5in] h-[13in] shrink-0 font-bookman bg-white p-8 bre ak-before-page"
+            className="w-[8.5in] h-[13in] shrink-0 font-bookman bg-white dark:bg-white/50 dark:text-black p-8 bre ak-before-page"
         >
             <style>
                 {`
