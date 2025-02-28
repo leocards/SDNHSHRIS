@@ -260,7 +260,7 @@ const LeavePDFDetailsOfApplication = (
                             isDownload ? "border-black" : "dark:border-border border-black"
                         )}
                     >
-                        <div className={cn(isDownload && "mb-1.5 mt-1", !from && "h-")}>
+                        <div className={cn(isDownload && "mb-1.5 mt-1", !from && "h-4")}>
                             {from ? formatDateRange({
                                 from: from,
                                 to: to,
