@@ -64,7 +64,7 @@ const LeaveView: React.FC<LeaveViewProps> = ({
     const LeaveStatus = role === "principal" || role === "hr" ? leave.hrstatus : leave.principalstatus
 
     return (
-        <div>
+        <div className="overflow-hidden relative">
             <Header title="View Leave Application">
                 <div className="flex items-center gap-1">
                     Leave <ArrowRight2 className="size-4 [&>path]:stroke-[3]" />{" "}
@@ -288,7 +288,7 @@ const PrincipalComponents: React.FC<PropsWithChildren> = ({ children }) => {
 };
 
 const getResponse = (leave: APPLICATIONFORLEAVETYPES) => {
-    return !(
+    return (
         leave?.hrstatus !== "approved" &&
         leave?.principalstatus !== "approved"
     );

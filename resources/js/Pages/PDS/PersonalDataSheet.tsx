@@ -57,7 +57,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
     });
 
     return (
-        <div>
+        <div className="overflow-hidden relative">
             <Header title="PDS" children="Personal Data Sheet" />
 
             <Tabs

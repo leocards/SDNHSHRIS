@@ -152,12 +152,12 @@ const ApplyLeave = () => {
                 </TypographyLarge>
             </div>
 
-            <div className="grid grid-cols-4 gap-4 pt-5 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-4 pt-5 mb-4">
                 {[
                     user.lastname,
                     user.firstname,
                     user.middlename ?? "N/A",
-                    (user.role === "principal" ? 'DEPED' : 'SOUTHERN DAVAO NHS'),
+                    (user.role === "principal" ? 'SOUTHERN DAVAO NHS' : 'SOUTHERN DAVAO NHS'),
                 ].map((name, index) => (
                     <div key={index} className="space-y-1.5">
                         <TypographySmall>
@@ -169,8 +169,8 @@ const ApplyLeave = () => {
                                 ? "Middle Name"
                                 : "Office/Department"}
                         </TypographySmall>
-                        <div className="rounded-md border border-border shadow-sm h-10 px-3 text-sm flex items-center text-muted-foreground dark:bg-white/5">
-                            {name}
+                        <div className="rounded-md border border-border shadow-sm h-10 px-3 text-sm flex items-center text-muted-foreground dark:bg-white/5 overflow-hidden">
+                            <div className="line-clamp-1 h-fit text-nowrap whitespace-nowrap">{name}</div>
                         </div>
                     </div>
                 ))}
@@ -179,7 +179,7 @@ const ApplyLeave = () => {
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
                     <div className="space-y-4">
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-1.5 sm:gap-4">
                             <FormCalendar
                                 form={form}
                                 name="filingfrom"
@@ -212,7 +212,7 @@ const ApplyLeave = () => {
                                 children="Types of leave to be availed"
                                 className="uppercase"
                             />
-                            <div className="grid grid-cols-2 gap-4 mt-2">
+                            <div className="grid grid-cols-1 sm:grid-cols-2  gap-1.5 sm:gap-4 mt-2">
                                 <FormSelect
                                     form={form}
                                     name="type"
@@ -392,7 +392,7 @@ const ApplyLeave = () => {
                                         className="uppercase"
                                     />
 
-                                    <div className="mt-3 grid grid-cols-3 gap-4">
+                                    <div className="mt-3 grid sm:grid-cols-2 [@media(min-width:870px)]:grid-cols-3 gap-4">
                                         {!['monitization', 'terminal'].includes(watchDetails??'') && <>
                                             <FormCalendar
                                                 form={form}

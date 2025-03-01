@@ -195,7 +195,7 @@ const ViewSearched: React.FC<Props> = ({
                             </div>
                         </div>
                         <Card className="p-4 w-full mt-5 space-y-3">
-                            <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3">
                                 <DetailsCard
                                     label="Gender"
                                     value={
@@ -218,7 +218,7 @@ const ViewSearched: React.FC<Props> = ({
                                     valueClass=" overflow-hidden text-ellipsis whitespace-nowrap"
                                 />
                             </div>
-                            <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 mt-2 gap-3">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 mt-2 gap-3">
                                 <DetailsCard
                                     label="Home Address / Mailing Address"
                                     valueClass="capitalize"
@@ -231,7 +231,7 @@ const ViewSearched: React.FC<Props> = ({
                                     }
                                 />
                             </div>
-                            <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3 mb-2">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3 mb-2">
                                 <DetailsCard
                                     label="GSIS No./BP No."
                                     value={
@@ -261,7 +261,7 @@ const ViewSearched: React.FC<Props> = ({
                                     }
                                 />
                             </div>
-                            <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3">
                                 <DetailsCard
                                     label="DepEd Employee No."
                                     value={user?.personnelid}
