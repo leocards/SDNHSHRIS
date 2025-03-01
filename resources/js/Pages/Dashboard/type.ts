@@ -7,6 +7,7 @@ export type ACTIVELEAVETYPE = {
     type: LEAVETYPEKEYS;
     from: string;
     to: string;
+    updated_at: string;
 };
 
 export type PERSONNELPERFORMANCETYPE = {

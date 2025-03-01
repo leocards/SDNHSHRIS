@@ -14,10 +14,7 @@ import {
     ChartContainer,
     ChartLegend,
     ChartLegendContent,
-    ChartTooltip,
-    ChartTooltipContent,
 } from "@/Components/ui/chart";
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 import { FilterButton, FilterItem } from "@/Components/ui/menubar";
 import { useEffect, useMemo, useState } from "react";

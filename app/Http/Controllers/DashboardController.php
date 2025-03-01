@@ -51,9 +51,11 @@ class DashboardController extends Controller
                     $query->whereDate('from', '<=', Carbon::now()->format('Y-m-d'))
                         ->whereDate('to', '>=', Carbon::now()->format('Y-m-d'))
                         ->orWhereDate('from', '>=', Carbon::now()->format('Y-m-d'))
-                        ->whereNull('to');
+                        ->whereNull('to')
+                        ->orWhereNull('from')
+                        ->whereDate('updated_at', '=', Carbon::now()->format('Y-m-d'));
                 })
-                ->get(['id', 'user_id', 'type', 'from', 'to']),
+                ->get(['id', 'user_id', 'type', 'from', 'to', 'updated_at']),
             "announcements" => Announcement::whereDate('details->date', '>=', now('Asia/Manila')->format('Y-m-d'))
                 ->orWhereDate('created_at', '=', now('Asia/Manila')->format('Y-m-d'))
                 ->get(),

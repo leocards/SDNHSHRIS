@@ -8,6 +8,7 @@ import { Button } from "@/Components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { Label } from "@/Components/ui/label";
 import { LEAVETYPESOBJ } from "../Leave/Types/leavetypes";
+import { cn } from "@/Lib/utils";
 
 type Props = {
     activeleave: ACTIVELEAVETYPE[];
@@ -19,11 +20,15 @@ const ActiveLeave = ({ activeleave }: Props) => {
     );
 
     const leaveStatus = useMemo(() => {
-        if (selectedLeave)
+        if (selectedLeave) {
+            if(!selectedLeave?.from) {
+                return 'active'
+            }
             return getTimeRemains({
                 from: new Date(selectedLeave?.from ?? ""),
                 to: selectedLeave?.to ? new Date(selectedLeave?.to ?? "") : undefined,
             });
+        }
     }, [selectedLeave]);
 
     return (
@@ -57,11 +62,11 @@ const ActiveLeave = ({ activeleave }: Props) => {
                                 </div>
                             </div>
                             <div className="text-sm ml-auto text-right">
-                                {formatDateRange({
+                                {leave?.from && formatDateRange({
                                     from: leave?.from ?? "",
                                     to: leave?.to ?? "",
                                 })}
-                                {getTimeRemains({
+                                {leave?.from && getTimeRemains({
                                     from: new Date(leave?.from ?? ""),
                                     to: leave?.to ? new Date(leave?.to ?? "") : undefined,
                                 }) == "active" ? (
@@ -71,7 +76,7 @@ const ActiveLeave = ({ activeleave }: Props) => {
                                             to: leave?.to ? new Date(leave?.to ?? "") : undefined,
                                         })}
                                     </div>
-                                ) : (
+                                ) : leave?.from && (
                                     <div className="leading-4 text-xs text-foreground/60">
                                         Time remaining:{" "}
                                         {getTimeRemains({
@@ -110,16 +115,16 @@ const ActiveLeave = ({ activeleave }: Props) => {
                         </div>
 
                         <div className="shrink-0 ml-3 text-right">
-                            {formatDateRange({
+                            {selectedLeave?.from && formatDateRange({
                                 from: selectedLeave?.from ?? "",
                                 to: selectedLeave?.to ?? "",
                             })}
                             {leaveStatus == "active" ? (
-                                <div className="text-green-600 text-xs capitalize">
+                                <div className={cn("text-green-600 capitalize", selectedLeave?.from && "text-xs")}>
                                     {leaveStatus}
                                 </div>
                             ) : (
-                                <div className="leading-4 text-xs text-foreground/60">
+                                <div className={cn("leading-4 text-xs text-foreground/60")}>
                                     Time remaining: {leaveStatus}
                                 </div>
                             )}
@@ -128,7 +133,7 @@ const ActiveLeave = ({ activeleave }: Props) => {
 
                     <CalendarView
                         date={{
-                            from: new Date(selectedLeave?.from ?? ""),
+                            from: selectedLeave?.from ? new Date(selectedLeave?.from ?? "") : new Date(selectedLeave?.updated_at),
                             to: selectedLeave?.to ? new Date(selectedLeave?.to ?? "") : undefined,
                         }}
                     />
