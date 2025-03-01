@@ -17,6 +17,7 @@ import { formatDateRange } from "@/Types/types";
 import { useToast } from "@/Hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { User } from "@/Types";
+import { cn } from "@/Lib/utils";
 
 type ViewCertificateProps = ModalProps & {
     srid: number | null;
@@ -155,7 +156,7 @@ const ViewCertificate: React.FC<ViewCertificateProps> = ({
                                             {data?.details?.organizer}
                                         </div>
                                     </div>
-                                    <div className="flex items-center">
+                                    <div className="flex [@media(max-width:456px)]:flex-col [@media(min-width:456px)]:items-center">
                                         <TypographySmall
                                             className=""
                                             children="Credits:"
@@ -202,14 +203,14 @@ const ViewCertificate: React.FC<ViewCertificateProps> = ({
                         {(role == "hr" && data?.status === "pending" && !isInactive) && (
                             <div className="flex items-center justify-end gap-2 mt-5">
                                 <Button
-                                    className="bg-green-600 hover:bg-green-500"
+                                    className="bg-green-600 hover:bg-green-500 max-sm:w-full"
                                     onClick={() => onRespond("approved")}
                                 >
                                     <Like1 />
                                     Approve
                                 </Button>
                                 <Button
-                                    className="ml-3 bg-destructive hover:bg-destructive/85"
+                                    className="sm:ml-3 bg-destructive hover:bg-destructive/85 max-sm:w-full"
                                     onClick={() => onRespond("invalid")}
                                 >
                                     <Dislike />
@@ -236,7 +237,8 @@ export const COCImages = ({
             <Tabs defaultValue="coa">
                 <TabsList>
                     <TabsTrigger value="coa">
-                        Certificate of Attendance
+                        <span className="[@media(min-width:456px)]:hidden">COA</span>
+                        <span className="[@media(max-width:456px)]:hidden">Certificate of Attendance</span>
                     </TabsTrigger>
                     <TabsTrigger value="dtr">DTR</TabsTrigger>
                     <TabsTrigger value="memo">MEMO</TabsTrigger>
@@ -281,7 +283,7 @@ export const COCImages = ({
                     <TypographySmall className="" children="Number of hours:" />
                     <div className="text-sm">{details?.numofhours}</div>
                 </div>
-                <div className="flex items-center">
+                <div className="flex [@media(max-width:456px)]:flex-col [@media(min-width:456px)]:items-center">
                     <TypographySmall className="" children="Credits:" />
                     <div className="flex gap-5 ml-4">
                         <div className="flex items-center gap-3">
@@ -324,7 +326,7 @@ export const ImageViewer = ({
     return (
         <div>
             {filetype != "pdf" && (
-                <div className="border border-border rounded-md overflow-hidden relative h-[21rem] bg-black/5 flex">
+                <div className="border border-border rounded-md overflow-hidden relative h-[18rem] lg:h-[21rem] bg-black/5 flex">
                     <div className="absolute top-0 right-0 w-full p-3 bg-gradient-to-b from-black/70 flex">
                         {role == "hr" && (
                             <div className="flex items-center gap-3">
@@ -405,12 +407,12 @@ export const ImageViewer = ({
 
             {maximize &&
                 createPortal(
-                    <div className="fixed top-0 left-0 size-full inline-flex items-center justify-center bg-black/40 backdrop-blur-[1px] z-[100]">
-                        <div className="w-[55rem] h-[calc(100vh-10rem)] bg-black/40 relative flex">
+                    <div className="fixed top-0 left-0 size-full inline-flex items-center justify-center bg-black/40 backdrop-blur-[1px] z-[100] max-lg:px-4">
+                        <div className={cn("w-full lg:w-[55rem] bg-black /40 relative rounded-lg p-3 flex", filetype == "pdf" ? "h-[calc(100vh-14rem)] lg:h-[calc(100vh-10rem)]" : "min-h-[20rem] lg:h-[calc(100vh-10rem)]")}>
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="size-8 absolute top-0 -right-10"
+                                className="size-8 absolute top-3 lg:top-0 right-3 lg:-right-10 max-lg:shadow-md"
                                 onClick={() => setMaximize(false)}
                             >
                                 <X />

@@ -51,10 +51,10 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const download_pdf = usePDF({
-            method: "save",
-            filename: "Personal Data Sheet.pdf",
-            page: { format: "A4", margin: Margin.MEDIUM },
-        });
+        method: "save",
+        filename: "Personal Data Sheet.pdf",
+        page: { format: "A4", margin: Margin.MEDIUM },
+    });
 
     return (
         <div>
@@ -65,7 +65,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                 className="overflow-hidden grow flex flex-col my-5"
                 onValueChange={(value) => setTab(value as PDSTABSTYPE)}
             >
-                <div className="flex">
+                <div className="flex [@media(max-width:856px)]:flex-col [@media(max-width:856px)]:gap-4 [@media(max-width:856px)]:mb-3">
                     <div className="flex items-center gap-3 divide-x divide-border">
                         <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal bg-primary/15 text-primary/60">
                             <TabsTrigger value="C1">C1</TabsTrigger>
@@ -73,33 +73,39 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                             <TabsTrigger value="C3">C3</TabsTrigger>
                             <TabsTrigger value="C4">C4</TabsTrigger>
                         </TabsList>
-                        <div className="pl-3 flex flex-row-reverse items-center gap-3">
-                            <TypographySmall
-                                className={cn(
-                                    "capitalize",
-                                    props.status == "approved"
-                                        ? "text-green-600"
-                                        : "text-destructive"
-                                )}
-                            >
-                                {props.status}
-                            </TypographySmall>
-
+                        <div className="pl-3 flex items-center gap-3">
                             <Button
-                                className=""
+                                className="max-lg:p-0 max-lg:size-10"
                                 variant="outline"
-                                disabled={props.status !== "approved" || isLoading}
+                                disabled={
+                                    props.status !== "approved" || isLoading
+                                }
                                 onClick={() => {
-                                    if(props.status === "approved" || !isLoading)
-                                       download_pdf.toPDF();
+                                    if (
+                                        props.status === "approved" ||
+                                        !isLoading
+                                    )
+                                        download_pdf.toPDF();
                                 }}
                             >
                                 <DocumentDownload />
-                                <span>{isLoading ? "Loading" : "Download"}</span>
+                                <span className="max-lg:hidden">
+                                    {isLoading ? "Loading" : "Download"}
+                                </span>
                             </Button>
                         </div>
                     </div>
-                    <div className="ml-auto w-fit">
+                    <div className="[@media(min-width:857px)]:ml-auto [@media(min-width:857px)]:w-fit w-full gap-3 flex items-center [@media(max-width:856px)]:justify-between">
+                        <TypographySmall
+                            className={cn(
+                                "capitalize",
+                                props.status == "approved"
+                                    ? "text-green-600"
+                                    : "text-destructive"
+                            )}
+                        >
+                            {props.status}
+                        </TypographySmall>
                         <Button
                             onClick={() => {
                                 if (!!!props.hasImport) setShowImport(true);
@@ -123,7 +129,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                         className="overflow-hidden grow flex flex-col mb-5"
                         onValueChange={(value) => {}}
                     >
-                        <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal [&>button>span]:line-clamp-1 bg-primary/15 text-primary/60">
+                        <TabsList className="max-xs:!hidden w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal [&>button>span]:line-clamp-1 bg-primary/15 text-primary/60">
                             <TabsTrigger value="I">
                                 I. Personal Information
                             </TabsTrigger>
@@ -132,6 +138,17 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                             </TabsTrigger>
                             <TabsTrigger value="III">
                                 III. Educational Background
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsList className="xs:!hidden xs:w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button]:w-full bg-primary/15 text-primary/60">
+                            <TabsTrigger value="I">
+                                I.
+                            </TabsTrigger>
+                            <TabsTrigger value="II">
+                                II.
+                            </TabsTrigger>
+                            <TabsTrigger value="III">
+                                III.
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value="I">
@@ -169,12 +186,20 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                         className="overflow-hidden grow flex flex-col mb-5"
                         onValueChange={(value) => {}}
                     >
-                        <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal bg-primary/15 text-primary/60">
+                        <TabsList className="max-xs:!hidden w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal bg-primary/15 text-primary/60">
                             <TabsTrigger value="IV">
                                 IV. CIVIL SERVICE ELIGIBILITY
                             </TabsTrigger>
                             <TabsTrigger value="V">
                                 V. WORK EXPERIENCE
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsList className="xs:!hidden xs:w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button]:w-full bg-primary/15 text-primary/60">
+                            <TabsTrigger value="IV">
+                                IV.
+                            </TabsTrigger>
+                            <TabsTrigger value="V">
+                                V.
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value="IV">
@@ -201,7 +226,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                         className="overflow-hidden grow flex flex-col mb-5"
                         onValueChange={(value) => {}}
                     >
-                        <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal bg-primary/15 text-primary/60">
+                        <TabsList className="max-xs:!hidden w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button_span]:max-w-44 [&>button]:text-left [&>button]:!justify-start [&>button_span]:line-clamp-1 [&>button_span]:!whitespace-normal bg-primary/15 text-primary/60">
                             <TabsTrigger value="VI">
                                 VI. VOLUNTARY WORK OR...
                             </TabsTrigger>
@@ -210,6 +235,17 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                             </TabsTrigger>
                             <TabsTrigger value="VIII">
                                 VIII. OTHER INFORMATION
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsList className="xs:!hidden xs:w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 [&>button]:w-full bg-primary/15 text-primary/60">
+                            <TabsTrigger value="VI">
+                                VI.
+                            </TabsTrigger>
+                            <TabsTrigger value="VII">
+                                VII.
+                            </TabsTrigger>
+                            <TabsTrigger value="VIII">
+                                VIII.
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value="VI">

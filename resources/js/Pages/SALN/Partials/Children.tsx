@@ -60,7 +60,7 @@ const Children = ({ form }: Props) => {
                                 </Button>
                             )}
 
-                            <div className="grid sm:grid-cols-[1fr,auto,auto] grid-cols-1 max-sm:gap-2.5 gap-4">
+                            <div className="grid lg:grid-cols-[1fr,auto,auto] grid-cols-1 max-sm:gap-2.5 gap-4">
                                 <div className="">
                                     <FormInput
                                         form={form}
@@ -69,7 +69,7 @@ const Children = ({ form }: Props) => {
                                         inputClass="uppercase"
                                     />
                                 </div>
-                                <div className="">
+                                <div className="flex gap-4 w-fll">
                                     <FormCalendar
                                         form={form}
                                         name={`children.${index}.dateofbirth`}
@@ -78,12 +78,13 @@ const Children = ({ form }: Props) => {
                                         triggerClass="uppercase"
                                         noFutureDates
                                         disableDate={(date) => isFuture(date)}
+                                        itemClass="w-full"
                                     />
-                                </div>
-                                <div className="space-y-1.5 text-center">
-                                    <Label className="">Age</Label>
-                                    <div className="h-10 w-12 py-2 shadow-sm border rounded-md">
-                                        {form.watch('children.'+index+".dateofbirth") && calculateAge(form.watch('children.'+index+".dateofbirth"))}
+                                    <div className="space-y-1.5">
+                                        <Label className="text-left lg:text-center">Age</Label>
+                                        <div className="h-10 w-12 py-2 shadow-sm border rounded-md text-center">
+                                            {form.watch('children.'+index+".dateofbirth") && calculateAge(form.watch('children.'+index+".dateofbirth"))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

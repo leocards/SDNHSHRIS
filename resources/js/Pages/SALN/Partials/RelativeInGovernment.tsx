@@ -47,7 +47,7 @@ const RelativeInGovernment: React.FC<{ form: any }> = ({ form }) => {
                                 </Button>
                             )}
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-4">
                                 <FormInput
                                     form={form}
                                     name={`relativesingovernment.relatives.${index}.name`}

@@ -38,7 +38,7 @@ const Assets = ({ form }: Props) => {
                 {realAssets.fields.map((real, index) => (
                     <div
                         key={real.id}
-                        className="space-y-4 border rounded-md p-3 shadow-sm relative"
+                        className="space-y-2.5 sm:space-y-4 border rounded-md p-3 shadow-sm relative"
                     >
                         {realAssets.fields.length > 1 && (
                             <Button
@@ -51,7 +51,7 @@ const Assets = ({ form }: Props) => {
                                 <X className="size-4 text-destructive" />
                             </Button>
                         )}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2.5 sm:gap-4">
                             <FormInput
                                 form={form}
                                 name={`assets.real.${index}.description`}
@@ -92,7 +92,7 @@ const Assets = ({ form }: Props) => {
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-4">
                             <FormInput
                                 form={form}
                                 name={`assets.real.${index}.assessedvalue`}
@@ -176,7 +176,7 @@ const Assets = ({ form }: Props) => {
                             </Button>
                         )}
 
-                        <div className="grid grid-cols-1 sm:grid-cols-[1fr,10rem,13rem] gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-[1fr,10rem,13rem] gap-2.5 sm:gap-4">
                             <FormInput
                                 form={form}
                                 name={`assets.personal.${index}.description`}

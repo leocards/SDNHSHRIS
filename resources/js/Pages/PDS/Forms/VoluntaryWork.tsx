@@ -95,13 +95,21 @@ const VoluntaryWork: React.FC<VoluntaryWorkProps> = ({ data }) => {
                                     <Trash className="[&_path]:stroke-2 !size-4" />
                                 </Button>
 
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                     <FormInput
                                         form={form}
                                         name={`vw.${index}.nameandaddress`}
                                         label="Name & Address of Organization"
-                                        itemClass="col-span-3"
+                                        itemClass="sm:col-span-2 lg:col-span-3"
                                         inputClass="uppercase"
+                                    />
+
+                                    <FormInput
+                                        form={form}
+                                        name={`vw.${index}.positionornatureofwork`}
+                                        label="Position/Nature of Work"
+                                        inputClass="uppercase"
+                                        itemClass="sm:col-span-2 lg:col-span-3"
                                     />
 
                                     <FormCalendar
@@ -124,14 +132,6 @@ const VoluntaryWork: React.FC<VoluntaryWorkProps> = ({ data }) => {
                                         label="Number of Hours"
                                         inputClass="uppercase"
                                     />
-
-                                    <FormInput
-                                        form={form}
-                                        name={`vw.${index}.positionornatureofwork`}
-                                        label="Position/Nature of Work"
-                                        inputClass="uppercase"
-                                        itemClass="col-span-3"
-                                    />
                                 </div>
                             </div>
                         ))}
@@ -149,11 +149,11 @@ const VoluntaryWork: React.FC<VoluntaryWorkProps> = ({ data }) => {
                         </Button>
                     </div>
 
-                    <div className="flex items-center mt-8 pt-4 border-t border-border">
+                    <div className="flex items-center mt-8 pt-4 border-t border-border max-xs:gap-4 max-xs:[&>button]:!w-full">
                         <Button type="button" variant="outline">
                             Cancel changes
                         </Button>
-                        <Button className="ml-auto">Save changes</Button>
+                        <Button className="xs:ml-auto">Save changes</Button>
                     </div>
                 </form>
             </Form>

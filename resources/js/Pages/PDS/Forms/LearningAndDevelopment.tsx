@@ -99,14 +99,29 @@ const LearningAndDevelopment: React.FC<LearningAndDevelopmentProps> = ({ data })
                                     <Trash className="[&_path]:stroke-2 !size-4" />
                                 </Button>
 
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 xs:grid-cols-2 gap-4">
                                     <FormInput
                                         form={form}
                                         name={`ld.${index}.title`}
                                         label="Title of Learning and Development Intervention/Training Program (Write in full)"
-                                        itemClass="col-span-3"
+                                        itemClass="xs:col-span-2"
                                         inputClass="uppercase"
                                     />
+                                    <FormInput
+                                        form={form}
+                                        name={`ld.${index}.typeofld`}
+                                        label="Type of LD (Managerial/Supervisory/Technical/etc)"
+                                        inputClass="uppercase"
+                                    />
+                                    <FormInput
+                                        form={form}
+                                        name={`ld.${index}.conductedsponsoredby`}
+                                        label="Conducted/Sponsored by (Write in full)"
+                                        inputClass="uppercase"
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                                     <FormCalendar
                                         form={form}
                                         name={`ld.${index}.inclusivedates.from`}
@@ -126,30 +141,15 @@ const LearningAndDevelopment: React.FC<LearningAndDevelopmentProps> = ({ data })
                                         inputClass="uppercase"
                                     />
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-4 mt-4">
-                                    <FormInput
-                                        form={form}
-                                        name={`ld.${index}.typeofld`}
-                                        label="Type of LD (Managerial/Supervisory/Technical/etc)"
-                                        inputClass="uppercase"
-                                    />
-                                    <FormInput
-                                        form={form}
-                                        name={`ld.${index}.conductedsponsoredby`}
-                                        label="Conducted/Sponsored by (Write in full)"
-                                        inputClass="uppercase"
-                                    />
-                                </div>
                             </div>
                         ))}
                     </div>
 
-                    <div className="flex items-center mt-8 pt-4 border-t border-border">
+                    <div className="flex items-center mt-8 pt-4 border-t border-border max-xs:gap-4 max-xs:[&>button]:!w-full">
                         <Button type="button" variant="outline">
                             Cancel changes
                         </Button>
-                        <Button className="ml-auto">Save changes</Button>
+                        <Button className="xs:ml-auto">Save changes</Button>
                     </div>
                 </form>
             </Form>

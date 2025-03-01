@@ -13,7 +13,7 @@ import empty from "@/Assets/empty-tardiness.svg";
 import emptyData from "@/Assets/empty-file.svg";
 import ViewCertificate from "../ServiceRecord/ViewCertificate";
 import PDSPDF from "../PDS/PDF/PDSPDF";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Menu } from "lucide-react";
 import { router } from "@inertiajs/react";
 import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
 import { useMessage } from "@/Components/Provider/message-provider";
@@ -21,9 +21,25 @@ import { cn } from "@/Lib/utils";
 import { useSidebar } from "@/Components/ui/sidebar";
 import useWindowSize from "@/Hooks/useWindowResize";
 import { PERSONALINFORMATIONTYPE } from "../PDS/Types/PersonalInformation";
+import {
+    Menubar,
+    MenubarContent,
+    MenubarItem,
+    MenubarMenu,
+    MenubarTrigger,
+} from "@/Components/ui/menubar";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/Components/ui/accordion";
 
 type Props = {
-    user: User & {mailingaddress: string; pds_personal_information: PERSONALINFORMATIONTYPE};
+    user: User & {
+        mailingaddress: string;
+        pds_personal_information: PERSONALINFORMATIONTYPE;
+    };
     leavecount: number;
     attendances: any[];
     certificates: any[];
@@ -42,18 +58,28 @@ const ViewSearched: React.FC<Props> = ({
     const { selectConversation } = useMessage();
     const { state } = useSidebar();
     const { width } = useWindowSize();
+    const [tabs, setTabs] = useState("details");
 
+    const srcolumns = `1fr ${width <= 456 ? "" : "8rem"} ${
+        width <= 640 ? "" : "10rem"
+    } 4rem`;
     const columns = ["1fr", "10rem", "10rem", "4rem"].join(" ");
+    const TabsLabel = {
+        details: "Details",
+        tardiness: "Attendance",
+        sr: "Certificates",
+        pds: "PDS",
+    }[tabs];
 
     return (
         <div>
             <Header title="General Search" />
 
-
             <div className="flex items-center gap-4 font-medium uppercase">
                 <Button
                     className=""
                     variant="outline"
+                    size={width <= 640 ? "icon" : "default"}
                     onClick={() =>
                         router.get(
                             route("general-search"),
@@ -64,7 +90,7 @@ const ViewSearched: React.FC<Props> = ({
                         )
                     }
                 >
-                    <ChevronLeft /> Back
+                    <ChevronLeft /> <span className="max-sm:hidden">Back</span>
                 </Button>
 
                 <div>{user?.full_name}</div>
@@ -73,21 +99,73 @@ const ViewSearched: React.FC<Props> = ({
             <Tabs
                 className="overflow-hidden grow flex flex-col my-5"
                 defaultValue="details"
-                onValueChange={(value) => console.log(value)}
+                onValueChange={setTabs}
+                value={tabs}
             >
-                <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60">
-                    <TabsTrigger value="details">Details</TabsTrigger>
-                    <TabsTrigger value="tardiness">Attendance</TabsTrigger>
-                    <TabsTrigger value="sr">Certificates</TabsTrigger>
-                    <TabsTrigger value="pds">PDS</TabsTrigger>
-                </TabsList>
+                {width > 537 && (
+                    <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60">
+                        <TabsTrigger value="details">Details</TabsTrigger>
+                        <TabsTrigger value="tardiness">Attendance</TabsTrigger>
+                        <TabsTrigger value="sr">Certificates</TabsTrigger>
+                        <TabsTrigger value="pds">PDS</TabsTrigger>
+                    </TabsList>
+                )}
+
+                <div className="flex items-center gap-3 [@media(min-width:538px)]:hidden">
+                    <Menubar>
+                        <MenubarMenu>
+                            <MenubarTrigger size="icon" variant={"outline"}>
+                                <Menu />
+                            </MenubarTrigger>
+                            <MenubarContent>
+                                <MenubarItem
+                                    className={cn(
+                                        tabs === "details" &&
+                                            "text-primary font-semibold"
+                                    )}
+                                    onClick={() => setTabs("details")}
+                                >
+                                    Details
+                                </MenubarItem>
+                                <MenubarItem
+                                    className={cn(
+                                        tabs === "tardiness" &&
+                                            "text-primary font-semibold"
+                                    )}
+                                    onClick={() => setTabs("tardiness")}
+                                >
+                                    Attendance
+                                </MenubarItem>
+                                <MenubarItem
+                                    className={cn(
+                                        tabs === "sr" &&
+                                            "text-primary font-semibold"
+                                    )}
+                                    onClick={() => setTabs("sr")}
+                                >
+                                    Certificates
+                                </MenubarItem>
+                                <MenubarItem
+                                    className={cn(
+                                        tabs === "pds" &&
+                                            "text-primary font-semibold"
+                                    )}
+                                    onClick={() => setTabs("pds")}
+                                >
+                                    PDS
+                                </MenubarItem>
+                            </MenubarContent>
+                        </MenubarMenu>
+                    </Menubar>
+                    <div>{TabsLabel}</div>
+                </div>
 
                 <TabsContent
                     value="details"
                     className="p-4 [@media(max-width:456px)]:px-0 max-w-3xl mx-auto w-full"
                 >
                     <div className="" data-sidebarstate={state}>
-                        <div className="flex items-center gap-3">
+                        <div className="flex max-md:flex-col items-center gap-3">
                             <ProfilePhoto
                                 src={user.avatar}
                                 className="size-24"
@@ -103,7 +181,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </TypographySmall>
                             </div>
 
-                            <div className="ml-auto">
+                            <div className="md:ml-auto">
                                 <Button
                                     className=""
                                     variant="secondary"
@@ -118,26 +196,88 @@ const ViewSearched: React.FC<Props> = ({
                         </div>
                         <Card className="p-4 w-full mt-5 space-y-3">
                             <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3">
-                                <DetailsCard label="Gender" value={{male:"Male",female:"Female"}[user?.gender]} />
-                                <DetailsCard label="Date of Birth" value={format(user?.birthday, "MMMM d, y")} />
-                                <DetailsCard label="Mobile No." value={user?.mobilenumber} />
-                                <DetailsCard label="Email" value={user?.email} valueClass=" overflow-hidden text-ellipsis whitespace-nowrap" />
+                                <DetailsCard
+                                    label="Gender"
+                                    value={
+                                        { male: "Male", female: "Female" }[
+                                            user?.gender
+                                        ]
+                                    }
+                                />
+                                <DetailsCard
+                                    label="Date of Birth"
+                                    value={format(user?.birthday, "MMMM d, y")}
+                                />
+                                <DetailsCard
+                                    label="Mobile No."
+                                    value={user?.mobilenumber}
+                                />
+                                <DetailsCard
+                                    label="Email"
+                                    value={user?.email}
+                                    valueClass=" overflow-hidden text-ellipsis whitespace-nowrap"
+                                />
                             </div>
                             <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 mt-2 gap-3">
-                                <DetailsCard label="Home Address / Mailing Address" valueClass="capitalize" value={user?.mailingaddress.toLowerCase()} />
-                                <DetailsCard label="School / Detailed" value={"Southern Davao National High School"} />
+                                <DetailsCard
+                                    label="Home Address / Mailing Address"
+                                    valueClass="capitalize"
+                                    value={user?.mailingaddress.toLowerCase()}
+                                />
+                                <DetailsCard
+                                    label="School / Detailed"
+                                    value={
+                                        "Southern Davao National High School"
+                                    }
+                                />
                             </div>
                             <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3 mb-2">
-                                <DetailsCard label="GSIS No./BP No." value={user?.pds_personal_information?.gsis??""} />
-                                <DetailsCard label="PAG-IBIG No." value={user?.pds_personal_information?.pagibig??""} />
-                                <DetailsCard label="PHILHEALTH No." value={user?.pds_personal_information?.philhealth??""} />
-                                <DetailsCard label="BIR (TIN No.)" value={user?.pds_personal_information?.tin??""} />
+                                <DetailsCard
+                                    label="GSIS No./BP No."
+                                    value={
+                                        user?.pds_personal_information?.gsis ??
+                                        ""
+                                    }
+                                />
+                                <DetailsCard
+                                    label="PAG-IBIG No."
+                                    value={
+                                        user?.pds_personal_information
+                                            ?.pagibig ?? ""
+                                    }
+                                />
+                                <DetailsCard
+                                    label="PHILHEALTH No."
+                                    value={
+                                        user?.pds_personal_information
+                                            ?.philhealth ?? ""
+                                    }
+                                />
+                                <DetailsCard
+                                    label="BIR (TIN No.)"
+                                    value={
+                                        user?.pds_personal_information?.tin ??
+                                        ""
+                                    }
+                                />
                             </div>
                             <div className="grid grid-cols-1 [@media(min-width:395px)]:grid-cols-2 [@media(min-width:935px)]:grid-cols-4 [@media(max-width:935px)]:gap-3">
-                                <DetailsCard label="DepEd Employee No." value={user?.personnelid} />
-                                <DetailsCard label="Date Hired" value={format(user?.hiredate, "MMMM, d y")} />
-                                <DetailsCard label="Department" value={Departments[user?.department]} />
-                                <DetailsCard label="Approved Leave" value={leavecount?.toString()??"0"} />
+                                <DetailsCard
+                                    label="DepEd Employee No."
+                                    value={user?.personnelid}
+                                />
+                                <DetailsCard
+                                    label="Date Hired"
+                                    value={format(user?.hiredate, "MMMM, d y")}
+                                />
+                                <DetailsCard
+                                    label="Department"
+                                    value={Departments[user?.department]}
+                                />
+                                <DetailsCard
+                                    label="Approved Leave"
+                                    value={leavecount?.toString() ?? "0"}
+                                />
                             </div>
                         </Card>
                     </div>
@@ -145,29 +285,43 @@ const ViewSearched: React.FC<Props> = ({
 
                 <TabsContent
                     value="tardiness"
-                    className="max-w-6xl mx-auto w-full p-4 [@media(max-width:456px)]:px-0"
+                    className="max-w-6xl mx-auto w-full p-4 max-sm:px-0 [@media(max-width:456px)]:px-0"
                 >
                     <Card className="min-h-[28rem] relative">
-                        <TableHeader className="grid grid-cols-6">
-                            <div>School Year</div>
-                            <div>Month</div>
-                            <div>No. of Days Present</div>
-                            <div>No. of Days Absent</div>
-                            <div>No. of Time Tardy</div>
-                            <div>No. of Undertime</div>
-                        </TableHeader>
-                        {attendances.map((att, index) => (
-                            <TableRow key={index} className="grid grid-cols-6">
-                                <div>{att?.schoolyear?.schoolyear}</div>
-                                <div>{att?.month}</div>
-                                <div>{att?.present}</div>
-                                <div>{att?.absent}</div>
-                                <div>{att?.timetardy}</div>
-                                <div>{att?.undertime}</div>
-                            </TableRow>
-                        ))}
+                        <Accordion type="single" collapsible className="w-full">
+                            {attendances.map((att, index) => (
+                                <AccordionItem value={att.id} key={index}>
+                                    <AccordionTrigger className="py-2.5 px-3">
+                                        S.Y. {att?.schoolyear?.schoolyear} for
+                                        the month of {att?.month}
+                                    </AccordionTrigger>
+                                    <AccordionContent className="group-data-[state=open]/accordion:border-border border-transparent border-t p-2 bg-muted">
+                                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 [&>div]:text-center [&>div>div:nth-child(2)]:text-lg">
+                                            <div className="">
+                                                <div>No. of Days Present</div>
+                                                <div>{att?.present}</div>
+                                            </div>
+                                            <div className="">
+                                                <div>No. of Days Absent</div>
+                                                <div>{att?.absent}</div>
+                                            </div>
+                                            <div className="">
+                                                <div>
+                                                    No. of Days Time Tardy
+                                                </div>
+                                                <div>{att?.timetardy}</div>
+                                            </div>
+                                            <div className="">
+                                                <div>No. of Days Undertime</div>
+                                                <div>{att?.undertime}</div>
+                                            </div>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
                         {attendances.length === 0 && (
-                            <div className="flex flex-col items-center absolute inset-0 justify-center">
+                            <div className="flex flex-col items-center absolute inset-0 justify-center pointer-events-none">
                                 <img
                                     className="size-24 opacity-40 dark:opacity-65"
                                     src={empty}
@@ -185,10 +339,12 @@ const ViewSearched: React.FC<Props> = ({
                     className="max-w-4xl mx-auto w-full p-4 [@media(max-width:456px)]:px-0"
                 >
                     <Card className="min-h-[28rem] relative p-2 space-y-1">
-                        <TableHeader style={{ gridTemplateColumns: columns }}>
+                        <TableHeader style={{ gridTemplateColumns: srcolumns }}>
                             <div>Certificate Name</div>
-                            <div>Type</div>
-                            <div>Date modified</div>
+                            <div className="[@media(max-width:456px)]:!hidden">
+                                Type
+                            </div>
+                            <div className="max-sm:!hidden">Date modified</div>
                             <div></div>
                         </TableHeader>
                         {certificates.length === 0 && (
@@ -205,11 +361,11 @@ const ViewSearched: React.FC<Props> = ({
 
                         {certificates?.map((data, index) => (
                             <TableRow
-                                style={{ gridTemplateColumns: columns }}
+                                style={{ gridTemplateColumns: srcolumns }}
                                 key={index}
                                 className="hover:bg-secondary border border-border rounded-md shadow-sm cursor-pointer"
                                 onClick={() => {
-                                    setSelectedCertificate(data.id);
+                                    setSelectedCertificate(data?.id);
                                     setViewCertificate(true);
                                 }}
                             >
@@ -218,6 +374,7 @@ const ViewSearched: React.FC<Props> = ({
                                 </div>
                                 <div
                                     className={cn(
+                                        "[@media(max-width:456px)]:!hidden",
                                         data?.type === "coc"
                                             ? "uppercase"
                                             : "capitalize"
@@ -225,7 +382,7 @@ const ViewSearched: React.FC<Props> = ({
                                 >
                                     {data?.type}
                                 </div>
-                                <div>
+                                <div className="max-sm:!hidden">
                                     {format(data?.updated_at, "MMMM dd, y")}
                                 </div>
                                 <Button className="ml-auto" variant={"link"}>
@@ -242,7 +399,10 @@ const ViewSearched: React.FC<Props> = ({
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="pds" className="w-fit max-sm:w-full sm:mx-auto">
+                <TabsContent
+                    value="pds"
+                    className="w-fit max-sm:w-full sm:mx-auto"
+                >
                     <Tabs
                         defaultValue={pdsTab}
                         className="overflow-hidden rounded-md grow flex flex-col my-4 mb-2 sm:mx-auto w-fit"
@@ -258,13 +418,19 @@ const ViewSearched: React.FC<Props> = ({
                         </TabsList>
                     </Tabs>
 
-                    <div className={cn("overflow-x-auto min-h-[8.11in]",
-                        width > 630 && "data-[sidebarstate=expanded]:[@media(max-width:1162px)]:max-w-2xl data-[sidebarstate=expanded]:[@media(max-width:810px)]:max-w-xl",
-                        width > 630 && "data-[sidebarstate=collapsed]:[@media(max-width:1020px)]:max-w-2xl data-[sidebarstate=collapsed]:[@media(max-width:810px)]:max-w-xl",
-                        width <= 630 && "max-w-[91vw]",
-                        width <= 500 && "max-w-[91vw]",
-                        width <= 490 && "max-w-[85vw]",
-                    )} data-sidebarstate={state}>
+                    <div
+                        className={cn(
+                            "overflow-x-auto min-h-[8.11in]",
+                            width > 630 &&
+                                "data-[sidebarstate=expanded]:[@media(max-width:1162px)]:max-w-2xl data-[sidebarstate=expanded]:[@media(max-width:810px)]:max-w-xl",
+                            width > 630 &&
+                                "data-[sidebarstate=collapsed]:[@media(max-width:1020px)]:max-w-2xl data-[sidebarstate=collapsed]:[@media(max-width:810px)]:max-w-xl",
+                            width <= 630 && "max-w-[91vw]",
+                            width <= 500 && "max-w-[91vw]",
+                            width <= 490 && "max-w-[85vw]"
+                        )}
+                        data-sidebarstate={state}
+                    >
                         <PDSPDF userid={user?.id} tab={pdsTab} />
                     </div>
                 </TabsContent>
@@ -273,18 +439,22 @@ const ViewSearched: React.FC<Props> = ({
     );
 };
 
-const DetailsCard = ({label, value, valueClass}:{
+const DetailsCard = ({
+    label,
+    value,
+    valueClass,
+}: {
     label: string;
     value: string;
     valueClass?: string;
 }) => {
-    return <div>
-        <TypographySmall className="font-semibold">
-            {label}
-        </TypographySmall>
+    return (
+        <div>
+            <TypographySmall className="font-semibold">{label}</TypographySmall>
 
-        <div className={cn(valueClass)}>{value}</div>
-    </div>
-}
+            <div className={cn(valueClass)}>{value}</div>
+        </div>
+    );
+};
 
 export default ViewSearched;

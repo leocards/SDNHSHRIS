@@ -120,11 +120,11 @@ const EducationalBackground: React.FC<EducationalBackgroundProps> = ({
                         />
                     </div>
 
-                    <div className="flex items-center mt-8 pt-4 border-t border-border">
+                    <div className="flex items-center mt-8 pt-4 border-t border-border max-xs:gap-4 max-xs:[&>button]:!w-full">
                         <Button type="button" variant="outline">
                             Cancel changes
                         </Button>
-                        <Button className="ml-auto">Save changes</Button>
+                        <Button className="xs:ml-auto">Save changes</Button>
                     </div>
                 </form>
             </Form>
@@ -166,7 +166,7 @@ const Education: React.FC<{ form: any; name: string; edLevel: string }> = ({
                                 fields.length > 1 && index > 0 && "pt-4"
                             )}
                         >
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <FormInput
                                     form={form}
                                     name={`${name}.${index}.nameofschool`}
@@ -181,7 +181,7 @@ const Education: React.FC<{ form: any; name: string; edLevel: string }> = ({
 
                             <div
                                 key={field.id}
-                                className="grid grid-cols-[8rem,8rem,1fr,8rem,1fr] gap-4"
+                                className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 [@media(min-width:1335px)]:grid-cols-[8rem,8rem,1fr,8rem,1fr] gap-4"
                             >
                                 <FormInput
                                     form={form}
@@ -210,6 +210,7 @@ const Education: React.FC<{ form: any; name: string; edLevel: string }> = ({
                                     form={form}
                                     name={`${name}.${index}.scholarshiphonor`}
                                     label="Scholarship/Academic Honors Received"
+                                    itemClass="lg:col-span-2"
                                 />
                             </div>
                         </div>

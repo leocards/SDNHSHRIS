@@ -2,7 +2,6 @@ import Header, { TableHeader, TableRow } from "@/Components/Header";
 import React, {
     ChangeEvent,
     Fragment,
-    useEffect,
     useRef,
     useState,
 } from "react";
@@ -22,14 +21,13 @@ import {
     SortItem,
 } from "@/Components/ui/menubar";
 import {
-    LEAVETYPEKEYS,
     LEAVETYPES,
     LEAVETYPESOBJ,
 } from "@/Pages/Leave/Types/leavetypes";
 import { Input } from "@/Components/ui/input";
 import { Eye, SearchNormal1 } from "iconsax-react";
 import { Button } from "@/Components/ui/button";
-import { EllipsisVertical, X } from "lucide-react";
+import { X } from "lucide-react";
 import TableDataSkeletonLoader from "@/Components/TableDataSkeletonLoader";
 import empty from "@/Assets/empty-file.svg";
 import { ProfilePhoto } from "@/Components/ui/avatar";
@@ -41,6 +39,9 @@ import { APPLICATIONFORLEAVETYPES } from "@/Pages/Leave/PDF/type";
 import { format } from "date-fns";
 import { cn } from "@/Lib/utils";
 import { useDebouncedFunction } from "@/Hooks/useDebounce";
+import useWindowSize from "@/Hooks/useWindowResize";
+import { useSidebar } from "@/Components/ui/sidebar";
+import SearchInput from "@/Components/SearchInput";
 
 type LEAVETYPE = APPLICATIONFORLEAVETYPES & {
     user: User;
@@ -66,8 +67,9 @@ const Leave: React.FC<LeaveProps & { leaves: PAGINATEDDATA<LEAVETYPE> }> = (
 const Main: React.FC<LeaveProps> = ({}) => {
     const { page, onQuery } = usePagination<LEAVETYPE>();
     const { role } = usePage().props.auth.user;
-    const [search, setSearch] = useState("");
-    const searchRef = useRef<HTMLInputElement | null>(null);
+    const { width } = useWindowSize()
+    const { state } = useSidebar()
+
     const { setProcess } = useProcessIndicator();
     const [status, setStatus] = useState("pending");
     const [filter, setFilter] = useState("");
@@ -79,23 +81,10 @@ const Main: React.FC<LeaveProps> = ({}) => {
         order: "asc",
     });
 
-    const debouncedSearch = useDebouncedFunction((value: string) => {
-        onQuery({ status, filter, sort, order, search: value });
-    }, 700);
-
-    const onSearch = (event: ChangeEvent<HTMLInputElement>) => {
-        const input = event.target.value.replace(/\s+/g, " ");
-
-        setSearch(input);
-
-        debouncedSearch(input);
-    };
-
-    const clearSearch = () => {
-        searchRef.current && searchRef.current.focus();
-        setSearch("");
-        debouncedSearch("");
-    };
+    const Columns = {
+        collapsed: width <= 1000 ? (width <= 929 ? (width <= 474 ? `minmax(6rem,1fr) 5rem` : `${Array(2).fill('minmax(6rem,1fr)').join(' ')} 5rem`) : `${Array(4).fill('minmax(6rem,1fr)').join(' ')} 5rem`) : `${Array(5).fill('minmax(6rem,1fr)').join(' ')} 5rem`,
+        expanded: width <= 1080 ? (width <= 1000 ? (width <= 474 ? `minmax(6rem,1fr) 5rem` : `${Array(2).fill('minmax(6rem,1fr)').join(' ')} 5rem`) : `${Array(3).fill('minmax(6rem,1fr)').join(' ')} 5rem`) : `${Array(5).fill('minmax(6rem,1fr)').join(' ')} 5rem`
+    }[state]
 
     return (
         <div>
@@ -116,7 +105,7 @@ const Main: React.FC<LeaveProps> = ({}) => {
                 </TabsList>
             </Tabs>
 
-            <div className="flex mb-4">
+            <div className="flex max-sm:flex-col max-sm:gap-4 mb-4">
                 <div className="flex gap-4">
                     <FilterButton isDirty={!!filter}>
                         <MenubarLabel>Leave types</MenubarLabel>
@@ -177,37 +166,18 @@ const Main: React.FC<LeaveProps> = ({}) => {
                     </SortButton>
                 </div>
 
-                <div className="ml-auto relative max-w-96 w-full">
-                    <Input
-                        className="w-full px-10 pl-9 formInput h-9"
-                        value={search}
+                <div className="ml-auto relative sm:max-w-64 lg:max-w-96 w-full">
+                    <SearchInput
                         placeholder="Search name"
-                        ref={searchRef}
-                        onChange={onSearch}
+                        onSearch={(search) => onQuery({ status, filter, sort, order, search })}
                     />
-                    <SearchNormal1 className="size-4 absolute top-1/2 -translate-y-1/2 left-2.5 opacity-45" />
-                    {search !== "" && (
-                        <Button
-                            size="icon"
-                            variant="ghost"
-                            className="absolute top-1/2 -translate-y-1/2 right-1 size-7"
-                            onClick={clearSearch}
-                        >
-                            <X className="size-5" />
-                        </Button>
-                    )}
                 </div>
             </div>
 
             <Card className="min-h-[27rem] relative">
                 <TableDataSkeletonLoader
                     data="leaves"
-                    columns={[
-                        ...Array.from({ length: 5 }).map(
-                            () => "minmax(6rem,1fr)"
-                        ),
-                        "5rem",
-                    ]}
+                    columns={Columns}
                     length={8}
                 >
                     {(column) => (
@@ -216,11 +186,11 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Name</div>
-                                <div>Type</div>
-                                <div>Date</div>
-                                <div>HR Status</div>
-                                <div>Principal Status</div>
-                                <div className="justify-center"></div>
+                                <div className="[@media(max-width:475px)]:!hidden" data-sidebarstate={state}>Type</div>
+                                {width > 1000 && <div className="data-[sidebarstate=expanded]:[@media(max-width:1000px)]:!hidden" data-sidebarstate={state}>Date Created</div>}
+                                <div className="data-[sidebarstate=expanded]:[@media(max-width:1080px)]:!hidden data-[sidebarstate=collapsed]:[@media(max-width:930px)]:!hidden" data-sidebarstate={state}>HR Status</div>
+                                <div className="data-[sidebarstate=expanded]:[@media(max-width:1080px)]:!hidden data-[sidebarstate=collapsed]:[@media(max-width:930px)]:!hidden" data-sidebarstate={state}>Principal Status</div>
+                                <div className="justify-center">View</div>
                             </TableHeader>
                             {page?.data.length === 0 && (
                                 <Empty
@@ -239,10 +209,10 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                             {leave?.user?.name}
                                         </div>
                                     </div>
-                                    <div>{LEAVETYPESOBJ[leave?.type]}</div>
-                                    <div>
+                                    <div className="[@media(max-width:475px)]:!hidden" data-sidebarstate={state}>{LEAVETYPESOBJ[leave?.type]}</div>
+                                    {width > 1000 && <div className="data-[sidebarstate=expanded]:[@media(max-width:1000px)]:!hidden" data-sidebarstate={state}>
                                         {format(leave?.created_at, "MMM dd, y")}
-                                    </div>
+                                    </div>}
                                     <div
                                         className={cn(
                                             "capitalize",
@@ -250,8 +220,10 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                                 pending: "text-amber-600",
                                                 approved: "text-green-600",
                                                 disapproved: "text-destructive",
-                                            }[leave?.hrstatus]
+                                            }[leave?.hrstatus],
+                                            "data-[sidebarstate=expanded]:[@media(max-width:1080px)]:!hidden data-[sidebarstate=collapsed]:[@media(max-width:930px)]:!hidden"
                                         )}
+                                        data-sidebarstate={state}
                                     >
                                         {leave?.hrstatus}
                                     </div>
@@ -262,8 +234,10 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                                 pending: "text-amber-600",
                                                 approved: "text-green-600",
                                                 disapproved: "text-destructive",
-                                            }[leave?.principalstatus]
+                                            }[leave?.principalstatus],
+                                            "data-[sidebarstate=expanded]:[@media(max-width:1080px)]:!hidden data-[sidebarstate=collapsed]:[@media(max-width:930px)]:!hidden"
                                         )}
+                                        data-sidebarstate={state}
                                     >
                                         {leave?.principalstatus}
                                     </div>

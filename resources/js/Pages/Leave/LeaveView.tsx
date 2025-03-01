@@ -21,16 +21,23 @@ import SubmitMedical from "./SubmitMedical";
 import { cn } from "@/Lib/utils";
 import LeaveResponse from "../Myapproval/Leave/LeaveResponse";
 import { User } from "@/Types";
+import { useSidebar } from "@/Components/ui/sidebar";
 
 export type LeaveViewProps = {
     leave: APPLICATIONFORLEAVETYPES;
     hr: string;
-    applicant: {full_name: string; } & Pick<User, "role">
+    applicant: { full_name: string } & Pick<User, "role">;
     principal: PRINCIPAL;
 };
 
-const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal, applicant }) => {
+const LeaveView: React.FC<LeaveViewProps> = ({
+    leave,
+    hr,
+    principal,
+    applicant,
+}) => {
     const role = usePage().props.auth.user.role;
+    const {state} = useSidebar()
     const [viewDetails, setViewDetails] = useState(false);
     const contentRef = useRef<HTMLDivElement | null>(null);
     const [uploadMedical, setUploadMedical] = useState(false);
@@ -54,6 +61,8 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal, applicant }
         contentRef,
     });
 
+    const LeaveStatus = role === "principal" || role === "hr" ? leave.hrstatus : leave.principalstatus
+
     return (
         <div>
             <Header title="View Leave Application">
@@ -64,39 +73,18 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal, applicant }
             </Header>
 
             <div className="flex flex-row-reverse items-center gap-3 my-5 border-b pb-3 mt-7">
-                <HrComponents>
-                    {leave.hrstatus !== "pending" && (
-                        <div
-                            className={cn(
-                                {
-                                    pending: "text-amber-600",
-                                    approved: "text-green-600",
-                                    disapproved: "text-destructive",
-                                }[leave?.hrstatus],
-                                "Capitalize"
-                            )}
-                        >
-                            {leave?.hrstatus}
-                        </div>
+                <div
+                    className={cn(
+                        {
+                            pending: "text-amber-600",
+                            approved: "text-green-600",
+                            disapproved: "text-destructive",
+                        }[LeaveStatus],
+                        "capitalize"
                     )}
-                </HrComponents>
-
-                <PrincipalComponents>
-                    {leave.principalstatus !== "pending" && (
-                        <div
-                            className={cn(
-                                {
-                                    pending: "text-amber-600",
-                                    approved: "text-green-600",
-                                    disapproved: "text-destructive",
-                                }[leave?.principalstatus],
-                                "Capitalize"
-                            )}
-                        >
-                            {leave?.principalstatus}
-                        </div>
-                    )}
-                </PrincipalComponents>
+                >
+                    {LeaveStatus}
+                </div>
 
                 <div className="mr-auto flex flex-row-reverse items-center gap-3">
                     <TooltipLabel label="Print">
@@ -164,41 +152,41 @@ const LeaveView: React.FC<LeaveViewProps> = ({ leave, hr, principal, applicant }
                 </div>
             </div>
 
-            <div className="">
-                <div className="overflow-hidden overflow-x-auto h-auto py-2">
-                    <div className="mx-auto border overflow-hidden w-[790px] flex gap-2">
-                        <LeavePDF
-                            ref={(ref) => {
-                                contentRef.current = ref;
-                                targetRef.current = ref;
-                            }}
-                            leave={leave}
-                            hr={hr}
-                            principal={
-                                principal ?? {
-                                    name: "No principal",
-                                    full_name: "No principal",
-                                    position: "No principal",
-                                }
+            <div className={cn("mx-auto relative overflow-x-auto", state == "collapsed" ? "max-w-[18rem] [@media(min-width:430px)_and_(max-width:639px)]:max-w-sm sm:max-w-xl [@media(min-width:910px)]:max-w-4xl" : "[@media(max-width:396px)]:max-w-[18rem] [@media(min-width:397px)_and_(max-width:629px)]:max-w-[22rem] [@media(min-width:630px)_and_(max-width:768px)]:max-w-xl [@media(min-width:768px)_and_(max-width:815px)]:max-w-sm [@media(min-width:816px)_and_(max-width:888px)]:max-w-lg [@media(min-width:889px)_and_(max-width:978px)]:max-w-xl [@media(min-width:978px)_and_(max-width:1094px)]:max-w-2xl [@media(min-width:1095px)]:max-w-4xl")}>
+                <div className="mx-auto border w-[790px]">
+                    <LeavePDF
+                        ref={(ref) => {
+                            contentRef.current = ref;
+                            targetRef.current = ref;
+                        }}
+                        leave={leave}
+                        hr={hr}
+                        principal={
+                            principal ?? {
+                                name: "No principal",
+                                full_name: "No principal",
+                                position: "No principal",
                             }
-                            applicant={applicant}
-                        />
-                        <LeavePDF
-                            ref={download_pdf.targetRef}
-                            isDownload
-                            leave={leave}
-                            hr={hr}
-                            principal={
-                                principal ?? {
-                                    name: "No principal",
-                                    full_name: "No principal",
-                                    position: "No principal",
-                                }
-                            }
-                            applicant={applicant}
-                        />
-                    </div>
+                        }
+                        applicant={applicant}
+                    />
                 </div>
+            </div>
+            <div className="absolute top-0 -right-[300%]">
+                <LeavePDF
+                    ref={download_pdf.targetRef}
+                    isDownload
+                    leave={leave}
+                    hr={hr}
+                    principal={
+                        principal ?? {
+                            name: "No principal",
+                            full_name: "No principal",
+                            position: "No principal",
+                        }
+                    }
+                    applicant={applicant}
+                />
             </div>
 
             <div className="flex gap-4 justify-end mt-7 border-t border-border pt-4 pb-10">
@@ -300,8 +288,8 @@ const PrincipalComponents: React.FC<PropsWithChildren> = ({ children }) => {
 };
 
 const getResponse = (leave: APPLICATIONFORLEAVETYPES) => {
-    return (
-        leave?.principalstatus !== "approved" ||
+    return !(
+        leave?.hrstatus !== "approved" &&
         leave?.principalstatus !== "approved"
     );
 };

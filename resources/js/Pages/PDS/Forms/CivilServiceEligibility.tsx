@@ -111,9 +111,9 @@ const CivilServiceEligibility: React.FC<CivilServiceEligibilityProps> = ({ data 
                         </Button>
                     </div>
 
-                    <div className="flex items-center mt-8 pt-4 border-t border-border">
+                    <div className="flex items-center mt-8 pt-4 border-t border-border max-xs:gap-4 max-xs:[&>button]:!w-full">
                         <Button type="button" variant="outline">Cancel changes</Button>
-                        <Button className="ml-auto">Save changes</Button>
+                        <Button className="xs:ml-auto">Save changes</Button>
                     </div>
                 </form>
             </Form>
@@ -138,12 +138,11 @@ const CSECard: React.FC<{
             >
                 <Trash className="[&_path]:stroke-2 !size-4" />
             </Button>
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid [@media(min-width:910px)]:grid-cols-[1fr,15rem] lg:grid-cols-[1fr,18rem] gap-4">
                 <FormInput
                     form={form}
                     name={`${name}.eligibility`}
                     label="Career service/RA 1080 (BOARD/BAR) under special Laws/CES/CSEE Barangay Eligibility / Driver's license"
-                    itemClass="col-span-3"
                 />
                 <FormInput
                     form={form}
@@ -155,7 +154,6 @@ const CSECard: React.FC<{
                     form={form}
                     name={`${name}.placeofexaminationconferment`}
                     label="Place of Examination/Conferment"
-                    itemClass="col-span-3"
                 />
                 <FormCalendar
                     form={form}
@@ -166,7 +164,7 @@ const CSECard: React.FC<{
 
             <div>
                 <TypographySmall>LICENCE (If applicable)</TypographySmall>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 xs:grid-cols-2 gap-4">
                     <FormInput
                         form={form}
                         name={`${name}.license.number`}

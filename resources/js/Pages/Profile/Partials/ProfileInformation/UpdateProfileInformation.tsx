@@ -21,20 +21,20 @@ export default function UpdateProfileInformation({
     mustVerifyEmail,
     status,
     className = "",
-    address
+    address,
 }: {
     mustVerifyEmail: boolean;
     status?: string;
     className?: string;
     address: {
-        permanent: ADDRESSTYPE,
-        residential: ADDRESSTYPE,
-    }
+        permanent: ADDRESSTYPE;
+        residential: ADDRESSTYPE;
+    };
 }) {
     const { toast } = useToast();
     const user = usePage().props.auth.user;
     const [show, setShow] = useState(false);
-    const [uploadProfile, setUploadProfile] = useState(false)
+    const [uploadProfile, setUploadProfile] = useState(false);
 
     const form = useFormSubmit<Omit<IFormAccount, "personnel">>({
         schema: ACCOUNTSCHEMA.omit({ personnel: true }),
@@ -90,13 +90,17 @@ export default function UpdateProfileInformation({
                 disableCredentials
                 disablePersonnelForm
                 withClear={false}
-                cancelButton={<Button variant="outline" onClick={() => setShow(false)}>Cancel</Button>}
+                cancelButton={
+                    <Button variant="outline" onClick={() => setShow(false)}>
+                        Cancel
+                    </Button>
+                }
             />
         </div>
     ) : (
         <div className={cn("max-w-3xl mx-auto", className)}>
             <div className="">
-                <div className="rounded-b-lg h-14 -h-48 -bg-zinc-100 -dark:bg-zinc-800 relative overflow-hidden">
+                <div className="rounded-b-lg h-14 -h-48 -bg-zinc-100 -dark:bg-zinc-800 relative overflow-hidden hidden">
                     <div className="absolute -bottom-0 left-0 w-full h-full -bg-gradient-to-t from-black opacity-10 blur-[2px]" />
                     <div className="absolute bottom-2 right-2 hidden">
                         <Button className="" variant="outline">
@@ -105,10 +109,15 @@ export default function UpdateProfileInformation({
                         </Button>
                     </div>
                 </div>
-                <div className="relative grid grid-cols-[188px,1fr,auto]">
+                <div className="relative grid grid-cols-1 lg:grid-cols-[188px,1fr,auto] mt-3 lg:mt-10">
                     <div></div>
-                    <div className="p-1.5 absolute -top-8 left-10 bg-background rounded-full">
-                        <ProfilePhoto src={user.avatar} className="size-32 object-cover" active={false} fallbackSize={40} />
+                    <div className="p-1.5 relative max-lg:w-fit lg:absolute lg:-top-8 lg:left-10 bg-background rounded-full max-lg:mx-auto">
+                        <ProfilePhoto
+                            src={user.avatar}
+                            className="size-32 object-cover"
+                            active={false}
+                            fallbackSize={40}
+                        />
                         <div className="absolute bottom-2 right-2">
                             <TooltipLabel label="Change profile">
                                 <Button
@@ -122,7 +131,7 @@ export default function UpdateProfileInformation({
                             </TooltipLabel>
                         </div>
                     </div>
-                    <div className="py-4">
+                    <div className="py-4 max-lg:mx-auto text-center lg:text-left">
                         <div className="font-semibold text-lg">
                             {user && `${user.firstname} ${user.lastname}`}
                         </div>
@@ -136,13 +145,13 @@ export default function UpdateProfileInformation({
                     </div>
                 </div>
             </div>
-            <div className="mt-14 pt-4 space-y-8">
+            <div className="mt-8 lg:mt-14 pt-4 space-y-8">
                 <div className="relative">
                     <Label
                         children="Personal Information"
                         className="text-base bg-background pr-3 before:absolute before:w-full before:h-px before:bg-border before:top-3 before:-z-10"
                     />
-                    <div className="grid grid-cols-3 mt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-lg:gap-4 mt-2">
                         <div className="">
                             <Label
                                 children="Last Name"
@@ -165,7 +174,7 @@ export default function UpdateProfileInformation({
                             <div>{user.middlename ?? "N/A"}</div>
                         </div>
 
-                        <div className="mt-5">
+                        <div className="lg:mt-5">
                             <Label
                                 children="Extension Name"
                                 className="text-foreground/60"
@@ -173,7 +182,7 @@ export default function UpdateProfileInformation({
                             <div>{user.extensionname ?? "N/A"}</div>
                         </div>
 
-                        <div className="mt-5">
+                        <div className="lg:mt-5">
                             <Label
                                 children="Gender"
                                 className="text-foreground/60"
@@ -181,7 +190,7 @@ export default function UpdateProfileInformation({
                             <div className="capitalize">{user.gender}</div>
                         </div>
 
-                        <div className="mt-5">
+                        <div className="lg:mt-5">
                             <Label
                                 children="Birth date"
                                 className="text-foreground/60"
@@ -197,7 +206,7 @@ export default function UpdateProfileInformation({
                         className="text-base bg-background pr-3 before:absolute before:w-full before:h-px before:bg-border before:top-3 before:-z-10"
                     />
 
-                    <div className="grid grid-cols-3 mt-2">
+                    <div className="grid  [@media(min-width:870px)]:grid-cols-2 [@media(max-width:870px)]:gap-4 mt-2">
                         <div className="">
                             <Label
                                 children="Email"
@@ -219,13 +228,15 @@ export default function UpdateProfileInformation({
                             children="Residential Address"
                             className="text-foreground/80 italic"
                         />
-                        <div className="grid grid-cols-3 mt-2">
+                        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 mt-2">
                             <div className="">
                                 <Label
                                     children="House/Block/Lot No."
                                     className="text-foreground/60"
                                 />
-                                <div>{address?.residential?.houselotblockno}</div>
+                                <div>
+                                    {address?.residential?.houselotblockno}
+                                </div>
                             </div>
                             <div className="">
                                 <Label
@@ -242,7 +253,7 @@ export default function UpdateProfileInformation({
                                 <div>{address?.residential?.subdivision}</div>
                             </div>
 
-                            <div className="mt-5">
+                            <div className="">
                                 <Label
                                     children="Barangay"
                                     className="text-foreground/60"
@@ -250,15 +261,17 @@ export default function UpdateProfileInformation({
                                 <div>{address?.residential?.barangay}</div>
                             </div>
 
-                            <div className="mt-5">
+                            <div className="">
                                 <Label
                                     children="City/Municipality"
                                     className="text-foreground/60"
                                 />
-                                <div className="capitalize">{address?.residential?.citymunicipality}</div>
+                                <div className="capitalize">
+                                    {address?.residential?.citymunicipality}
+                                </div>
                             </div>
 
-                            <div className="mt-5">
+                            <div className="">
                                 <Label
                                     children="Province"
                                     className="text-foreground/60"
@@ -266,7 +279,7 @@ export default function UpdateProfileInformation({
                                 <div>{address?.residential?.province}</div>
                             </div>
 
-                            <div className="mt-5">
+                            <div className="">
                                 <Label
                                     children="ZIP Code"
                                     className="text-foreground/60"
@@ -281,7 +294,7 @@ export default function UpdateProfileInformation({
                             children="Permanent Address"
                             className="text-foreground/80 italic"
                         />
-                        <div className="grid grid-cols-3 mt-2">
+                        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 mt-2">
                             <div className="">
                                 <Label
                                     children="House/Block/Lot No."
@@ -304,7 +317,7 @@ export default function UpdateProfileInformation({
                                 <div>{address?.permanent?.subdivision}</div>
                             </div>
 
-                            <div className="mt-5">
+                            <div className="">
                                 <Label
                                     children="Barangay"
                                     className="text-foreground/60"
@@ -312,15 +325,17 @@ export default function UpdateProfileInformation({
                                 <div>{address?.permanent?.barangay}</div>
                             </div>
 
-                            <div className="mt-5">
+                            <div className="">
                                 <Label
                                     children="City/Municipality"
                                     className="text-foreground/60"
                                 />
-                                <div className="capitalize">{address?.permanent?.citymunicipality}</div>
+                                <div className="capitalize">
+                                    {address?.permanent?.citymunicipality}
+                                </div>
                             </div>
 
-                            <div className="mt-5">
+                            <div className="">
                                 <Label
                                     children="Province"
                                     className="text-foreground/60"
@@ -328,7 +343,7 @@ export default function UpdateProfileInformation({
                                 <div>{address?.permanent?.province}</div>
                             </div>
 
-                            <div className="mt-5">
+                            <div className="">
                                 <Label
                                     children="ZIP Code"
                                     className="text-foreground/60"
@@ -344,7 +359,7 @@ export default function UpdateProfileInformation({
                         children="Personnel Information"
                         className="text-base bg-background pr-3 before:absolute before:w-full before:h-px before:bg-border before:top-3 before:-z-10"
                     />
-                    <div className="grid grid-cols-3 mt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 max-sm:gap-4 mt-2">
                         <div className="">
                             <Label
                                 children="Personnel Id"
@@ -364,18 +379,24 @@ export default function UpdateProfileInformation({
                                 children="User Role"
                                 className="text-foreground/60"
                             />
-                            <div className="capitalize">{user.role ?? "N/A"}</div>
+                            <div className="capitalize">
+                                {user.role ?? "N/A"}
+                            </div>
                         </div>
 
-                        <div className="mt-5">
+                        <div className="sm:mt-5">
                             <Label
                                 children="Department"
                                 className="text-foreground/60"
                             />
-                            <div>{user.role === "hr" || user.role === "principal" ? "N/A" : Departments[user.department] ?? "N/A"}</div>
+                            <div>
+                                {user.role === "hr" || user.role === "principal"
+                                    ? "N/A"
+                                    : Departments[user.department] ?? "N/A"}
+                            </div>
                         </div>
 
-                        <div className="mt-5">
+                        <div className="sm:mt-5">
                             <Label
                                 children="Position"
                                 className="text-foreground/60"
@@ -388,7 +409,10 @@ export default function UpdateProfileInformation({
                 </div>
             </div>
 
-            <UploadProfilePhoto show={uploadProfile} onClose={setUploadProfile} />
+            <UploadProfilePhoto
+                show={uploadProfile}
+                onClose={setUploadProfile}
+            />
         </div>
     );
 }

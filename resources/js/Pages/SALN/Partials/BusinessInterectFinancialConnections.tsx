@@ -58,7 +58,7 @@ const BusinessInterectFinancialConnections: React.FC<{ form: any }> = ({
                                 </Button>
                             )}
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-4">
                                 <FormInput
                                     form={form}
                                     name={`biandfc.bifc.${index}.name`}

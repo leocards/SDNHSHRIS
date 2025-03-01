@@ -26,6 +26,8 @@ import {
     MenubarLabel,
 } from "@/Components/ui/menubar";
 import SearchInput from "@/Components/SearchInput";
+import { useSidebar } from "@/Components/ui/sidebar";
+import useWindowSize from "@/Hooks/useWindowResize";
 
 const ServiceRecord: React.FC<{ sr: PAGINATEDDATA<SERVICERECORDTYPE> }> = (
     props
@@ -46,6 +48,12 @@ const Main = () => {
     const [type, setType] = useState<"All" | "COC" | "Certificate">("All");
     const [viewCertificate, setViewCertificate] = useState(false);
     const [selected, setSelected] = useState<number | null>(null);
+    const { width } =useWindowSize()
+
+    const responsiveTableColumns = {
+        expanded: `1fr ${(width <= 915 && width >= 768) || width <= 610 ? `` : `1fr`} ${width <= 460 ? '' : '7rem'} ${width <= 1070 ? `` : `11rem`} 5rem`,
+        collapsed: `1fr 1fr 7rem 11rem 5rem`
+    }[useSidebar().state]
 
     return (
         <div className="mx-auto max-w-6xl">
@@ -130,7 +138,7 @@ const Main = () => {
                 <TableDataSkeletonLoader
                     data="sr"
                     length={7}
-                    columns={["1fr", "1fr", "7rem", "11rem", "5rem"]}
+                    columns={responsiveTableColumns}
                 >
                     {(column) => (
                         <Fragment>
@@ -138,9 +146,9 @@ const Main = () => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Personnel name</div>
-                                <div>Cartificate name</div>
-                                <div>Type</div>
-                                <div>Date modified</div>
+                                <div className="[@media(max-width:611px)]:!hidden [@media(min-width:768px)_and_(max-width:915px)]:!hidden">Cartificate name</div>
+                                <div className="[@media(max-width:461px)]:!hidden">Type</div>
+                                <div className="[@media(max-width:1070px)]:!hidden">Date modified</div>
                                 <div>Actions</div>
                             </TableHeader>
 
@@ -190,17 +198,18 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
     onView,
     ...props
 }) => {
+    const {state} = useSidebar()
     return (
         <TableRow {...props} className={cn("cursor-default", props.className)}>
             <div className="items-center gap-2">
                 <ProfilePhoto src={sr?.user?.avatar} />
                 <span className="line-clamp-1">{sr.user?.name}</span>
             </div>
-            <div>{sr.details.name}</div>
-            <div className={cn(sr.type === "coc" ? "uppercase" : "capitalize")}>
+            <div className={cn(state === "collapsed" ? "" : "[@media(max-width:611px)]:!hidden [@media(min-width:768px)_and_(max-width:915px)]:!hidden")}>{sr.details.name}</div>
+            <div className={cn(sr.type === "coc" ? "uppercase" : "capitalize", state === "collapsed" ? "" : "[@media(max-width:461px)]:!hidden")}>
                 {sr.type}
             </div>
-            <div>
+            <div className={(state === "collapsed" ? "" : "[@media(max-width:1070px)]:!hidden")}>
                 <span className="line-clamp-1">
                     {format(sr.created_at, "MMM dd, y")}
                 </span>

@@ -21,6 +21,8 @@ import NewCOC from "./NewCOC";
 import ViewCertificate from "./ViewCertificate";
 import { usePage } from "@inertiajs/react";
 import { FilterButton, FilterItem } from "@/Components/ui/menubar";
+import useWindowSize from "@/Hooks/useWindowResize";
+import { useSidebar } from "@/Components/ui/sidebar";
 
 export type CERTIFICATEAPPROVALTYPE = "pending" | "approved" | "invalid";
 
@@ -61,6 +63,7 @@ const Main = () => {
     const [viewCertificate, setViewCertificate] = useState(false)
     const [selected, setSelected] = useState<number|null>(null)
     const [type, setType] = useState<"All" | "COC" | "Certificate">("All");
+    const {width} = useWindowSize()
 
     return (
         <div className="mx-auto max-w-6xl">
@@ -68,7 +71,7 @@ const Main = () => {
 
             <Tabs
                 defaultValue="pending"
-                className="overflow-hidden grow flex items-center my-5"
+                className="overflow-hidden grow flex max-lg:flex-col lg:items-center my-5"
                 onValueChange={(value) => {
                     setStatus(value);
                     onQuery({ status: value });
@@ -80,73 +83,75 @@ const Main = () => {
                     <TabsTrigger value="invalid">Invalid</TabsTrigger>
                 </TabsList>
 
-                {role != "teaching" && <FilterButton className="mr-4" isDirty={type !== "All"} filter={type} align="end" onClearFilter={() => {
-                    setType("All");
-                    onQuery({
-                        status,
-                        type: "All",
-                    });
-                }}>
-                    <FilterItem
-                        value="All"
-                        activeFilter={type}
-                        onClick={(value) => {
-                            setType(value as "All" | "COC" | "Certificate");
-                            onQuery({
-                                status,
-                                type: value,
-                            });
-                        }}
-                    >
-                        All
-                    </FilterItem>
-                    <FilterItem
-                        value="Certificate"
-                        activeFilter={type}
-                        onClick={(value) => {
-                            setType(value as "All" | "COC" | "Certificate");
-                            onQuery({
-                                status,
-                                type: value,
-                            });
-                        }}
-                    >
-                        Certificate
-                    </FilterItem>
-                    <FilterItem
-                        value="COC"
-                        activeFilter={type}
-                        onClick={(value) => {
-                            setType(value as "All" | "COC" | "Certificate");
-                            onQuery({
-                                status,
-                                type: value,
-                            });
-                        }}
-                    >
-                        COC
-                    </FilterItem>
-                </FilterButton>}
+                <div className="flex max-lg:mt-4 max-lg:ml-auto">
+                    {role != "teaching" && <FilterButton className="mr-4" isDirty={type !== "All"} filter={type} align="end" onClearFilter={() => {
+                        setType("All");
+                        onQuery({
+                            status,
+                            type: "All",
+                        });
+                    }}>
+                        <FilterItem
+                            value="All"
+                            activeFilter={type}
+                            onClick={(value) => {
+                                setType(value as "All" | "COC" | "Certificate");
+                                onQuery({
+                                    status,
+                                    type: value,
+                                });
+                            }}
+                        >
+                            All
+                        </FilterItem>
+                        <FilterItem
+                            value="Certificate"
+                            activeFilter={type}
+                            onClick={(value) => {
+                                setType(value as "All" | "COC" | "Certificate");
+                                onQuery({
+                                    status,
+                                    type: value,
+                                });
+                            }}
+                        >
+                            Certificate
+                        </FilterItem>
+                        <FilterItem
+                            value="COC"
+                            activeFilter={type}
+                            onClick={(value) => {
+                                setType(value as "All" | "COC" | "Certificate");
+                                onQuery({
+                                    status,
+                                    type: value,
+                                });
+                            }}
+                        >
+                            COC
+                        </FilterItem>
+                    </FilterButton>}
 
-                {(role === "non-teaching" || role === "principal") && <Button onClick={() => setNewcoc(true)}>
-                    <DocumentUpload />
-                    <span>COC</span>
-                </Button>}
+                    {(role === "non-teaching" || role === "principal") && <Button onClick={() => setNewcoc(true)}>
+                        <DocumentUpload />
+                        <span>COC</span>
+                    </Button>}
 
-                <Button
-                    className="ml-4"
-                    onClick={() => setNewCertificate(true)}
-                >
-                    <DocumentUpload />
-                    <span>Certificate</span>
-                </Button>
+                    <Button
+                        className="ml-4"
+                        onClick={() => setNewCertificate(true)}
+                    >
+                        <DocumentUpload />
+                        <span>Certificate</span>
+                    </Button>
+                </div>
             </Tabs>
 
             <Card className="min-h-[27rem] relative">
                 <TableDataSkeletonLoader
                     data="sr"
                     length={7}
-                    columns={["1fr", "1fr", "1fr", "6rem"]}
+                    columns={width > 1024 ? `1fr 1fr 1fr 6rem` : width <= 639? `1fr 6rem`:`1fr 1fr 6rem`}
                 >
                     {(column) => (
                         <Fragment>
@@ -154,9 +159,9 @@ const Main = () => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Cartificate name</div>
-                                <div>Type</div>
-                                <div>Date modified</div>
-                                <div>Actions</div>
+                                <div className="max-sm:!hidden">Type</div>
+                                <div className="[@media(max-width:1024px)]:!hidden">Date modified</div>
+                                <div className="justify-center">Actions</div>
                             </TableHeader>
                             {page?.data.length === 0 && (
                                 <Empty
@@ -207,11 +212,11 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
     return (
         <TableRow {...props} className={cn("cursor-default", props.className)}>
             <div>{sr.details.name}</div>
-            <div className={cn(sr.type === "coc" ? "uppercase" : "capitalize")}>
+            <div className={cn(sr.type === "coc" ? "uppercase" : "capitalize", "max-sm:!hidden")}>
                 {sr.type}
             </div>
-            <div>{format(sr.created_at, "MMM dd, y")}</div>
-            <div>
+            <div className="[@media(max-width:1024px)]:!hidden">{format(sr.created_at, "MMM dd, y")}</div>
+            <div className="justify-center">
                 <TooltipLabel label="View" className="mx-auto">
                     <Button
                         size="icon"

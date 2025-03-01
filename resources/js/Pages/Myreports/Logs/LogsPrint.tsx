@@ -71,9 +71,9 @@ const LogsPrint: React.FC<Props> = ({
                 </Button>
             </div>
 
-            <div className="min-w-[9in] min-h-40">
+            <div className="min-h-40">
                 <Component loading={false}>
-                    <div className="overflow-y-auto rounded-scrollbar overflow-x-hidden">
+                    <div className="overflow-y-auto rounded-scrollbar overflow-x-auto w-">
                         <div
                             ref={contentRef}
                             className="w-[8.3in] shrink-0 pr int:scale-90 mx-auto px-4"

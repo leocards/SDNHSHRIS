@@ -143,7 +143,10 @@ export default {
     					height: '0'
     				}
     			}
-    		}
+    		},
+            screens: {
+                xs: '456px'
+            }
     	}
     },
 

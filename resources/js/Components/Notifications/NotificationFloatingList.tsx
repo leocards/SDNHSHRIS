@@ -57,7 +57,7 @@ const NotificationFloatingList = () => {
     }
 
     return (
-        <Card className="grid grid-rows-[auto,auto,1fr,auto] w-[380px] h-[37rem] border-none shadow-none rounded-none relative">
+        <Card className="grid grid-rows-[auto,auto,1fr,auto] w-full xs:w-[380px] h-[37rem] border-none shadow-none rounded-none relative">
             {proccesMarkAllRead && (
                 <div className="absolute bottom-16 left-1/2 -translate-x-1/2 p-1 px-4 text-sm rounded-md bg-primary text-primary-foreground z-10">Loading...</div>
             )}

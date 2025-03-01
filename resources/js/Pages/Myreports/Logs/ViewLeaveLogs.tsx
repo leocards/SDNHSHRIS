@@ -39,7 +39,7 @@ const ViewLeaveLogs = ({ leaveid, show, onClose }: Props) => {
             </div>
 
             {loading ? (
-                <div className="flex flex-col items-center gap-4 mx-auto py-8 min-w-[790px]">
+                <div className="flex flex-col lg:items-center gap-4 mx-auto py-8 min-w-[790px]">
                     <div className="loading loading-spinner loading-md"></div>
                     <TypographySmall>Please wait a moment...</TypographySmall>
                 </div>

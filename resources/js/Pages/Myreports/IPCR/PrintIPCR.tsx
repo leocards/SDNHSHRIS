@@ -65,7 +65,7 @@ const PrintIPCR: React.FC<Props> = ({ ipcr, show, principal, hr, onClose, year }
                         }
                     `}
                 </style>
-                <div className=" overflow-y-auto rounded-scrollbar overflow-x-hidden">
+                <div className=" overflow-y-auto rounded-scrollbar overflow-x-auto">
                     <PDFIPCR ipcr={ipcr} ref={contentRef}  principal={principal} hr={hr} year={year} />
                 </div>
             </div>

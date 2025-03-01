@@ -19,7 +19,6 @@ import {
 import { useFieldArray } from "react-hook-form";
 import { Add, Trash } from "iconsax-react";
 import { Button } from "@/Components/ui/button";
-import { X } from "lucide-react";
 import { useToast } from "@/Hooks/use-toast";
 import { isValidDate } from "@/Types/types";
 
@@ -108,7 +107,7 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({ data }) => {
                                 >
                                     <Trash className="[&_path]:stroke-2 !size-4" />
                                 </Button>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 [@media(min-width:530px)]:grid-cols-2 gap-4">
                                     <FormInput
                                         form={form}
                                         name={`we.${index}.positiontitle`}
@@ -121,7 +120,7 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({ data }) => {
                                                 </span>{" "}
                                             </span>
                                         }
-                                        itemClass="col-span-2"
+                                        itemClass="[@media(min-width:530px)]:col-span-2"
                                         inputClass="uppercase"
                                     />
                                     <FormCalendar
@@ -172,7 +171,7 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({ data }) => {
                                         required={false}
                                     />
                                 </div>
-                                <div className="grid grid-cols-[1fr,1fr,auto] gap-4 mt-4">
+                                <div className="grid [@media(min-width:530px)_and_(max-width:849px)]:grid-cols-2 [@media(min-width:850px)]:grid-cols-[1fr,1fr,auto] gap-4 mt-4">
                                     <FormInput
                                         form={form}
                                         name={`we.${index}.monthlysalary`}
@@ -249,11 +248,11 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({ data }) => {
                         </Button>
                     </div>
 
-                    <div className="flex items-center mt-8 pt-4 border-t border-border">
+                    <div className="flex items-center mt-8 pt-4 border-t border-border max-xs:gap-4 max-xs:[&>button]:!w-full">
                         <Button type="button" variant="outline">
                             Cancel changes
                         </Button>
-                        <Button className="ml-auto">Save changes</Button>
+                        <Button className="xs:ml-auto">Save changes</Button>
                     </div>
                 </form>
             </Form>

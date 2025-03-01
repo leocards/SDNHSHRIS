@@ -14,7 +14,7 @@ const Header: React.FC<{
     return (
         <>
             {title && <Head title={title} />}
-            <div className={cn("text-xl font-semibold w-fit text-secondary-foreground", className)}>{children}</div>
+            <div className={cn("text-lg sm:text-xl font-semibold w-fit text-secondary-foreground", className)}>{children}</div>
         </>
     );
 };

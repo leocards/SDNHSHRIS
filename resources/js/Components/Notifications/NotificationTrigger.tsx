@@ -68,8 +68,8 @@ const NotificationTrigger = () => {
                         <PopoverContent
                             onOpenAutoFocus={(e) => e.preventDefault()}
                             onCloseAutoFocus={(e) => e.preventDefault()}
-                            className="w-fit p-0 rounded-md overflow-hidden mt-1 max-sm:-mr-10 transition-all duration-200"
-                            align="end"
+                            className="w-[calc(100vw-12px)] xs:w-fit p-0 rounded-md overflow-hidden mt-1 max-xs:mr-2 max-sm:mr-10 transition-all duration-200 max-sm:px-2"
+                            align="center"
                         >
                             <NotificationFloatingList />
                         </PopoverContent>

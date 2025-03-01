@@ -12,7 +12,6 @@ import {
 import { Input } from "@/Components/ui/input";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { cn } from "@/Lib/utils";
-import { X } from "lucide-react";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import {
@@ -85,17 +84,19 @@ const OtherInformation: React.FC<OtherInformationProps> = ({ data }) => {
 
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-4">
                         <OtherInformations form={form} name="skills" />
+                        <div className="h-px bg-border w-full lg:hidden" />
                         <OtherInformations form={form} name="nonacademicrecognition" />
+                        <div className="h-px bg-border w-full lg:hidden" />
                         <OtherInformations form={form} name="membership" />
                     </div>
 
-                    <div className="flex items-center mt-8 pt-4 border-t border-border">
+                    <div className="flex items-center mt-8 pt-4 border-t border-border max-xs:gap-4 max-xs:[&>button]:!w-full">
                         <Button type="button" variant="outline">
                             Cancel changes
                         </Button>
-                        <Button className="ml-auto">Save changes</Button>
+                        <Button className="xs:ml-auto">Save changes</Button>
                     </div>
                 </form>
             </Form>

@@ -47,7 +47,7 @@ const PrintSALN: React.FC<Props> = ({ saln, show, principal, year, onClose }) =>
                         }
                     `}
                 </style>
-                <div className="max-h-[36.5rem] overflow-y-auto rounded-scrollbar overflow-x-hidden">
+                <div className="max-h-[36.5rem] overflow-y-auto rounded-scrollbar overflow-x-auto">
                     <PDFSALN ref={contentRef} saln={saln}  principal={principal} year={year} />
                 </div>
             </div>

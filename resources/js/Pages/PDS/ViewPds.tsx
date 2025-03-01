@@ -99,29 +99,31 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
                 </TooltipLabel>
             </div>
 
-            <div className="mx-auto w-fit">
-                <PDSPDF
-                    ref={download_pdf.targetRef}
-                    userid={userid}
-                    tab={tab}
-                    onStatus={setStatus}
-                    onLoad={setIsLoading}
-                />
+            <div className="w-full flex">
+                <div className="mx-auto overflow-x-auto">
+                    <PDSPDF
+                        ref={download_pdf.targetRef}
+                        userid={userid}
+                        tab={tab}
+                        onStatus={setStatus}
+                        onLoad={setIsLoading}
+                    />
+                </div>
             </div>
 
-            <div className="flex mt-5 justify-end">
+            <div className="flex mt-5 justify-end max-sm:gap-2">
                 {!isLoading ? (
                     status == "pending" ? (
                         <Fragment>
                             <Button
-                                className="bg-green-600 hover:bg-green-500"
+                                className="bg-green-600 hover:bg-green-500 max-sm:w-full"
                                 onClick={() => onRespond("approved")}
                             >
                                 <Like1 />
                                 Approve
                             </Button>
                             <Button
-                                className="ml-3 bg-destructive hover:bg-destructive/85"
+                                className="sm:ml-3 bg-destructive hover:bg-destructive/85 max-sm:w-full"
                                 onClick={() => onRespond("disapproved")}
                             >
                                 <Dislike />

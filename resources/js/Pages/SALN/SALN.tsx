@@ -17,6 +17,9 @@ import { dataSaln, getRecord, SALNTYPE } from "./Types/type";
 import TableDataSkeletonLoader from "@/Components/TableDataSkeletonLoader";
 import { format } from "date-fns";
 import { Edit, Eye } from "iconsax-react";
+import useWindowSize from "@/Hooks/useWindowResize";
+import { useSidebar } from "@/Components/ui/sidebar";
+import { cn } from "@/Lib/utils";
 
 const SALN: React.FC<{ saln: PAGINATEDDATA<SALNTYPE> }> = (props) => {
     return (
@@ -30,12 +33,19 @@ const Main = () => {
     const { page, onQuery } = usePagination<SALNTYPE>();
     const [status, setStatus] = useState("pending");
     const { setProcess } = useProcessIndicator();
+    const { width } = useWindowSize();
+    const { state } = useSidebar();
 
     const data = useMemo((): dataSaln[] => {
         if (page) return getRecord(page.data);
 
         return [];
     }, [page]);
+
+    const columns = {
+        collapsed: `1fr 1fr 1fr 10rem 7rem`,
+        expanded: (width >= 768 && width <= 960) || (width <= 640) ? (width <= 456 ? `1fr 7rem`:`1fr 10rem 7rem`): `1fr 1fr 1fr 10rem 7rem`
+    }[state]
 
     return (
         <div className="mx-auto max-w-6xl">
@@ -46,7 +56,7 @@ const Main = () => {
 
             <Tabs
                 defaultValue="pending"
-                className="overflow-hidden grow flex items-center my-5"
+                className="overflow-hidden grow flex max-sm:flex-col sm:items-center my-5"
                 onValueChange={(value) => {
                     setStatus(value);
                     onQuery({ status: value });
@@ -59,7 +69,7 @@ const Main = () => {
                 </TabsList>
 
                 <Button
-                    className="ml-auto"
+                    className="ml-auto max-sm:mt-4"
                     onClick={() => {
                         router.get(
                             route("saln.create"),
@@ -77,16 +87,16 @@ const Main = () => {
             <Card className="min-h-[27rem] relative">
                 <TableDataSkeletonLoader
                     data="saln"
-                    columns={["1fr", "1fr", "1fr", "10rem", "7rem"]}
+                    columns={columns}
                 >
                     {(column) => (
                         <Fragment>
                             <TableHeader
                                 style={{ gridTemplateColumns: column }}
                             >
-                                <div>Assets</div>
-                                <div>Liabilities</div>
-                                <div>Networth</div>
+                                <div className={cn(state === "expanded" && "[@media(min-width:768px)_and_(max-width:960px)]:!hidden", "max-sm:!hidden")}>Assets</div>
+                                <div className={cn(state === "expanded" && "[@media(min-width:768px)_and_(max-width:960px)]:!hidden", "max-sm:!hidden")}>Liabilities</div>
+                                <div className="max-xs:!hidden">Networth</div>
                                 <div>As of</div>
                                 <div className="justify-center">Action</div>
                             </TableHeader>
@@ -101,19 +111,19 @@ const Main = () => {
                                         key={index}
                                         style={{ gridTemplateColumns: column }}
                                     >
-                                        <div>
+                                        <div className={cn(state === "expanded" && "[@media(min-width:769px)_and_(max-width:960px)]:!hidden", "max-sm:!hidden")}>
                                             &#8369;{" "}
                                             {Number(
                                                 salndata?.assets
                                             ).toLocaleString()}
                                         </div>
-                                        <div>
+                                        <div className={cn(state === "expanded" && "[@media(min-width:769px)_and_(max-width:960px)]:!hidden", "max-sm:!hidden")}>
                                             &#8369;{" "}
                                             {Number(
                                                 salndata?.liability
                                             ).toLocaleString()}
                                         </div>
-                                        <div>
+                                        <div className="max-xs:!hidden">
                                             &#8369;{" "}
                                             {Number(
                                                 salndata?.networth

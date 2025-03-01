@@ -15,6 +15,7 @@ import empty from "@/Assets/empty-tardiness.svg";
 import { ProfilePhoto } from "@/Components/ui/avatar";
 import { format } from "date-fns";
 import { usePage } from "@inertiajs/react";
+import useWindowSize from "@/Hooks/useWindowResize";
 
 export type TARDINESSTYPE = {
     id: number;
@@ -53,6 +54,7 @@ const Tardiness: React.FC<TardinessProps> = ({ ...props }) => {
 const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
     const { page, onQuery } = usePagination<TARDINESSTYPE>();
     const { props } = usePage();
+    const {width} = useWindowSize();
 
     const [filterSy, setFilterSy] = useState<{
         id: number;
@@ -121,39 +123,6 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                             />
                         ))}
                     </FilterButton>
-                    {/* <FilterButton
-                        isDirty={filterMonth != format(new Date(), "MMMM")}
-                        filter={filterMonth}
-                        tooltipLabel="Filter by month"
-                        onClearFilter={() => {
-                            if (filterMonth != format(new Date(), "MMMM")) {
-                                setFilterMonth(format(new Date(), "MMMM"));
-                                onQuery({
-                                    sy: filterSy.id,
-                                    month: format(new Date(), "MMMM"),
-                                });
-                            }
-                        }}
-                    >
-                        {Array.from({ length: 12 }).map((_, index) => (
-                            <FilterItem
-                                key={index}
-                                value={format(new Date(2024, index, 1), "MMMM")}
-                                activeFilter={filterMonth}
-                                onClick={(value) => {
-                                    if (value != filterMonth) {
-                                        setFilterMonth(value);
-                                        onQuery({
-                                            sy: filterSy.id,
-                                            month: value,
-                                        });
-                                    }
-                                }}
-                            >
-                                {format(new Date(2024, index, 1), "MMMM")}
-                            </FilterItem>
-                        ))}
-                    </FilterButton> */}
                 </div>
             </div>
 
@@ -161,18 +130,14 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                 <TableDataSkeletonLoader
                     data={["tardinesses"]}
                     length={8}
-                    columns={[
-                        ...Array.from({ length: 5 }).map(
-                            () => "1fr"
-                        ),
-                    ]}
+                    columns={`${width <= 456 ? (Array(4).fill('1fr').join(' ')) : (Array(5).fill('1fr').join(' '))}`}
                 >
                     {(column) => (
                         <Fragment>
                             <TableHeader
                                 style={{ gridTemplateColumns: column }}
                             >
-                                <div className="justify-center">Month</div>
+                                <div className="justify-center max-xs:!hidden">Month</div>
                                 <div className="justify-center">No. of Days Present</div>
                                 <div className="justify-center">No. of Days Absent</div>
                                 <div className="justify-center">No. of Time Tardy</div>
@@ -194,18 +159,32 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
                                 const tardiness = getAttendanceForTheMonth(format(new Date(2024, index, 1), "MMMM"))
 
                                 return (
-                                    <TableRow
-                                        key={index}
-                                        style={{ gridTemplateColumns: column }}
-                                    >
-                                        <div className="justify-center">{format(new Date(2024, index, 1), "MMMM")}</div>
-                                        <div className="justify-center">{tardiness?.present??(<span className="text-foreground/30">-</span>)}</div>
-                                        <div className="justify-center">{tardiness?.absent??(<span className="text-foreground/30">-</span>)}</div>
-                                        <div className="justify-center">
-                                            {tardiness?.timetardy??(<span className="text-foreground/30">-</span>)}
-                                        </div>
-                                        <div className="justify-center">{tardiness?.undertime??(<span className="text-foreground/30">-</span>)}</div>
-                                    </TableRow>
+                                    width <= 640 ? <div>
+                                        <div className="text-sm">{format(new Date(2024, index, 1), "MMMM")}</div>
+                                        <TableRow
+                                            key={index}
+                                            style={{ gridTemplateColumns: column }}
+                                            className="bg-muted"
+                                        >
+                                            <div className="justify-center">{tardiness?.present??(<span className="text-foreground/30">-</span>)}</div>
+                                            <div className="justify-center">{tardiness?.absent??(<span className="text-foreground/30">-</span>)}</div>
+                                            <div className="justify-center">
+                                                {tardiness?.timetardy??(<span className="text-foreground/30">-</span>)}
+                                            </div>
+                                            <div className="justify-center">{tardiness?.undertime??(<span className="text-foreground/30">-</span>)}</div>
+                                        </TableRow>
+                                    </div> : <TableRow
+                                    key={index}
+                                    style={{ gridTemplateColumns: column }}
+                                >
+                                    <div className="justify-center">{format(new Date(2024, index, 1), "MMMM")}</div>
+                                    <div className="justify-center">{tardiness?.present??(<span className="text-foreground/30">-</span>)}</div>
+                                    <div className="justify-center">{tardiness?.absent??(<span className="text-foreground/30">-</span>)}</div>
+                                    <div className="justify-center">
+                                        {tardiness?.timetardy??(<span className="text-foreground/30">-</span>)}
+                                    </div>
+                                    <div className="justify-center">{tardiness?.undertime??(<span className="text-foreground/30">-</span>)}</div>
+                                </TableRow>
                                 )
                             })}
                         </Fragment>

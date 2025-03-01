@@ -53,11 +53,11 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
         <div>
             <div className="flex flex-col items-center gap-2 mt-4">
                 <div className="flex items-center">
-                    <div className="flex items-center gap-3.5">
+                    <div className="flex items-center gap-3.5 text-center">
                         <FormRadioGroup
                             form={form}
                             label={
-                                <span className="">
+                                <span>
                                     <b>Note:</b> Husband and wife who are both
                                     public officials and employees may file the
                                     required statements jointly or separately.
@@ -86,7 +86,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                 <TypographySmall className="uppercase">
                     Declarant
                 </TypographySmall>
-                <div className="grid grid-cols-3 gap-2.5 sm:gap-4 [&>div]:h-12 [&>div]:flex [&>div]:flex-col">
+                <div className="grid lg:grid-cols-3 gap-2.5 sm:gap-4 [&>div]:h-12 [&>div]:flex [&>div]:flex-col">
                     <div>
                         <div className="text-center grow">
                             <div className="line-clamp-1 uppercase">{user.lastname}</div>
@@ -126,7 +126,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                         (Address)
                     </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2.5 sm:gap-4 [&>div]:h-12 [&>div]:flex [&>div]:flex-col">
+                <div className="grid lg:grid-cols-3 gap-2.5 sm:gap-4 [&>div]:h-12 [&>div]:flex [&>div]:flex-col">
                     <div>
                         <div className="text-center grow">
                             <div className="line-clamp-1 uppercase">{user.position}</div>
@@ -163,7 +163,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
 
             <div className="space-y-2 mt-5">
                 <TypographySmall className="uppercase">Spouse</TypographySmall>
-                <div className="grid sm:grid-cols-3 gap-2.5 sm:gap-4">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
                     <FormInput
                         form={form}
                         name="spouse.familyname"
@@ -185,8 +185,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                         required={false}
                         inputClass="uppercase"
                     />
-                </div>
-                <div className="grid sm:grid-cols-3 gap-2.5 sm:gap-4">
+
                     <FormInput
                         form={form}
                         name="spouse.position"
@@ -208,9 +207,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                         required={false}
                         inputClass="uppercase"
                     />
-                </div>
 
-                <div className="grid sm:grid-cols-3 gap-2.5 sm:gap-4">
                     <FormInput
                         form={form}
                         name="spouse.governmentissuedid"

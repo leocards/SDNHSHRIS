@@ -35,7 +35,7 @@ const MessageFloatingList = () => {
     }, [newMessage]);
 
     return (
-        <Card className="grid grid-rows-[auto,auto,1fr,auto] w-[380px] h-[37rem] border-none shadow-none rounded-none">
+        <Card className="grid grid-rows-[auto,auto,1fr,auto] w-full xs:w-[380px] h-[37rem] border-none shadow-none rounded-none">
             <CardHeader className="relative !flex flex-row items-center justify-between py-4 border-b border-border">
                 <div>
                     <CardTitle className="text-lg leading-4">

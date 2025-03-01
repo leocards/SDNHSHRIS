@@ -21,7 +21,7 @@ const TableDataSkeletonLoader: React.FC<TableDataSkeletonLoaderProps> = ({
         typeof columns == "number"
             ? Array.from({ length: columns }).map(() => "1fr").join(" ")
             : typeof columns === "string" ? columns : columns.join(" ");
-
+    console.log(gridtemplatecolumns)
     return (
         <Deferred
             data={data}

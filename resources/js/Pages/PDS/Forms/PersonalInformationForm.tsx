@@ -189,8 +189,8 @@ const PersonalInformationForm: React.FC<{
 
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
-                    <div className="space-y-4">
-                        <div className="grid grid-cols-4 gap-4 p-1 px-0">
+                    <div className="space-y-2.5 xs:space-y-4">
+                        <div className="grid xs:grid-cols-2 lg:grid-cols-4 gap-4 p-1 px-0">
                             <FormInput
                                 form={form}
                                 label="Last Name"
@@ -252,7 +252,7 @@ const PersonalInformationForm: React.FC<{
                             />
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 p-1 px-0">
+                        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 [@media(min-width:1130px)]:grid-cols-4 gap-4 p-1 px-0">
                             <FormCalendar
                                 form={form}
                                 name="dateofbirth"
@@ -283,9 +283,37 @@ const PersonalInformationForm: React.FC<{
                                     </>
                                 }
                             />
-                        </div>
-
-                        <div className="grid grid-cols-5 gap-4 p-1 px-0">
+                            <FormSelect
+                                form={form}
+                                name="bloodtype"
+                                label="Blood Type"
+                                triggerClass="uppercase"
+                                items={
+                                    <>
+                                        <SelectItem value="A" children="A" />
+                                        <SelectItem value="A+" children="A+" />
+                                        <SelectItem value="A-" children="A-" />
+                                        <SelectItem value="B" children="B" />
+                                        <SelectItem value="B+" children="B+" />
+                                        <SelectItem value="B-" children="B-" />
+                                        <SelectItem
+                                            value="AB"
+                                            children="AB"
+                                        />
+                                        <SelectItem
+                                            value="AB+"
+                                            children="AB+"
+                                        />
+                                        <SelectItem
+                                            value="AB-"
+                                            children="AB-"
+                                        />
+                                        <SelectItem value="O" children="O" />
+                                        <SelectItem value="O+" children="O+" />
+                                        <SelectItem value="O-" children="O-" />
+                                    </>
+                                }
+                            />
                             <FormSelect
                                 form={form}
                                 name="civilstatus.status"
@@ -346,40 +374,11 @@ const PersonalInformationForm: React.FC<{
                                     </div>
                                 }
                             />
-                            <FormSelect
-                                form={form}
-                                name="bloodtype"
-                                label="Blood Type"
-                                triggerClass="uppercase"
-                                items={
-                                    <>
-                                        <SelectItem value="A" children="A" />
-                                        <SelectItem value="A+" children="A+" />
-                                        <SelectItem value="A-" children="A-" />
-                                        <SelectItem value="B" children="B" />
-                                        <SelectItem value="B+" children="B+" />
-                                        <SelectItem value="B-" children="B-" />
-                                        <SelectItem
-                                            value="AB"
-                                            children="AB"
-                                        />
-                                        <SelectItem
-                                            value="AB+"
-                                            children="AB+"
-                                        />
-                                        <SelectItem
-                                            value="AB-"
-                                            children="AB-"
-                                        />
-                                        <SelectItem value="O" children="O" />
-                                        <SelectItem value="O+" children="O+" />
-                                        <SelectItem value="O-" children="O-" />
-                                    </>
-                                }
-                            />
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 p-1 px-0">
+                        <div className="h-px bg-border w-full"></div>
+
+                        <div className="grid xs:grid-cols-2 sm:grid-cols-3 gap-4 p-1 px-0">
                             <FormInput
                                 form={form}
                                 name="gsis"
@@ -429,6 +428,8 @@ const PersonalInformationForm: React.FC<{
                                 maxLength={9}
                             />
                         </div>
+
+                        <div className="h-px bg-border w-full"></div>
 
                         <div>
                             <FormRadioGroup
@@ -522,7 +523,7 @@ const PersonalInformationForm: React.FC<{
                             disabled={watchIsSameResidential}
                         />
 
-                        <div className="grid grid-cols-3 gap-4 p-1 px-0">
+                        <div className="grid xs:grid-cols-2 md:grid-cols-3 gap-4 p-1 px-0">
                             <FormInput
                                 form={form}
                                 name="telephone"
@@ -550,11 +551,11 @@ const PersonalInformationForm: React.FC<{
                         </div>
                     </div>
 
-                    <div className="flex items-center mt-8 pt-4 border-t border-border">
+                    <div className="flex items-center mt-8 pt-4 border-t border-border max-xs:gap-4 max-xs:[&>button]:!w-full">
                         <Button type="button" variant="outline">
                             Cancel changes
                         </Button>
-                        <Button className="ml-auto">Save changes</Button>
+                        <Button className="xs:ml-auto">Save changes</Button>
                     </div>
                 </form>
             </Form>
@@ -701,7 +702,7 @@ const Address: React.FC<{
             <TypographySmall className="uppercase font-bold underline">
                 {addresstype} Address
             </TypographySmall>
-            <div className="grid grid-cols-3 gap-4 p-1 px-0">
+            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4 p-1 px-0">
                 <FormSelect
                     form={form}
                     name={name + ".province"}

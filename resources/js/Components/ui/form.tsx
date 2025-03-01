@@ -465,7 +465,8 @@ const FormCalendar: React.FC<
         withPresent?: boolean;
         withNA?: boolean;
         onCancel?: () => void;
-        noFutureDates?: boolean
+        noFutureDates?: boolean;
+        itemClass?: string;
     }
 > = ({
     form,
@@ -505,7 +506,7 @@ const FormCalendar: React.FC<
             control={form.control}
             name={name}
             render={({ field }) => (
-                <FormItem className="">
+                <FormItem className={cn(props.itemClass)}>
                     <FormLabel
                         className={cn(required && "required", labelClass)}
                         children={label}

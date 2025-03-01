@@ -18,6 +18,7 @@ import { Eye } from "iconsax-react";
 import { router } from "@inertiajs/react";
 import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
 import SearchInput from "@/Components/SearchInput";
+import useWindowSize from "@/Hooks/useWindowResize";
 
 type HRSALNTYPE = SALNTYPE & {
     user: User;
@@ -38,6 +39,7 @@ const Main = () => {
     const { page, onQuery } = usePagination<HRSALNTYPE>();
     const [status, setStatus] = useState("pending");
     const { setProcess } = useProcessIndicator();
+    const { width } = useWindowSize()
 
     return (
         <div className="mx-auto max-w-4xl">
@@ -70,7 +72,7 @@ const Main = () => {
             <Card className="min-h-[27rem] relative">
                 <TableDataSkeletonLoader
                     data="saln"
-                    columns={["1fr", "10rem", "8rem"]}
+                    columns={`1fr ${width > 520 ? "10rem":""} 5rem`}
                     length={8}
                 >
                     {(column) => (
@@ -79,7 +81,7 @@ const Main = () => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Name</div>
-                                <div>As of</div>
+                                <div className="[@media(max-width:520px)]:!hidden">As of</div>
                                 <div className="justify-center">View</div>
                             </TableHeader>
                             {page?.data.length === 0 && (
@@ -93,7 +95,7 @@ const Main = () => {
                                     style={{ gridTemplateColumns: column }}
                                 >
                                     <div>{data.user.full_name}</div>
-                                    <div>{format(data.asof, "MMM dd, y")}</div>
+                                    <div className="[@media(max-width:520px)]:!hidden">{format(data.asof, "MMM dd, y")}</div>
                                     <div className="justify-center">
                                         <Button
                                             size={"icon"}

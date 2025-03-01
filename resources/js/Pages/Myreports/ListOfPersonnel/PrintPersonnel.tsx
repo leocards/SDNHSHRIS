@@ -75,7 +75,7 @@ const PrintPersonnel: React.FC<Props> = ({ show, list, onClose, }) => {
                     `}
                 </style>
 
-                <div className="overflow-y-auto rounded-scrollbar overflow-x-hidden">
+                <div className="overflow-y-auto rounded-scrollbar overflow-x-auto">
                     <PDFPersonnel summary={list} schoolYear={schoolYear} ref={contentRef} principal={list.principal.length > 0 ? list.principal[0] : {position: "None", full_name: "none"}} />
                 </div>
             </div>

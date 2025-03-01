@@ -96,7 +96,7 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
                                 Spouse Name
                             </TypographySmall>
 
-                            <div className="grid grid-cols-4 gap-4 p-1 px-0">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 p-1 px-0">
                                 <FormInput
                                     form={form}
                                     name="spouse.familyname"
@@ -175,7 +175,7 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
                                 />
                             </div>
 
-                            <div className="grid grid-cols-4 gap-4 p-1 px-0">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 p-1 px-0 mt-2.5">
                                 <FormInput
                                     form={form}
                                     name="spouse.occupation"
@@ -220,7 +220,7 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
                                         key={field.id}
                                         className="p-4 border broder-boder rounded-md relative shadow-sm"
                                     >
-                                        <div className="grid grid-cols-3 gap-2">
+                                        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-2">
                                             <FormInput
                                                 form={form}
                                                 name={`children.${index}.name`}
@@ -232,9 +232,10 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
                                                 form={form}
                                                 name={`children.${index}.dateofbirth`}
                                                 label="Date of Birth"
-                                                triggerClass="uppercase"
+                                                triggerClass="uppercase w-full"
                                                 noFutureDates
                                                 disableDate={(date) => isFuture(date)}
+                                                itemClass=""
                                             />
 
                                             <Button
@@ -274,7 +275,7 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
                                 Father's Name
                             </TypographySmall>
 
-                            <div className="grid grid-cols-4 gap-4 p-1 px-0">
+                            <div className="grid  grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 p-1 px-0">
                                 <FormInput
                                     form={form}
                                     name="father.familyname"
@@ -357,7 +358,7 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
                                 Mother's Maiden Name
                             </TypographySmall>
 
-                            <div className="grid grid-cols-3 gap-4 p-1 px-0">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4 p-1 px-0">
                                 <FormInput
                                     form={form}
                                     name="mother.familyname"
@@ -381,9 +382,9 @@ const FamilyBackgroundForm: React.FC<FamilyBackgroundFormProps> = ({ data }) => 
                         </div>
                     </div>
 
-                    <div className="flex items-center mt-8 pt-4 border-t border-border">
+                    <div className="flex items-center mt-8 pt-4 border-t border-border max-xs:gap-4 max-xs:[&>button]:!w-full">
                         <Button type="button" variant="outline">Cancel changes</Button>
-                        <Button className="ml-auto">Save changes</Button>
+                        <Button className="xs:ml-auto">Save changes</Button>
                     </div>
                 </form>
             </Form>

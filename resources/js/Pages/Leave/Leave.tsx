@@ -30,6 +30,8 @@ import { useProcessIndicator } from "@/Components/Provider/process-indicator-pro
 import { APPLICATIONFORLEAVETYPES } from "./PDF/type";
 import { cn } from "@/Lib/utils";
 import { format } from "date-fns";
+import useWindowSize from "@/Hooks/useWindowResize";
+import { useSidebar } from "@/Components/ui/sidebar";
 
 type LEAVETYPE = APPLICATIONFORLEAVETYPES & {
     created_at: string;
@@ -55,6 +57,9 @@ const Main: React.FC<LeaveProps> = ({}) => {
     const { page, onQuery } = usePagination<LEAVETYPE>();
     const { setProcess } = useProcessIndicator();
     const role = usePage().props.auth.user.role
+    const { width } = useWindowSize()
+    const { state } = useSidebar()
+
     const [status, setStatus] = useState("pending");
     const [filter, setFilter] = useState("");
     const [{ sort, order }, setSortOrder] = useState<{
@@ -64,6 +69,8 @@ const Main: React.FC<LeaveProps> = ({}) => {
         sort: "name",
         order: "asc",
     });
+
+    const columns = width < 1024 ? width <= 639 ? `minmax(6rem,1fr) 5rem` : `${Array(3).fill('minmax(6rem,1fr)').join(' ')} 5rem`:`${Array(4).fill('minmax(6rem,1fr)').join(' ')} 5rem`
 
     return (
         <div>
@@ -84,7 +91,7 @@ const Main: React.FC<LeaveProps> = ({}) => {
                 </TabsList>
 
                 <Button
-                    className="ml-auto"
+                    className="ml-auto max-sm:hidden"
                     onClick={() =>
                         router.get(route("leave.apply"), undefined, {
                             onBefore: () => setProcess(true),
@@ -153,17 +160,22 @@ const Main: React.FC<LeaveProps> = ({}) => {
                         children="Date created"
                     />
                 </SortButton>
+                <Button
+                    className="ml-auto sm:hidden"
+                    onClick={() =>
+                        router.get(route("leave.apply"), undefined, {
+                            onBefore: () => setProcess(true),
+                        })
+                    }
+                >
+                    <Add />
+                </Button>
             </div>
 
             <Card className="min-h-[27rem] relative">
                 <TableDataSkeletonLoader
                     data="leaves"
-                    columns={[
-                        ...Array.from({ length: 4 }).map(
-                            () => "minmax(6rem,1fr)"
-                        ),
-                        "5rem",
-                    ]}
+                    columns={columns}
                     length={8}
                 >
                     {(column) => (
@@ -172,9 +184,9 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Type</div>
-                                <div>Date Created</div>
-                                <div>HR Status</div>
-                                <div>Principal Status</div>
+                                <div className="max-lg:!hidden">Date Created</div>
+                                <div className="[@media(max-width:641px)]:!hidden">HR Status</div>
+                                <div className="[@media(max-width:641px)]:!hidden">Principal Status</div>
                                 <div className="justify-center">Action</div>
                             </TableHeader>
                             {page?.data.length === 0 && (
@@ -189,7 +201,7 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                     style={{ gridTemplateColumns: column }}
                                 >
                                     <div>{LEAVETYPESOBJ[leave?.type]}</div>
-                                    <div>{format(leave?.created_at, 'MMM dd, y')}</div>
+                                    <div className="max-lg:!hidden">{format(leave?.created_at, 'MMM dd, y')}</div>
                                     <div
                                         className={cn(
                                             "capitalize",
@@ -197,7 +209,8 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                                 pending: "text-amber-600",
                                                 approved: "text-green-600",
                                                 disapproved: "text-destructive",
-                                            }[leave?.hrstatus]
+                                            }[leave?.hrstatus],
+                                            "[@media(max-width:641px)]:!hidden"
                                         )}
                                     >
                                         {leave?.hrstatus}
@@ -209,7 +222,8 @@ const Main: React.FC<LeaveProps> = ({}) => {
                                                 pending: "text-amber-600",
                                                 approved: "text-green-600",
                                                 disapproved: "text-destructive",
-                                            }[leave?.principalstatus]
+                                            }[leave?.principalstatus],
+                                            "[@media(max-width:641px)]:!hidden"
                                         )}
                                     >
                                         {leave?.principalstatus}

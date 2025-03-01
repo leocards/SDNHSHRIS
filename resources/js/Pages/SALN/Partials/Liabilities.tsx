@@ -33,12 +33,13 @@ const Liabilities: React.FC<{ form: any }> = ({ form }) => {
                             </Button>
                         )}
 
-                        <div className="grid grid-cols-1 sm:grid-cols-[1fr,10rem,13rem] gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr,10rem,13rem] gap-2.5 xs:gap-4">
                             <FormInput
                                 form={form}
                                 name={`liabilities.${index}.nature`}
                                 label="Nature"
                                 inputClass="uppercase"
+                                itemClass="max-lg:col-span-2 max-xs:col-span-1"
                             />
                             <FormInput
                                 form={form}

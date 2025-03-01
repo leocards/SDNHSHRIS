@@ -17,6 +17,7 @@ import ViewPds from "@/Pages/PDS/ViewPds";
 import { Button } from "@/Components/ui/button";
 import { Eye } from "iconsax-react";
 import SearchInput from "@/Components/SearchInput";
+import useWindowSize from "@/Hooks/useWindowResize";
 
 type PDSTYPE = {
     id: number;
@@ -47,6 +48,7 @@ const Main = () => {
     const [status, setStatus] = useState("pending");
     const [viewpds, setViewpds] = useState(false);
     const [userid, setUserid] = useState<number | null>(null);
+    const { width } = useWindowSize()
 
     return (
         <div className="mx-auto max-w-3xl">
@@ -76,7 +78,7 @@ const Main = () => {
             <Card className="min-h-[27rem] relative">
                 <TableDataSkeletonLoader
                     data="pds"
-                    columns={["1fr", "10rem", "5rem"]}
+                    columns={`1fr ${width > 520 ? "10rem":""} 5rem`}
                     length={8}
                 >
                     {(column) => (
@@ -85,7 +87,7 @@ const Main = () => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Name</div>
-                                <div>Date modified</div>
+                                <div className="[@media(max-width:520px)]:!hidden">Date modified</div>
                                 <div className="justify-center">View</div>
                             </TableHeader>
                             {page?.data?.length === 0 && (
@@ -105,7 +107,7 @@ const Main = () => {
                                             {pds?.user?.name}
                                         </div>
                                     </div>
-                                    <div>
+                                    <div className="[@media(max-width:520px)]:!hidden">
                                         {format(
                                             new Date(pds?.updated_at),
                                             "MMM dd, yyyy"

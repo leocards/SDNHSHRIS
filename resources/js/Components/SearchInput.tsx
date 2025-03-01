@@ -32,7 +32,7 @@ const SearchInput = ({ placeholder = "Search", onSearch }: Props) => {
         debouncedSearch("");
     };
     return (
-        <div className="ml-auto relative max-w-96 w-full">
+        <div className="ml-auto relative sm:max-w-96 w-full">
             <Input
                 className="w-full px-10 pl-9 formInput h-9"
                 value={search}
