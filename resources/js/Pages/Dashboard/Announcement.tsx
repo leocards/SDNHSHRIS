@@ -41,8 +41,12 @@ const Announcement = ({ announcements }: Props) => {
             window.axios
                 .get(route("announcement"))
                 .then((response) => {
-                    setAnnounceList(response.data);
+                    let data = response.data;
+
+                    setAnnounceList(data);
+                    console.log(data)
                 })
+                .catch((err) => console.log(err))
                 .finally(() => setRefresh(false));
         }
     };

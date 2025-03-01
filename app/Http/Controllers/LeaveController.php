@@ -140,7 +140,7 @@ class LeaveController extends Controller
 
             if ($request->type !== "maternity" && $request->type !== "sick") {
                 if ($request->type == "vacation" || $request->type == "mandatory") {
-                    if (!in_array($request->details, ['monitization', 'terminal']) && !$this->verifyDateFiveDaysAhead($request->filingfrom, $request->from)) {
+                    if (($request->details && !in_array($request->details, ['monitization', 'terminal'])) && ($request->from && !$this->verifyDateFiveDaysAhead($request->filingfrom, $request->from))) {
                         throw new Exception("You must send application 5 days ahead.", 1);
                     }
                 }
@@ -197,6 +197,8 @@ class LeaveController extends Controller
                     }
                 } */
             }
+
+            throw new Exception('test');
 
             $leave = Leave::create([
                 "user_id" => $auth->id,

@@ -17,11 +17,11 @@ const SchoolYear = ({ create, edit, onSelectMenu }:{
     edit: boolean;
     onSelectMenu: (value: "create"|"edit"|"close") => void
 }) => {
-    const { schoolyear } = usePage().props;
+    const { schoolyear, auth: { user } } = usePage().props;
 
     return (
-        <div>
-            <Menubar className="size-fit shadow-none">
+        <div className="flex">
+            {user.role === "hr" ? (<Menubar className="size-fit shadow-none">
                 <MenubarMenu>
                     <TooltipLabel label="School Year">
                         <span>
@@ -46,7 +46,12 @@ const SchoolYear = ({ create, edit, onSelectMenu }:{
                         </MenubarItem>
                     </MenubarContent>
                 </MenubarMenu>
-            </Menubar>
+            </Menubar>) : (
+                <div className="h-10 flex items-center justify-center px-3 border border-border rounded-md shadow-sm">
+                    {schoolyear?"SY "+schoolyear.schoolyear:"Add School Year"}
+                </div>
+            )}
+
 
             <CreateSchoolYear onClose={() => onSelectMenu("close")} show={create || edit} edit={edit} />
         </div>

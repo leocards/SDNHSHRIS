@@ -158,8 +158,8 @@ const HeaderNavigationBar: React.FC<Props> = ({}) => {
                         <MenubarSeparator />
 
                         <MenubarSub>
-                            <MenubarSubTrigger>SY 2024-2025</MenubarSubTrigger>
-                            <MenubarSubContent className="[@media_(max-width:360px)]:!-mr-[8rem] [@media_(max-width:360px)]:mt-9" alignOffset={-15}>
+                            <MenubarSubTrigger disabled={user.role !== 'hr'}>SY 2024-2025</MenubarSubTrigger>
+                            {user.role === 'hr' && <MenubarSubContent className="[@media_(max-width:360px)]:!-mr-[8rem] [@media_(max-width:360px)]:mt-9" alignOffset={-15}>
                                 <MenubarItem className="space-x-2" onClick={() => setSYState("create")}>
                                     <Plus />
                                     <div>New School Year</div>
@@ -168,7 +168,7 @@ const HeaderNavigationBar: React.FC<Props> = ({}) => {
                                     <SquarePen />
                                     <div>Edit School Year</div>
                                 </MenubarItem>
-                            </MenubarSubContent>
+                            </MenubarSubContent>}
                         </MenubarSub>
 
                         <MenubarSeparator />

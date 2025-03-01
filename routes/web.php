@@ -61,12 +61,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::prefix('announcement')->middleware(['role:hr'])->group(function () {
+    Route::prefix('announcement')->group(function () {
         Route::controller(AnnouncementController::class)->group(function () {
             Route::get('/', 'index')->name('announcement');
 
-            Route::post('/store/{user?}', 'store')->name('announcement.store');
-            Route::post('/delete/{announcement}', 'destroy')->name('announcement.delete');
+            Route::post('/store/{user?}', 'store')->middleware(['role:hr'])->name('announcement.store');
+            Route::post('/delete/{announcement}', 'destroy')->middleware(['role:hr'])->name('announcement.delete');
         });
     });
 
