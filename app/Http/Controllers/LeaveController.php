@@ -198,8 +198,6 @@ class LeaveController extends Controller
                 } */
             }
 
-            throw new Exception('test');
-
             $leave = Leave::create([
                 "user_id" => $auth->id,
                 "schoolyearid" => $sy->id,
