@@ -129,10 +129,17 @@ const ApplyLeave = () => {
     }, [watchDatesFrom, watchDatesTo]);
 
     useEffect(() => {
-        if (
-            !["shospital", "spatient", "vabroad"].includes(watchDetails ?? "")
-        ) {
-            form.setValue("detailsinput", "");
+        if(watchDetails) {
+            if (
+                !["shospital", "spatient", "vabroad"].includes(watchDetails)
+            ) {
+                form.setValue("detailsinput", "");
+            }
+
+            if(watchDetails === "monitization" || watchDetails === "terminal") {
+                form.setValue("from", null)
+                form.setValue("daysapplied", "")
+            }
         }
     }, [watchDetails]);
 
