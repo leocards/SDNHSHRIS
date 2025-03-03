@@ -361,6 +361,9 @@ const AttendanceRow: React.FC<AttendanceRowProps> = ({ form, name, index }) => {
                                 form={form}
                                 name={`${name}.${index}.present`}
                                 label={width <= 410 ? "No. of days present" : ""}
+                                type="number"
+                                maxLength={4}
+                                isStrictNumber
                             />
                         </div>
 
@@ -369,6 +372,9 @@ const AttendanceRow: React.FC<AttendanceRowProps> = ({ form, name, index }) => {
                                 form={form}
                                 name={`${name}.${index}.absent`}
                                 label={width <= 410 ? "No. of days absent" : ""}
+                                type="number"
+                                maxLength={4}
+                                isStrictNumber
                             />
                         </div>
 
@@ -377,6 +383,9 @@ const AttendanceRow: React.FC<AttendanceRowProps> = ({ form, name, index }) => {
                                 form={form}
                                 name={`${name}.${index}.timetardy`}
                                 label={width <= 410 ? "No. of time tardy" : ""}
+                                type="number"
+                                maxLength={4}
+                                isStrictNumber
                             />
                         </div>
 
@@ -385,6 +394,9 @@ const AttendanceRow: React.FC<AttendanceRowProps> = ({ form, name, index }) => {
                                 form={form}
                                 name={`${name}.${index}.undertime`}
                                 label={width <= 410 ? "No. of undertime" : ""}
+                                type="number"
+                                maxLength={4}
+                                isStrictNumber
                             />
                         </div>
                     </TableRow>
