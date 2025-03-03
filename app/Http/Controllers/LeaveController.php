@@ -306,18 +306,23 @@ class LeaveController extends Controller
             if ($auth->role == 'hr') {
                 $leave->hrstatus = $request->response;
                 $leave->hrdisapprovedmsg = $request->message;
-                $leave->from = $request->from ? Carbon::parse($request->from)->format('Y-m-d') : null;
-                $leave->to = $request->to ? Carbon::parse($request->to)->format('Y-m-d') : null;
+                if(in_array($leave->details, ['monitization', 'terminal']) && $request->response === 'approved') {
+                    $leave->from = $request->from ? Carbon::parse($request->from)->format('Y-m-d') : null;
+                    $leave->to = $request->to ? Carbon::parse($request->to)->format('Y-m-d') : null;
+                }
 
                 // deduct credits for principal that applies leave
                 if ($leave->user->role === "principal") {
-                    $this->processCreditDeduction($leaveApplicant, $leave);
+                    if($leave->type !== "maternity" && $request->response === 'approved')
+                        $this->processCreditDeduction($leaveApplicant, $leave);
                 }
             } else if ($auth->role == 'principal') {
                 $leave->principalstatus = $request->response;
                 $leave->principaldisapprovedmsg = $request->message;
-                $leave->from = $request->from ? Carbon::parse($request->from)->format('Y-m-d') : null;
-                $leave->to = $request->to ? Carbon::parse($request->to)->format('Y-m-d') : null;
+                if(in_array($leave->details, ['monitization', 'terminal']) && $request->response === 'approved') {
+                    $leave->from = $request->from ? Carbon::parse($request->from)->format('Y-m-d') : null;
+                    $leave->to = $request->to ? Carbon::parse($request->to)->format('Y-m-d') : null;
+                }
 
                 if ($leave->type !== "maternity" && $request->response == "approved") {
                     $this->processCreditDeduction($leaveApplicant, $leave);
