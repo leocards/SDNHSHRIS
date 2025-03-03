@@ -182,7 +182,7 @@ const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid, childre
     const watchFiling = form.watch('isjoint')
 
     useEffect(() => {
-        if(watchFiling && watchFiling != 'separate') {
+        if(watchFiling && watchFiling == 'joint') {
             form.setValue('children', getChildren(saln?.children??null, children))
         } else {
             form.setValue('children', [{ name: "N/A", dateofbirth: null }])
