@@ -67,7 +67,6 @@ const getChildren = (data: SALNTYPE["children"] | null, defaultChildren: SALNTYP
             })
         }
     }
-    console.log(childrens)
     return childrens;
 };
 
@@ -180,6 +179,8 @@ const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid, childre
         },
     });
 
+    const watchFiling = form.watch('isjoint')
+
     return (
         <div>
             <Header title="New SALN" className="w-full">
@@ -226,7 +227,9 @@ const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid, childre
                         spousegoveid={spousegoveid}
                     />
 
-                    <Children form={form} />
+                    {watchFiling != "separate" && <Children form={form} />}
+
+                    {watchFiling == "separate" && <br className="mb-5" />}
 
                     <Assets form={form} />
 
