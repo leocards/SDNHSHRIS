@@ -181,6 +181,14 @@ const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid, childre
 
     const watchFiling = form.watch('isjoint')
 
+    useEffect(() => {
+        if(watchFiling && watchFiling != 'separate') {
+            form.setValue('children', getChildren(saln?.children??null, children))
+        } else {
+            form.setValue('children', [{ name: "N/A", dateofbirth: null }])
+        }
+    }, [watchFiling])
+
     return (
         <div>
             <Header title="New SALN" className="w-full">
@@ -227,9 +235,7 @@ const NewSALN: React.FC<Props> = ({ address, saln, spouse, spousegoveid, childre
                         spousegoveid={spousegoveid}
                     />
 
-                    {watchFiling != "separate" && <Children form={form} />}
-
-                    {watchFiling == "separate" && <br className="mb-5" />}
+                    <Children form={form} />
 
                     <Assets form={form} />
 

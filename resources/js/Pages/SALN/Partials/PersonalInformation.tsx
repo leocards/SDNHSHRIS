@@ -21,32 +21,20 @@ type Props = {
 const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegoveid }) => {
     const user = usePage().props.auth.user;
 
-    const watchFiling = form.watch('isjoint')
+    const watchSpouse = form.watch('spouse')
 
     const onJointFiling = (filing: SALNTYPE['isjoint']) => {
-        if(spouse && ['joint'].includes(filing) && !/^(na|n\/a)$/i.test(spouse.familyname)) {
+        if(spouse && ['joint', 'not'].includes(filing) && !/^(na|n\/a)$/i.test(spouse.familyname)) {
             form.setValue('spouse', {
-                familyname: spouse.familyname,
-                firstname: spouse.firstname,
-                middleinitial: spouse.middlename?.[0]??"",
-                position: spouse.occupation,
-                office: spouse.employerbusiness,
-                officeaddress: spouse.businessaddress,
-                governmentissuedid: spousegoveid ? spousegoveid.governmentissuedid : "",
-                idno: spousegoveid ? spousegoveid.licensepassportid : "",
-                dateissued: spousegoveid ? new Date(spousegoveid.issued) : null,
-            })
-        } else if(filing === 'not') {
-            form.setValue('spouse', {
-                familyname: '',
-                firstname: '',
-                middleinitial: '',
-                position: '',
-                office: '',
-                officeaddress: '',
-                governmentissuedid: '',
-                idno: '',
-                dateissued: null,
+                familyname: spouse.familyname??watchSpouse?.familyname??"",
+                firstname: spouse.firstname??watchSpouse?.firstname??"",
+                middleinitial: spouse.middlename?.[0]??(watchSpouse?.middleinitial??""),
+                position: spouse.occupation??watchSpouse?.position??"",
+                office: spouse.employerbusiness??watchSpouse?.office??"",
+                officeaddress: spouse.businessaddress??watchSpouse?.officeaddress??"",
+                governmentissuedid: spousegoveid ? spousegoveid.governmentissuedid : watchSpouse?.governmentissuedid??"",
+                idno: spousegoveid ? spousegoveid.licensepassportid : watchSpouse?.idno?watchSpouse?.idno:"",
+                dateissued: spousegoveid ? new Date(spousegoveid.issued) : watchSpouse?.dateissued ? new Date(watchSpouse?.dateissued) : null,
             })
         } else {
             form.setValue('spouse', {
@@ -60,8 +48,6 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                 idno: '',
                 dateissued: null,
             })
-
-            form.setValue('children', [{ name: "N/A", dateofbirth: null }])
         }
     }
 
@@ -177,7 +163,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                 </div>
             </div>
 
-            {watchFiling !== "separate" && (<div className="space-y-2 mt-5">
+            <div className="space-y-2 mt-5">
                 <TypographySmall className="uppercase">Spouse</TypographySmall>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
                     <FormInput
@@ -246,7 +232,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
                         triggerClass="uppercase"
                     />
                 </div>
-            </div>)}
+            </div>
         </div>
     );
 };
