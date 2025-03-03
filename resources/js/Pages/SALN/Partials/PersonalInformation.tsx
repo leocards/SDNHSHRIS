@@ -24,7 +24,7 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
     const watchSpouse = form.watch('spouse')
 
     const onJointFiling = (filing: SALNTYPE['isjoint']) => {
-        if(['joint', 'not'].includes(filing)) {
+        if(['joint'].includes(filing)) {
             if((spouse && !/^(na|n\/a)$/i.test(spouse.familyname)))
                 form.setValue('spouse', {
                     familyname: spouse.familyname??watchSpouse?.familyname??"",
