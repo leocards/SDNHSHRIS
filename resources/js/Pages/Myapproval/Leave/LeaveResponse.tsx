@@ -1,6 +1,6 @@
 import Modal, { ModalProps } from "@/Components/Modal";
 import { Button } from "@/Components/ui/button";
-import { Form, FormTextArea } from "@/Components/ui/form";
+import { Form, FormCalendar, FormTextArea } from "@/Components/ui/form";
 import { useToast } from "@/Hooks/use-toast";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { cn } from "@/Lib/utils";
@@ -8,6 +8,7 @@ import { APPLICATIONFORLEAVETYPES } from "@/Pages/Leave/PDF/type";
 import { APPROVALTYPE } from "@/Types";
 import { requiredError } from "@/Types/types";
 import { usePage } from "@inertiajs/react";
+import { isWeekend } from "date-fns";
 import React, { Fragment, useEffect } from "react";
 import { z } from "zod";
 
@@ -15,6 +16,9 @@ const RESPONSESCHEMA = z
     .object({
         response: z.enum(["approved", "disapproved"]),
         message: z.string().optional().default(""),
+        detailsofleave: z.string().optional().default(''),
+        from: z.date().nullable().default(null),
+        to: z.date().optional().nullable().default(null)
     })
     .superRefine((res, ctx) => {
         if (res.response === "disapproved" && !res.message) {
@@ -22,6 +26,14 @@ const RESPONSESCHEMA = z
                 code: z.ZodIssueCode.custom,
                 message: requiredError("message"),
                 path: ["message"],
+            });
+        }
+
+        if(['monitization', 'terminal'].includes(res.detailsofleave) && !res.from) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: requiredError("from"),
+                path: ["from"],
             });
         }
     });
@@ -40,6 +52,13 @@ const LeaveResponse: React.FC<Props> = ({ leave, response, show, onClose }) => {
         route: route("myapproval.leave.approval", [leave.id]),
         method: "post",
         schema: RESPONSESCHEMA,
+        defaultValues: {
+            response: undefined,
+            message: '',
+            detailsofleave: leave.details??'',
+            from: null,
+            to: null
+        },
         async: true,
         callback: {
             onSuccess: (page: any) => {
@@ -65,6 +84,34 @@ const LeaveResponse: React.FC<Props> = ({ leave, response, show, onClose }) => {
         },
     });
 
+    const watchDateFrom = form.watch('from')
+
+    useEffect(() => {
+        if(watchDateFrom) {
+            if(parseInt(leave.daysapplied) > 1) {
+                function addBusinessDays(startDate: Date, daysToAdd: number): Date {
+                    const resultDate = new Date(startDate);
+
+                    for (let i = 0; i < daysToAdd; ) {
+                        resultDate.setDate(resultDate.getDate() + 1);
+                        const dayOfWeek = resultDate.getDay();
+
+                        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Skip weekends
+                            i++; // Only count business days
+                        }
+                    }
+
+                    return resultDate;
+                }
+
+                let days = new Date(watchDateFrom)
+                form.setValue('to', addBusinessDays(days, (parseInt(leave.daysapplied) - 1)))
+            }
+        } else {
+            form.setValue('to', null)
+        }
+    }, [watchDateFrom])
+
     useEffect(() => {
         if (show) {
             form.setValue("response", response ?? "approved");
@@ -81,8 +128,26 @@ const LeaveResponse: React.FC<Props> = ({ leave, response, show, onClose }) => {
                         <DisapproveResponse form={form} leave={leave} />
                     ) : (
                         <div>
-                            Confirm Application for leave of{" "}
-                            {leave?.firstname + " " + leave?.lastname} ?
+                            <div>
+                                Confirm Application for leave of{" "}
+                                {leave?.firstname + " " + leave?.lastname} ?
+                            </div>
+
+                            {['monitization', 'terminal'].includes(leave.details) && <div className="mt-4 space-y-3">
+                                <FormCalendar
+                                    form={form}
+                                    name="from"
+                                    label="From"
+                                    disableDate={(date) => isWeekend(date)}
+                                />
+                                <FormCalendar
+                                    form={form}
+                                    name="to"
+                                    label="To"
+                                    required={false}
+                                    disabled
+                                />
+                            </div>}
                         </div>
                     )}
 

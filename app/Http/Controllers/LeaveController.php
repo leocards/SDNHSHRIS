@@ -289,7 +289,9 @@ class LeaveController extends Controller
     {
         $request->validate([
             "response" => ["in:disapproved,approved"],
-            "message" => ['required_if:respond,disapproved', 'max:2000']
+            "message" => ['required_if:respond,disapproved', 'max:2000'],
+            "from" => ['required_if:detailsofleave,monitization,terminal'],
+            "to" => ['nullable','date']
         ]);
 
         DB::beginTransaction();
@@ -304,6 +306,8 @@ class LeaveController extends Controller
             if ($auth->role == 'hr') {
                 $leave->hrstatus = $request->response;
                 $leave->hrdisapprovedmsg = $request->message;
+                $leave->from = $request->from ? Carbon::parse($request->from)->format('Y-m-d') : null;
+                $leave->to = $request->to ? Carbon::parse($request->to)->format('Y-m-d') : null;
 
                 // deduct credits for principal that applies leave
                 if ($leave->user->role === "principal") {
@@ -312,6 +316,8 @@ class LeaveController extends Controller
             } else if ($auth->role == 'principal') {
                 $leave->principalstatus = $request->response;
                 $leave->principaldisapprovedmsg = $request->message;
+                $leave->from = $request->from ? Carbon::parse($request->from)->format('Y-m-d') : null;
+                $leave->to = $request->to ? Carbon::parse($request->to)->format('Y-m-d') : null;
 
                 if ($leave->type !== "maternity" && $request->response == "approved") {
                     $this->processCreditDeduction($leaveApplicant, $leave);
