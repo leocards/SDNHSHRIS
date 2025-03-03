@@ -24,18 +24,31 @@ const PersonalInformation: React.FC<Props> = ({ form, address, spouse, spousegov
     const watchSpouse = form.watch('spouse')
 
     const onJointFiling = (filing: SALNTYPE['isjoint']) => {
-        if(spouse && ['joint', 'not'].includes(filing) && !/^(na|n\/a)$/i.test(spouse.familyname)) {
-            form.setValue('spouse', {
-                familyname: spouse.familyname??watchSpouse?.familyname??"",
-                firstname: spouse.firstname??watchSpouse?.firstname??"",
-                middleinitial: spouse.middlename?.[0]??(watchSpouse?.middleinitial??""),
-                position: spouse.occupation??watchSpouse?.position??"",
-                office: spouse.employerbusiness??watchSpouse?.office??"",
-                officeaddress: spouse.businessaddress??watchSpouse?.officeaddress??"",
-                governmentissuedid: spousegoveid ? spousegoveid.governmentissuedid : watchSpouse?.governmentissuedid??"",
-                idno: spousegoveid ? spousegoveid.licensepassportid : watchSpouse?.idno?watchSpouse?.idno:"",
-                dateissued: spousegoveid ? new Date(spousegoveid.issued) : watchSpouse?.dateissued ? new Date(watchSpouse?.dateissued) : null,
-            })
+        if(['joint', 'not'].includes(filing)) {
+            if((spouse && !/^(na|n\/a)$/i.test(spouse.familyname)))
+                form.setValue('spouse', {
+                    familyname: spouse.familyname??watchSpouse?.familyname??"",
+                    firstname: spouse.firstname??watchSpouse?.firstname??"",
+                    middleinitial: spouse.middlename?.[0]??(watchSpouse?.middleinitial??""),
+                    position: spouse.occupation??watchSpouse?.position??"",
+                    office: spouse.employerbusiness??watchSpouse?.office??"",
+                    officeaddress: spouse.businessaddress??watchSpouse?.officeaddress??"",
+                    governmentissuedid: spousegoveid ? spousegoveid.governmentissuedid : watchSpouse?.governmentissuedid??"",
+                    idno: spousegoveid ? spousegoveid.licensepassportid : watchSpouse?.idno?watchSpouse?.idno:"",
+                    dateissued: spousegoveid ? new Date(spousegoveid.issued) : watchSpouse?.dateissued ? new Date(watchSpouse?.dateissued) : null,
+                })
+            else
+                form.setValue('spouse', {
+                    familyname: watchSpouse?.familyname??"",
+                    firstname: watchSpouse?.firstname??"",
+                    middleinitial: (watchSpouse?.middleinitial??""),
+                    position: watchSpouse?.position??"",
+                    office: watchSpouse?.office??"",
+                    officeaddress: watchSpouse?.officeaddress??"",
+                    governmentissuedid: spousegoveid ? spousegoveid.governmentissuedid : watchSpouse?.governmentissuedid??"",
+                    idno: spousegoveid ? spousegoveid.licensepassportid : watchSpouse?.idno?watchSpouse?.idno:"",
+                    dateissued: spousegoveid ? new Date(spousegoveid.issued) : watchSpouse?.dateissued ? new Date(watchSpouse?.dateissued) : null,
+                })
         } else {
             form.setValue('spouse', {
                 familyname: '',
