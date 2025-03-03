@@ -152,7 +152,7 @@ const SALNSCHEMA = z.object({
         }
     }
 
-    if (isjoint && isjoint != "not") {
+    if (isjoint && isjoint == "joint") {
         // Check if spouse is defined
         if (!spouse) {
             ctx.addIssue({
