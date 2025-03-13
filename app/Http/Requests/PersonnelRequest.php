@@ -32,7 +32,7 @@ class PersonnelRequest extends FormRequest
             'personal.extensionname' => ['nullable'],
             'personal.gender' => ['required', 'in:male,female'],
             'personal.birthday' => ['required', 'date'],
-            'contact.email' => ['required', 'email', 'string', 'lowercase', 'max:255', Rule::unique(User::class, "email")->ignore($this->route('personnelid'))],
+            'contact.email' => ['required', 'email', 'string', 'lowercase', 'max:255', 'ends_with:@deped.gov.ph', Rule::unique(User::class, "email")->ignore($this->route('personnelid'))],
             'contact.mobilenumber' => ['required', 'string', 'size:10'],
             'personnel.personnelid' => ['required', 'string', Rule::unique(User::class, 'personnelid')->ignore($this->route('personnelid'))],
             'personnel.datehired' => ['required', 'date'],
@@ -57,6 +57,13 @@ class PersonnelRequest extends FormRequest
                 "HR",
                 "N/A"
             ])],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'contact.email.ends_with' => 'The email must be from deped.gov.ph',
         ];
     }
 

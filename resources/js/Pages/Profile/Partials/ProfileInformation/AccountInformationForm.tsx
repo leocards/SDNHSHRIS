@@ -51,6 +51,9 @@ export const ACCOUNTSCHEMA = z.object({
             .string()
             .min(1, requiredError("email"))
             .email("Must be a valid email.")
+            .regex(/^[a-zA-Z0-9._%+-]+@deped\.gov\.ph$/, {
+                message: "Email must be from deped.gov.ph",
+            })
             .default(""),
         mobilenumber: z
             .string()
