@@ -222,7 +222,7 @@ const ViewSearched: React.FC<Props> = ({
                                 <DetailsCard
                                     label="Home Address / Mailing Address"
                                     valueClass="capitalize"
-                                    value={user?.mailingaddress.toLowerCase()}
+                                    value={user?.mailingaddress?.toLowerCase()}
                                 />
                                 <DetailsCard
                                     label="School / Detailed"

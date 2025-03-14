@@ -101,7 +101,7 @@ class GeneralSearchController extends Controller
     public function view(User $user)
     {
         $user->load(['pdsPersonalInformation.addresses']);
-        $user['mailingaddress'] = $this->getPermanentaddress($user->pdsPersonalInformation->addresses);
+        $user['mailingaddress'] = $user->pdsPersonalInformation ? $this->getPermanentaddress($user->pdsPersonalInformation->addresses) : null;
 
         return Inertia::render('GeneralSearch/ViewSearched', [
             "user" => $user,
