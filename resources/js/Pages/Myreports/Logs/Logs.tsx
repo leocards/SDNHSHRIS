@@ -114,7 +114,7 @@ const Main: React.FC<Props> = ({ years, principal }) => {
     }, [type]);
 
     return (
-        <div className="max-w-5xl mx-auto">
+        <div className="w-full">
             <Header title="Logs">Logs</Header>
 
             <Tabs

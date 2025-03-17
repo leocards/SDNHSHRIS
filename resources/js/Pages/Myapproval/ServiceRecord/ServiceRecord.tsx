@@ -56,7 +56,7 @@ const Main = () => {
     }[useSidebar().state]
 
     return (
-        <div className="mx-auto max-w-6xl">
+        <div className="w-full">
             <Header title="Service Record" children="Service Record" />
 
             <Tabs

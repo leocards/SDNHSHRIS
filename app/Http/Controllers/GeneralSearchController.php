@@ -98,16 +98,20 @@ class GeneralSearchController extends Controller
         ]);
     }
 
-    public function view(User $user)
+    public function view(Request $request, User $user)
     {
+        $tab = $request->tab;
+
         $user->load(['pdsPersonalInformation.addresses']);
         $user['mailingaddress'] = $user->pdsPersonalInformation ? $this->getPermanentaddress($user->pdsPersonalInformation->addresses) : null;
 
         return Inertia::render('GeneralSearch/ViewSearched', [
+            "tab" => $tab,
             "user" => $user,
             "attendances" => $user->tardiness()->with('schoolyear')->get(),
             "certificates" => $user->serviceRecord()->where('status', 'approved')->get(),
-            "leavecount" => $user->leave()->where('hrstatus', 'approved')->where('principalstatus', 'approved')->count()
+            "leavecount" => $user->leave()->where('hrstatus', 'approved')->where('principalstatus', 'approved')->count(),
+            "locatorslip" => $user->locatorSlip()->with('principal')->where('status', 'approved')->get(),
         ]);
     }
 

@@ -34,8 +34,10 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/Components/ui/accordion";
+import { LOCATORSLIPTYPE } from "../LocatorSlip/LocatorSlip";
 
 type Props = {
+    tab: string | null;
     user: User & {
         mailingaddress: string;
         pds_personal_information: PERSONALINFORMATIONTYPE;
@@ -43,13 +45,18 @@ type Props = {
     leavecount: number;
     attendances: any[];
     certificates: any[];
+    locatorslip: Array<LOCATORSLIPTYPE & {
+        principal: User
+    }>
 };
 
 const ViewSearched: React.FC<Props> = ({
+    tab,
     user,
     leavecount,
     attendances,
     certificates,
+    locatorslip
 }) => {
     const [selectedCertificate, setSelectedCertificate] = useState(0);
     const [viewCertificate, setViewCertificate] = useState(false);
@@ -58,18 +65,17 @@ const ViewSearched: React.FC<Props> = ({
     const { selectConversation } = useMessage();
     const { state } = useSidebar();
     const { width } = useWindowSize();
-    const [tabs, setTabs] = useState("details");
+    const [tabs, setTabs] = useState(tab??"details");
 
-    const srcolumns = `1fr ${width <= 456 ? "" : "8rem"} ${
-        width <= 640 ? "" : "10rem"
-    } 4rem`;
+    const srcolumns = `1fr ${width <= 456 ? "" : "10rem"} ${width <= 640 ? "" : "10rem"} 4rem`;
     const columns = ["1fr", "10rem", "10rem", "4rem"].join(" ");
     const TabsLabel = {
         details: "Details",
         tardiness: "Attendance",
         sr: "Certificates",
         pds: "PDS",
-    }[tabs];
+        ls: "Locator Slip",
+    }[tabs??'details'];
 
     return (
         <div>
@@ -108,6 +114,7 @@ const ViewSearched: React.FC<Props> = ({
                         <TabsTrigger value="tardiness">Attendance</TabsTrigger>
                         <TabsTrigger value="sr">Certificates</TabsTrigger>
                         <TabsTrigger value="pds">PDS</TabsTrigger>
+                        <TabsTrigger value="ls">Locator Slip</TabsTrigger>
                     </TabsList>
                 )}
 
@@ -153,6 +160,15 @@ const ViewSearched: React.FC<Props> = ({
                                     onClick={() => setTabs("pds")}
                                 >
                                     PDS
+                                </MenubarItem>
+                                <MenubarItem
+                                    className={cn(
+                                        tabs === "ls" &&
+                                            "text-primary font-semibold"
+                                    )}
+                                    onClick={() => setTabs("ls")}
+                                >
+                                    Locator Slip
                                 </MenubarItem>
                             </MenubarContent>
                         </MenubarMenu>
@@ -285,7 +301,7 @@ const ViewSearched: React.FC<Props> = ({
 
                 <TabsContent
                     value="tardiness"
-                    className="max-w-6xl mx-auto w-full p-4 max-sm:px-0 [@media(max-width:456px)]:px-0"
+                    className="w-full py-4 max-sm:px-0 [@media(max-width:456px)]:px-0"
                 >
                     <Card className="min-h-[28rem] relative">
                         <Accordion type="single" collapsible className="w-full">
@@ -336,9 +352,9 @@ const ViewSearched: React.FC<Props> = ({
 
                 <TabsContent
                     value="sr"
-                    className="max-w-4xl mx-auto w-full p-4 [@media(max-width:456px)]:px-0"
+                    className="w-full py-4 [@media(max-width:456px)]:px-0"
                 >
-                    <Card className="min-h-[28rem] relative p-2 space-y-1">
+                    <Card className="min-h-[28rem] relative space-y-1">
                         <TableHeader style={{ gridTemplateColumns: srcolumns }}>
                             <div>Certificate Name</div>
                             <div className="[@media(max-width:456px)]:!hidden">
@@ -433,6 +449,59 @@ const ViewSearched: React.FC<Props> = ({
                     >
                         <PDSPDF userid={user?.id} tab={pdsTab} />
                     </div>
+                </TabsContent>
+
+                <TabsContent
+                    value="ls"
+                    className="w-full py-4 max-sm:px-0 [@media(max-width:456px)]:px-0"
+                >
+                    <Card className="min-h-[28rem] relative">
+                        <TableHeader style={{ gridTemplateColumns: srcolumns }}>
+                            <div>Purpose of Travel</div>
+                            <div className="[@media(max-width:456px)]:!hidden">
+                                Type
+                            </div>
+                            <div className="max-sm:!hidden">Date of Filing</div>
+                            <div></div>
+                        </TableHeader>
+                        {locatorslip.length === 0 && (
+                            <div className="flex flex-col items-center absolute inset-0 justify-center pointer-events-none">
+                                <img
+                                    className="size-24 opacity-40 dark:opacity-65"
+                                    src={emptyData}
+                                />
+                                <div className="text-sm font-medium text-foreground/50 mt-1">
+                                    No recorded locator slip.
+                                </div>
+                            </div>
+                        )}
+
+                        {locatorslip?.map((data, index) => (
+                            <TableRow
+                                style={{ gridTemplateColumns: srcolumns }}
+                                key={index}
+                                className="cursor-pointer py-1"
+                                onClick={() => router.get(route('general-search.view.ls.view', [data.id]), {}, { onBefore: () => setProcess(true)})}
+                            >
+                                <div className="line-clamp-1">
+                                    {data?.purposeoftravel}
+                                </div>
+                                <div
+                                    className={cn(
+                                        "[@media(max-width:456px)]:!hidden"
+                                    )}
+                                >
+                                    {data?.type === 'business' ? 'Official Business' : 'Official Time'}
+                                </div>
+                                <div className="max-sm:!hidden">
+                                    {format(data?.dateoffiling, "MMMM dd, y")}
+                                </div>
+                                <Button className="ml-auto" variant={"link"}>
+                                    <Eye />
+                                </Button>
+                            </TableRow>
+                        ))}
+                    </Card>
                 </TabsContent>
             </Tabs>
         </div>

@@ -1,11 +1,10 @@
 import Header from "@/Components/Header";
 import TypographySmall, { TypographyLarge } from "@/Components/Typography";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
-import { DepartmentsType } from "@/Types";
-import { convertToAbbreviation, Departments } from "@/Types/types";
+import { convertToAbbreviation } from "@/Types/types";
 import { usePage } from "@inertiajs/react";
 import { ArrowRight2 } from "iconsax-react";
-import { Fragment, PropsWithChildren, useEffect, useRef } from "react";
+import { Fragment, PropsWithChildren, useEffect } from "react";
 import { defaultLeave, IFormLeave, LEAVESCHEMA } from "./Types/LeaveFormSchema";
 import { useToast } from "@/Hooks/use-toast";
 import {
@@ -21,18 +20,15 @@ import { LEAVETYPEKEYSARRAY, LEAVETYPESOBJ } from "./Types/leavetypes";
 import { Button } from "@/Components/ui/button";
 import {
     eachDayOfInterval,
-    isBefore,
     isToday,
-    isTomorrow,
     isWeekend,
-    isYesterday,
 } from "date-fns";
 import { countWeekdaysInRange } from "./Types/Methods";
 import FilePondUploader from "@/Components/FilePondUploader";
 import { cn } from "@/Lib/utils";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
-import { FilePond, registerPlugin } from "react-filepond";
+import { registerPlugin } from "react-filepond";
 
 const ApplyLeave = () => {
     const { toast } = useToast();

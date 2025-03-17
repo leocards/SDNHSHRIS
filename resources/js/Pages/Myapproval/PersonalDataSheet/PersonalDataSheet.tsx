@@ -51,7 +51,7 @@ const Main = () => {
     const { width } = useWindowSize()
 
     return (
-        <div className="mx-auto max-w-3xl">
+        <div className="w-full">
             <Header title="PDS" children="(PDS) Personal Data Sheet" />
 
             <Tabs

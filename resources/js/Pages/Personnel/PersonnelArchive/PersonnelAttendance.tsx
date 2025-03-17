@@ -26,7 +26,7 @@ const PersonnelAttendance: React.FC<Props> = ({ tardinesses }) => {
     };
 
     return (
-        <TabsContent value="tardiness" className="max-w-5xl mx-auto w-full p-4">
+        <TabsContent value="tardiness" className="mx-auto w-full py-4">
             <Deferred
                 data="tardinesses"
                 fallback={

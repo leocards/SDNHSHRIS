@@ -172,6 +172,8 @@ class PersonnelController extends Controller
 
     public function personnelArchiveView(Request $request, $userId)
     {
+        $tab = $request->tab;
+
         $user = User::withoutGlobalScopes()->find($userId);
 
         if (!$user->status_updated_at)
@@ -180,6 +182,7 @@ class PersonnelController extends Controller
             return $this->returnResponse('Info', 'The personnel with the given details does not exist.', 'info');
 
         return Inertia::render('Personnel/PersonnelArchive/View', [
+            'tab' => $tab,
             'user' => $user->load(['pdsPersonalInformation' => function ($query) {
                 $query->select('id', 'user_id', 'tin'); // Ensure foreign key is included
             }]),
@@ -205,6 +208,7 @@ class PersonnelController extends Controller
             'certificates' => Inertia::defer(fn() => $user->serviceRecord),
             'leaves' => Inertia::defer(fn() => $user->leave()->get(['id', 'user_id', 'type'])),
             'saln' => Inertia::defer(fn() => $user->salnreport),
+            'locatorslip' => Inertia::defer(fn() => $user->locatorSlip()->with('principal')->where('status', 'approved')->get()),
         ]);
     }
 

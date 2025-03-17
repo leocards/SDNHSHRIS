@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Conversation;
 use App\Models\Leave;
+use App\Models\LocatorSlip;
 use App\Models\Notification;
 use App\Models\PersonalDataSheet;
 use App\Models\Saln;
@@ -11,6 +12,7 @@ use App\Models\ServiceRecord;
 use App\Models\User;
 use App\Observers\ConversationObserver;
 use App\Observers\LeaveObserver;
+use App\Observers\LocatorSlipObserver;
 use App\Observers\NotificationObserver;
 use App\Observers\PersonalDataSheetObserver;
 use App\Observers\SALNObserver;
@@ -43,5 +45,6 @@ class AppServiceProvider extends ServiceProvider
         ServiceRecord::observe(ServiceRecordObserver::class);
         Saln::observe(SALNObserver::class);
         PersonalDataSheet::observe(PersonalDataSheetObserver::class);
+        LocatorSlip::observe(LocatorSlipObserver::class);
     }
 }

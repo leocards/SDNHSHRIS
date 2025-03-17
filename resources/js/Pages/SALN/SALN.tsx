@@ -48,7 +48,7 @@ const Main = () => {
     }[state]
 
     return (
-        <div className="mx-auto max-w-6xl">
+        <div className="w-full">
             <Header
                 title="SALN"
                 children="(SALN) Statement of Assests, Liabilities, and Networth"

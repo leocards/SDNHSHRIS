@@ -42,7 +42,7 @@ const Main = () => {
     const { width } = useWindowSize()
 
     return (
-        <div className="mx-auto max-w-4xl">
+        <div className="w-full">
             <Header
                 title="SALN"
                 children="(SALN) Statement of Assests, Liabilities, and Networth"

@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeneralSearchController;
 use App\Http\Controllers\IpcrReportController;
 use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\LocatorSlipController;
 use App\Http\Controllers\LogsReportController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
@@ -25,7 +26,6 @@ use App\Http\Controllers\SalnReportController;
 use App\Http\Controllers\SchoolYearController;
 use App\Http\Controllers\ServiceRecordController;
 use App\Http\Controllers\TardinessController;
-use App\Models\Conversation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -40,7 +40,6 @@ Route::get('/', function () {
                 return redirect('/dashboard');
             else
                 return back();
-
         }
 
     return Inertia::render('Welcome');
@@ -51,6 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::controller(GeneralSearchController::class)->group(function () {
             Route::get('/', 'index')->name('general-search');
             Route::get('/view/{user}', 'view')->name('general-search.view');
+            Route::get('/view/locatorslip/view/{ls}', [LocatorSlipController::class, 'view'])->name('general-search.view.ls.view');
         });
     });
 
@@ -80,6 +80,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/personnel-archive', 'personnelArchive')->middleware(['role:hr'])->name('personnel.archive');
             Route::get('/personnel-archive/view/{userId}', 'personnelArchiveView')->middleware(['role:hr'])->name('personnel.archive.view');
             Route::get('/personnel-archive/leave/view/{leave}', 'personnelArchiveViewLeaveApplication')->middleware(['role:hr'])->name('personnel.archive.leave.view');
+            Route::get('/personnel-archive/view/locatorslip/view/{ls}', [LocatorSlipController::class, 'view'])->middleware(['role:hr'])->name('personnel.archive.view.ls.view');
 
             Route::post('/new/{personnelid?}', 'store')->middleware(['role:hr'])->name('personnel.store');
             Route::post('/personnel-status/{user}', 'updatePersonnelStatus')->middleware(['role:hr'])->name('personnel.status.update');
@@ -103,6 +104,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/leave/view/{leave}', 'view')->name('myapproval.leave.view');
 
             Route::post('/leave/approval/{leave}', 'leaveApproval')->name('myapproval.leave.approval');
+        });
+
+        Route::controller(LocatorSlipController::class)->middleware(['role:teaching,non-teaching,principal'])->group(function () {
+            Route::get('/locatorslip', 'index')->name('myapproval.locatorslip');
+            Route::get('/locatorslip/view/{ls}', 'view')->name('myapproval.locatorslip.view');
+
+            Route::post('/approval/{ls}', 'approval')->name('myapproval.locatorslip.approval');
         });
 
         Route::controller(PersonalDataSheetController::class)->group(function () {
@@ -165,6 +173,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             Route::post('/apply/store', 'store')->name('leave.apply.store');
             Route::post('/submit/medical/{leave}', 'storeMedicalCertificate')->name('leave.medical.store');
+        });
+    });
+
+    Route::prefix('locatorslip')->middleware(['role:teaching,non-teaching,principal'])->group(function () {
+        Route::controller(LocatorSlipController::class)->group(function () {
+            Route::get('/', 'index')->name('locatorslip');
+            Route::get('/view/{ls}', 'view')->name('locatorslip.view');
+
+            Route::post('/apply', 'store')->name('locatorslip.store');
         });
     });
 

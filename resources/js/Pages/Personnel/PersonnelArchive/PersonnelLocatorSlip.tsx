@@ -5,19 +5,24 @@ import { Fragment, useState } from "react";
 import { Button } from "@/Components/ui/button";
 import { Eye } from "iconsax-react";
 import ViewCertificate from "@/Pages/ServiceRecord/ViewCertificate";
-import { Deferred } from "@inertiajs/react";
+import { Deferred, router } from "@inertiajs/react";
 import TypographySmall from "@/Components/Typography";
 import { TableHeader, TableRow } from "@/Components/Header";
 import { cn } from "@/Lib/utils";
 import { format } from "date-fns";
 import useWindowSize from "@/Hooks/useWindowResize";
+import { LOCATORSLIPTYPE } from "@/Pages/LocatorSlip/LocatorSlip";
+import { User } from "@/Types";
+import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
 
 type Props = {
-    certificates: any[];
+    locatorslip: Array<LOCATORSLIPTYPE & {
+            principal: User
+        }>
 };
 
-const PersonnelServiceRecords: React.FC<Props> = ({ certificates }) => {
-    const [selectedCertificate, setSelectedCertificate] = useState(0);
+const PersonnelLocatorSlip: React.FC<Props> = ({ locatorslip }) => {
+    const { setProcess } = useProcessIndicator();
     const [viewCertificate, setViewCertificate] = useState(false);
     const { width } = useWindowSize()
 
@@ -25,10 +30,10 @@ const PersonnelServiceRecords: React.FC<Props> = ({ certificates }) => {
 
     return (
         <TabsContent
-            value="sr"
+            value="ls"
             className="w-full mx-auto"
         >
-            <Card className="min-h-[28rem] relative space-y-1 mt-5">
+            <Card className="min-h-[28rem] relative mt-5">
                 <Deferred
                     data="certificates"
                     fallback={
@@ -41,48 +46,42 @@ const PersonnelServiceRecords: React.FC<Props> = ({ certificates }) => {
                     }
                 >
                     <Fragment>
-                        {certificates?.length === 0 && (
+                        {locatorslip?.length === 0 && (
                             <div className="flex flex-col items-center absolute inset-0 justify-center pointer-events-none">
                                 <img
                                     className="size-24 opacity-40 dark:opacity-65"
                                     src={emptyData}
                                 />
                                 <div className="text-sm font-medium text-foreground/50 mt-1">
-                                    No recorded certificates.
+                                    No recorded locator slip.
                                 </div>
                             </div>
                         )}
 
                         <TableHeader style={{ gridTemplateColumns: columns }}>
-                            <div>Certificate Name</div>
+                            <div>Pupose of Travel</div>
                             <div className="[@media(max-width:456px)]:!hidden">Type</div>
                             <div className="max-sm:!hidden">Date modified</div>
                             <div></div>
                         </TableHeader>
 
-                        {certificates?.map((data, index) => (
+                        {locatorslip?.map((data, index) => (
                             <TableRow
                                 style={{ gridTemplateColumns: columns }}
                                 key={index}
-                                className="hover:bg-secondary border border-border rounded-md shadow-sm cursor-pointer"
-                                onClick={() => {
-                                    setSelectedCertificate(data?.id);
-                                    setViewCertificate(true);
-                                }}
+                                className="cursor-pointer py-1"
+                                onClick={() => router.get(route('personnel.archive.view.ls.view', [data.id]), {}, { onBefore: () => setProcess(true)})}
                             >
                                 <div className="line-clamp-1">
-                                    {data?.details?.name ?? "N/A"}
+                                    {data?.purposeoftravel}
                                 </div>
                                 <div
-                                    className={cn("[@media(max-width:456px)]:!hidden",
-                                        data?.type === "coc"
-                                            ? "uppercase"
-                                            : "capitalize"
+                                    className={cn("[@media(max-width:456px)]:!hidden"
                                     )}
                                 >
-                                    {data?.type}
+                                    {data?.type === 'business' ? 'Official Business' : 'Official Time'}
                                 </div>
-                                <div className="max-sm:!hidden">{format(data?.updated_at, "MMMM dd, y")}</div>
+                                <div className="max-sm:!hidden">{format(data?.dateoffiling, "MMMM dd, y")}</div>
                                 <Button className="ml-auto" variant={"link"}>
                                     <Eye />
                                 </Button>
@@ -90,16 +89,9 @@ const PersonnelServiceRecords: React.FC<Props> = ({ certificates }) => {
                         ))}
                     </Fragment>
                 </Deferred>
-
-                <ViewCertificate
-                    srid={selectedCertificate}
-                    show={viewCertificate}
-                    onClose={setViewCertificate}
-                    isInactive
-                />
             </Card>
         </TabsContent>
     );
 };
 
-export default PersonnelServiceRecords;
+export default PersonnelLocatorSlip;

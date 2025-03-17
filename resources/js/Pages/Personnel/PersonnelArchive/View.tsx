@@ -14,8 +14,12 @@ import PersonnelSALN from "./PersonnelSALN";
 import { cn } from "@/Lib/utils";
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from "@/Components/ui/menubar";
 import { Menu } from "lucide-react";
+import { useSidebar } from "@/Components/ui/sidebar";
+import PersonnelLocatorSlip from "./PersonnelLocatorSlip";
+import { LOCATORSLIPTYPE } from "@/Pages/LocatorSlip/LocatorSlip";
 
 type Props = {
+    tab: string| null;
     user: User & {
         pds_personal_information: { tin: string };
     };
@@ -28,17 +32,24 @@ type Props = {
         type: (typeof LEAVETYPEKEYSARRAY)[number];
     }>;
     saln: SALNREPORTTYPE[];
+    locatorslip: Array<LOCATORSLIPTYPE & {
+                principal: User
+            }>
 };
 
 const View: React.FC<Props> = ({
+    tab,
     user,
     tardinesses,
     certificates,
     leaves,
     saln,
     servicecredits,
+    locatorslip
 }) => {
-    const [tabs, setTabs] = useState("details")
+    const { state } = useSidebar()
+
+    const [tabs, setTabs] = useState(tab??"details")
 
     const TabsLabel = {
         "details": "Details",
@@ -47,6 +58,7 @@ const View: React.FC<Props> = ({
         "sr": "Service Records",
         "leave": "Leave",
         "saln": "SALN",
+        "ls": "Locator Slip",
     }[tabs]
 
     return (
@@ -58,24 +70,30 @@ const View: React.FC<Props> = ({
             />
 
             <Tabs
-                className="overflow-hidden grow flex flex-col my-5"
+                className="overflow-hidden grow flex flex-col my-5 w-full"
                 defaultValue="details"
                 onValueChange={setTabs}
                 value={tabs}
             >
                 <TabsList className={cn(
-                    "w-fit flex rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60 [@media(max-width:540px)]:justify-start [@media(max-width:540px)]:overflow-x-auto [@media(max-width:540px)]:max-w-full",
-                    "[@media(max-width:538px)]:hidden"
-                )} style={{ scrollbarColor: "hsl(var(--primary)) transparent !important" }}>
+                    "w-fit flex rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60",
+                    "data-[state=expanded]:[@media(max-width:890px)]:hidden",
+                    "[@media(max-width:659px)]:hidden"
+                )} data-state={state}>
                     <TabsTrigger value="details">Details</TabsTrigger>
                     <TabsTrigger value="pds">PDS</TabsTrigger>
                     <TabsTrigger value="tardiness">Attendance</TabsTrigger>
                     <TabsTrigger value="sr">Service Records</TabsTrigger>
                     <TabsTrigger value="leave">Leave</TabsTrigger>
                     <TabsTrigger value="saln">SALN</TabsTrigger>
+                    <TabsTrigger value="ls">Locator Slip</TabsTrigger>
                 </TabsList>
 
-                <div className="flex items-center gap-3 [@media(min-width:538px)]:hidden">
+                <div className={cn(
+                    "flex items-center gap-3",
+                    "data-[state=expanded]:[@media(min-width:889px)]:hidden",
+                    "data-[state=collapsed]:[@media(max-width:889px)_and_(min-width:659px)]:hidden",
+                )} data-state={state}>
                     <Menubar>
                         <MenubarMenu>
                             <MenubarTrigger size="icon" variant={"outline"}>
@@ -88,12 +106,12 @@ const View: React.FC<Props> = ({
                                 <MenubarItem className={cn(tabs === 'sr' && "text-primary font-semibold")} onClick={() => setTabs('sr')}>Service Records</MenubarItem>
                                 <MenubarItem className={cn(tabs === 'leave' && "text-primary font-semibold")} onClick={() => setTabs('leave')}>Leave</MenubarItem>
                                 <MenubarItem className={cn(tabs === 'saln' && "text-primary font-semibold")} onClick={() => setTabs('saln')}>SALN</MenubarItem>
+                                <MenubarItem className={cn(tabs === 'ls' && "text-primary font-semibold")} onClick={() => setTabs('ls')}>Locator Slip</MenubarItem>
                             </MenubarContent>
                         </MenubarMenu>
                     </Menubar>
                     <div>{TabsLabel}</div>
                 </div>
-
 
                 <PersonnelDetails user={user} servicecredits={servicecredits} />
 
@@ -111,6 +129,10 @@ const View: React.FC<Props> = ({
                         position: user?.position,
                         tin: user?.pds_personal_information?.tin,
                     }}
+                />
+
+                <PersonnelLocatorSlip
+                    locatorslip={locatorslip}
                 />
             </Tabs>
         </div>

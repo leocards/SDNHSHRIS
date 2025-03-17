@@ -39,7 +39,7 @@ const PersonnelLeave: React.FC<Props> = ({ leaves }) => {
     return (
         <TabsContent
             value="leave"
-            className="sm:max-w-4xl mx-auto sm:min-w-[35rem] w-full"
+            className="w-full"
         >
             <Deferred
                 data="leaves"

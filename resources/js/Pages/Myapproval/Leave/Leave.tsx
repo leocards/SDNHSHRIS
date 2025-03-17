@@ -1,8 +1,6 @@
 import Header, { TableHeader, TableRow } from "@/Components/Header";
 import React, {
-    ChangeEvent,
     Fragment,
-    useRef,
     useState,
 } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/Components/ui/tabs";
@@ -24,10 +22,8 @@ import {
     LEAVETYPES,
     LEAVETYPESOBJ,
 } from "@/Pages/Leave/Types/leavetypes";
-import { Input } from "@/Components/ui/input";
-import { Eye, SearchNormal1 } from "iconsax-react";
+import { Eye } from "iconsax-react";
 import { Button } from "@/Components/ui/button";
-import { X } from "lucide-react";
 import TableDataSkeletonLoader from "@/Components/TableDataSkeletonLoader";
 import empty from "@/Assets/empty-file.svg";
 import { ProfilePhoto } from "@/Components/ui/avatar";
@@ -38,7 +34,6 @@ import { useProcessIndicator } from "@/Components/Provider/process-indicator-pro
 import { APPLICATIONFORLEAVETYPES } from "@/Pages/Leave/PDF/type";
 import { format } from "date-fns";
 import { cn } from "@/Lib/utils";
-import { useDebouncedFunction } from "@/Hooks/useDebounce";
 import useWindowSize from "@/Hooks/useWindowResize";
 import { useSidebar } from "@/Components/ui/sidebar";
 import SearchInput from "@/Components/SearchInput";

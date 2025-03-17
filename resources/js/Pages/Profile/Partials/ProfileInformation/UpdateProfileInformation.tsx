@@ -223,7 +223,7 @@ export default function UpdateProfileInformation({
                         </div>
                     </div>
 
-                    <div className="mt-6">
+                    {user.role !== 'hr' && (<div className="mt-6">
                         <Label
                             children="Residential Address"
                             className="text-foreground/80 italic"
@@ -287,9 +287,9 @@ export default function UpdateProfileInformation({
                                 <div>{address?.residential?.zipcode}</div>
                             </div>
                         </div>
-                    </div>
+                    </div>)}
 
-                    <div className="mt-6">
+                    {user.role !== 'hr' && (<div className="mt-6">
                         <Label
                             children="Permanent Address"
                             className="text-foreground/80 italic"
@@ -351,7 +351,7 @@ export default function UpdateProfileInformation({
                                 <div>{address?.permanent?.zipcode}</div>
                             </div>
                         </div>
-                    </div>
+                    </div>)}
                 </div>
 
                 <div className="relative">

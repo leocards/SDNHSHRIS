@@ -292,4 +292,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(LogsReport::class);
     }
+
+    public function locatorSlip()
+    {
+        return $this->hasMany(LocatorSlip::class);
+    }
 }

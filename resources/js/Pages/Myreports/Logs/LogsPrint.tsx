@@ -7,7 +7,6 @@ import { useReactToPrint } from "react-to-print";
 import logo from "@/Assets/images/sdnhs-logo.png";
 import deped from "@/Assets/images/DepEd.png";
 import { format } from "date-fns";
-import { cn } from "@/Lib/utils";
 import TypographySmall from "@/Components/Typography";
 import { User } from "@/Types";
 import { usePage } from "@inertiajs/react";

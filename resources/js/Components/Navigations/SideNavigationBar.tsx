@@ -22,6 +22,7 @@ import {
     ChartSuccess,
     DocumentForward,
     DocumentText,
+    DocumentText1,
     FavoriteChart,
     Home2,
     Note,
@@ -369,6 +370,34 @@ const SideNavigationBar = () => {
                                             </SidebarMenuSubButton>
                                         </SidebarMenuSubItem>
                                     </AuthTabs>
+                                    <AuthTabs tab="myapprovals.locatorslip">
+                                        <SidebarMenuSubItem>
+                                            <SidebarMenuSubButton
+                                                className="cursor-pointer"
+                                                onClick={() =>
+                                                    navigateTo(
+                                                        route(
+                                                            "myapproval.locatorslip"
+                                                        )
+                                                    )
+                                                }
+                                                isActive={url.startsWith(
+                                                    "/myapproval/locatorslip"
+                                                )}
+                                            >
+                                                <DocumentText1
+                                                    variant={
+                                                        url.startsWith(
+                                                            "/myapproval/locatorslip"
+                                                        )
+                                                            ? "Bulk"
+                                                            : "Linear"
+                                                    }
+                                                />
+                                                <span>Locator Slip</span>
+                                            </SidebarMenuSubButton>
+                                        </SidebarMenuSubItem>
+                                    </AuthTabs>
                                     <AuthTabs tab="myapprovals.pds">
                                         <SidebarMenuSubItem>
                                             <SidebarMenuSubButton
@@ -701,6 +730,35 @@ const SideNavigationBar = () => {
                         </SidebarMenuItem>
                     </AuthTabs>
 
+                    <AuthTabs tab="locatorslip">
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                tooltip="Leave"
+                                isActive={url.startsWith("/locatorslip")}
+                                onClick={() => {
+                                    navigateTo(route("locatorslip"));
+                                }}
+                            >
+                                <DocumentText1
+                                    variant={
+                                        url.startsWith("/locatorslip")
+                                            ? "Bulk"
+                                            : "Linear"
+                                    }
+                                />
+                                <span
+                                    className={cn(
+                                        (state == "collapsed" && !isMobile) && "hidden"
+                                    )}
+                                >
+                                    {props.auth.user.role === "principal" &&
+                                        "My"}{" "}
+                                    Locator Slip
+                                </span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </AuthTabs>
+
                     <AuthTabs tab="saln">
                         <SidebarMenuItem>
                             <SidebarMenuButton
@@ -790,7 +848,9 @@ const tabs = [
     "sr",
     "tardiness",
     "pds",
-    "personnel.archive"
+    "personnel.archive",
+    "myapprovals.locatorslip",
+    "locatorslip"
 ] as const;
 
 const AuthTabs: React.FC<{
@@ -809,9 +869,10 @@ const AuthTabs: React.FC<{
                 tabs[18],
                 tabs[19],
                 tabs[21],
+                tabs[23],
             ],
-            teaching: [tabs[1], ...tabs.slice(17, 22)],
-            "non-teaching": [tabs[1], ...tabs.slice(17, 22)],
+            teaching: [tabs[1], ...tabs.slice(17, 22), tabs[24]],
+            "non-teaching": [tabs[1], ...tabs.slice(17, 22), tabs[24]],
         };
         return allowedtabs[role].includes(props.tab);
     }, []);
