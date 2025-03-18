@@ -4,19 +4,25 @@ import { Button } from "@/Components/ui/button";
 import {
     Form,
     FormCalendar,
+    FormControl,
+    FormField,
     FormInput,
+    FormItem,
+    FormLabel,
+    FormMessage,
     FormRadioGroup,
     FormRadioItem,
 } from "@/Components/ui/form";
 import { useToast } from "@/Hooks/use-toast";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { requiredError } from "@/Types/types";
-import { isBefore, isToday } from "date-fns";
+import { format, isBefore, isToday } from "date-fns";
 import React, { useEffect } from "react";
 import { z } from "zod";
 import { allowedMimeTypes } from "../ServiceRecord/NewCOC";
 import TypographySmall from "@/Components/Typography";
 import { cn } from "@/Lib/utils";
+import { Input } from "@/Components/ui/input";
 
 const LOCATORSLIPOBJECT = z
     .object({
@@ -30,17 +36,25 @@ const LOCATORSLIPOBJECT = z
             invalid_type_error: "This field is required",
         }),
         agenda: z.object({
-            date: z.date({ required_error: requiredError("date of event") }),
-            transaction: z.string().optional().default(""),
+            date: z.date({ required_error: requiredError("date of event/transaction/meeting") }),
+            time: z.string().optional().default(""),
         }),
         memoid: z.number().optional().nullable().default(null),
     })
-    .superRefine(({ memoid, type }, ctx) => {
+    .superRefine(({ memoid, type, agenda }, ctx) => {
         if (type === "business" && !memoid) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: "Please upload a memo.",
                 path: ["memoid"],
+            });
+        }
+
+        if (type === "time" && !agenda.time) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "The time of event/transaction/meeting field is required.",
+                path: ["agenda.time"],
             });
         }
     });
@@ -60,7 +74,7 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
             purposeoftravel: "",
             destination: "",
             type: undefined,
-            agenda: { date: undefined, transaction: "" },
+            agenda: { date: undefined, time: "" },
         },
         async: true,
         callback: {
@@ -87,6 +101,8 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
         },
     });
 
+    const watchType = form.watch('type')
+
     const handleFilepondLoad = (id: number): any => {
         form.setValue(`memoid`, id, {
             shouldDirty: true,
@@ -102,6 +118,20 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
             form.reset();
         }
     }, [show]);
+
+    useEffect(() => {
+        if(watchType && watchType === 'time') {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            let time = `${hours}:${minutes}`
+            form.setValue('agenda.time', time)
+            form.setValue('memoid', null)
+
+        } else if(watchType && watchType === 'business') {
+            form.setValue('agenda.time', '')
+        }
+    }, [watchType])
 
     return (
         <Modal
@@ -127,7 +157,7 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
 
                         <FormCalendar
                             form={form}
-                            label="Date of event"
+                            label="Date of event/transaction/meeting"
                             name="agenda.date"
                             disableDate={(date) => {
                                 return (
@@ -137,12 +167,26 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
                             }}
                         />
 
-                        <FormInput
+                        {watchType === 'time' && (<FormField
+                            control={form.control}
+                            name="agenda.time"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel children="Time of Event" />
+                                    <FormControl>
+                                        <Input {...field} type="time" className="formInput" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />)}
+
+                        {/* <FormInput
                             form={form}
                             label="Transaction/Meeting"
                             name="agenda.transaction"
                             required={false}
-                        />
+                        /> */}
 
                         <FormRadioGroup
                             form={form}

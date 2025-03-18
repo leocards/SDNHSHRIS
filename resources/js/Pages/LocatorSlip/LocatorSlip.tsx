@@ -38,7 +38,7 @@ export type LOCATORSLIPTYPE = {
     destination: string;
     agenda: {
         date: string;
-        transaction: string;
+        time: string;
     };
     status: APPROVALTYPE;
     memo: string | null;

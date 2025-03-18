@@ -176,8 +176,8 @@ const PDFLocatorSlip = React.forwardRef<
                         </td>
                         <td className="p-0 pl-1">
                             {format(locatorslip.agenda.date, "MMM d, y")}
-                            {locatorslip.agenda.transaction && " / "}
-                            {locatorslip.agenda.transaction}
+                            {locatorslip.agenda.time && " / "}
+                            {locatorslip.agenda.time && format(locatorslip.agenda.date+' '+locatorslip.agenda.time, 'h:m')}
                         </td>
                     </tr>
                 </tbody>
@@ -192,7 +192,7 @@ const PDFLocatorSlip = React.forwardRef<
                             </div>
                             <div className="px-5">
                                 <div className="h-11 border-b border-black flex items-end justify-center">
-                                    <div className="underline font-semibold uppercase">
+                                    <div className="font-semibold uppercase">
                                         {locatorslip.user.full_name}
                                     </div>
                                 </div>
