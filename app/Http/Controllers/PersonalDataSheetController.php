@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NotificationEvent;
 use App\Imports\PDSImport;
 use App\Models\Notification;
 use App\Models\PdsCivilService;
@@ -15,7 +14,6 @@ use App\Models\PdsPersonalInformation;
 use App\Models\PdsVoluntaryWork;
 use App\Models\PdsWorkExperience;
 use App\Models\PersonalDataSheet;
-use App\Models\Scopes\ActiveUserScope;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -280,11 +278,10 @@ class PersonalDataSheetController extends Controller
 
             Notification::create([
                 'user_id' => $user->id,
+                'from_user_id' => $request->user()->id,
                 'type' => 'pdsresponse',
                 'details' => collect([
                     'link' => route('pds'),
-                    'name' =>  'HR',
-                    'avatar' => $request->user()->avatar,
                     'message' => 'has ' . $request->reponse . ' your Personal Data sheet.'
                 ])->toArray()
             ]);
@@ -329,11 +326,10 @@ class PersonalDataSheetController extends Controller
             if ($request->user()->role === "hr")
                 Notification::create([
                     "user_id" => $user->id,
+                    'from_user_id' => $request->user()->id,
                     "type" => "pds",
                     "details" => collect([
                         'link' => route('pds'),
-                        'name' => "HR",
-                        'avatar' => $request->user()->avatar,
                         'message' => 'has uploaded your Personal Data Sheet.',
                     ])->toArray()
                 ]);
@@ -341,12 +337,11 @@ class PersonalDataSheetController extends Controller
                 $hr = User::where('role', 'hr')->value('id');
                 Notification::create([
                     "user_id" => $hr,
+                    'from_user_id' => $request->user()->id,
                     "type" => "pds",
                     "details" => collect([
                         'link' => route('myapproval.pds'),
-                        'name' => $user->full_name,
-                        'avatar' => $request->user()->avatar,
-                        'message' => 'has uploaded ' . $user->gender == 'male' ? 'his' : 'her' . ' Personal Data Sheet.',
+                        'message' => 'has uploaded ' . ($user->gender == 'male' ? 'his' : 'her') . ' Personal Data Sheet.',
                     ])->toArray()
                 ]);
             }

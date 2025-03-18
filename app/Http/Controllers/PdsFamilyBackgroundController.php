@@ -77,11 +77,10 @@ class PdsFamilyBackgroundController extends Controller
 
             Notification::create([
                 'user_id' => $hr->id,
+                'from_user_id' => $request->user()->id,
                 'type' => 'pdsupdate',
                 'details' => collect([
                     'link' => route('myapproval.pds'),
-                    'name' =>  $request->user()->full_name,
-                    'avatar' => $request->user()->avatar,
                     'message' => 'updated '.$pronoun.' PDS family background.'
                 ])->toArray()
             ]);
@@ -159,11 +158,10 @@ class PdsFamilyBackgroundController extends Controller
 
             Notification::create([
                 'user_id' => $hr->id,
+                'from_user_id' => $request->user()->id,
                 'type' => 'pdsupdate',
                 'details' => collect([
                     'link' => route('myapproval.pds'),
-                    'name' =>  $request->user()->full_name,
-                    'avatar' => $request->user()->avatar,
                     'message' => 'updated '.$pronoun.' PDS family background.'
                 ])->toArray()
             ]);

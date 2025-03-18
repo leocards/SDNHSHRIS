@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Imports\SALNImport;
 use App\Models\SalnReport;
-use App\Models\SchoolYear;
 use App\Models\User;
 use App\ResponseTrait;
 use Exception;

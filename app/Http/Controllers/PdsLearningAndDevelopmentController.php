@@ -40,6 +40,7 @@ class PdsLearningAndDevelopmentController extends Controller
 
             Notification::create([
                 'user_id' => $hr->id,
+                'from_user_id' => $request->user()->id,
                 'type' => 'pdsupdate',
                 'details' => collect([
                     'link' => route('myapproval.pds'),
@@ -90,11 +91,10 @@ class PdsLearningAndDevelopmentController extends Controller
 
             Notification::create([
                 'user_id' => $hr->id,
+                'from_user_id' => $request->user()->id,
                 'type' => 'pdsupdate',
                 'details' => collect([
                     'link' => route('myapproval.pds'),
-                    'name' =>  $request->user()->full_name,
-                    'avatar' => $request->user()->avatar,
                     'message' => 'updated '.$pronoun.' PDS learning and development (l&d) interventions/training programs attended.'
                 ])->toArray()
             ]);

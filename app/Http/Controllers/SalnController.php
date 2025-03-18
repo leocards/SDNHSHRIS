@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\DateParserTrait;
 use App\Models\Notification;
-use App\Models\PdsFamilyBackground;
 use App\Models\PdsPersonalInformation;
 use App\Models\Saln;
 use App\Models\User;
@@ -96,7 +95,7 @@ class SalnController extends Controller
         ]);
     }
 
-    public function create(Request $request, Saln $saln = null)
+    public function create(Request $request, ?Saln $saln = null)
     {
         $spouse = collect([
             "spousename" => $request->user()->pdsFamilyBackground()->where('type', 'spouse')->value('details'),
@@ -125,7 +124,7 @@ class SalnController extends Controller
         ]);
     }
 
-    public function store(Request $request, Saln $saln = null)
+    public function store(Request $request, ?Saln $saln = null)
     {
         $request->validate([
             'assets.real.*.acquisition.year' => ['required', 'regex:/^(n\/a|\d+)$/i'],
@@ -210,11 +209,10 @@ class SalnController extends Controller
 
         Notification::create([
             'user_id' => $saln->user_id,
+            'from_user_id' => $request->user()->id,
             'type' => 'pdsupdate',
             'details' => collect([
                 'link' => route('saln.create', [$saln->id]),
-                'name' =>  'HR',
-                'avatar' => $request->user()->avatar,
                 'message' => $request->action.' your SALN.'
             ])->toArray()
         ]);

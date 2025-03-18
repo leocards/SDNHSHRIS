@@ -35,7 +35,7 @@ const NotificationList = () => {
                     <div className="size-fit mb-auto">
                         <ProfilePhoto
                             className="size-12"
-                            src={list.details?.avatar}
+                            src={list.from_user?.avatar}
                         />
                     </div>
                     <div className="">
@@ -45,7 +45,7 @@ const NotificationList = () => {
                                 !list.viewed && "font-medium"
                             )}
                         >
-                            <b>{list.details?.name}</b> {list.details?.message}
+                            <b>{list.from_user?.full_name}</b> {list.details?.message}
                         </span>
                         <div className="text-xs mt-1">{formatDistanceToNow(list.created_at).replace("about", "").concat(' ago')}</div>
                     </div>

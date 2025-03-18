@@ -14,7 +14,7 @@ import { useToast } from "@/Hooks/use-toast";
 type ACTIVEUSERSTYPE = { id: number, name: string, active_at: string }
 type ACTIVEUSERSLIST = Array<ACTIVEUSERSTYPE>
 
-type NOTIFICATION = { id: number, type: string, details: any, viewed: boolean, created_at: string }
+type NOTIFICATION = { id: number, from_user: Pick<User, 'id'|'firstname'|'middlename'|'lastname'|'role'|'avatar'|'full_name'|'name'>, type: string, details: any, viewed: boolean, created_at: string }
 
 type AccountState = {
     auth: User | null;

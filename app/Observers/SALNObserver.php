@@ -21,11 +21,10 @@ class SALNObserver implements ShouldHandleEventsAfterCommit
 
         Notification::create([
             'user_id' => $hr->id,
+            'from_user_id' => $user->id,
             'type' => 'leave',
             'details' => collect([
                 'link' => route('myapproval.saln'),
-                'name' =>  $user->full_name,
-                'avatar' => $user->avatar,
                 'message' => 'has submitted a SALN.'
             ])->toArray()
         ]);
@@ -92,11 +91,10 @@ class SALNObserver implements ShouldHandleEventsAfterCommit
 
             Notification::create([
                 'user_id' => $hr->id,
+                'from_user_id' => $user->id,
                 'type' => 'leave',
                 'details' => collect([
                     'link' => route('myapproval.saln'),
-                    'name' =>  $user->full_name,
-                    'avatar' => $user->avatar,
                     'message' => 'has updated a SALN.'
                 ])->toArray()
             ]);

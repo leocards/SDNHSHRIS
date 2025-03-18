@@ -117,11 +117,10 @@ class TardinessController extends Controller
 
                 Notification::create([
                     'user_id' => $attendance['user']['id'],
+                    'from_user_id' => $request->user()->id,
                     'type' => 'tardiness',
                     'details' => collect([
                         'link' => route('tardiness'),
-                        'name' =>  "HR",
-                        'avatar' => $request->user()->avatar,
                         'message' => 'has uploaded your attendance.'
                     ])->toArray()
                 ]);

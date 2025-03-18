@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PdsCivilServiceRequest;
 use App\Models\Notification;
 use App\Models\PdsCivilService;
-use App\Models\PersonalDataSheet;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PdsCivilServiceController extends Controller
@@ -42,11 +40,10 @@ class PdsCivilServiceController extends Controller
 
             Notification::create([
                 'user_id' => $hr->id,
+                'from_user_id' => $request->user()->id,
                 'type' => 'pdsupdate',
                 'details' => collect([
                     'link' => route('myapproval.pds'),
-                    'name' =>  $request->user()->full_name,
-                    'avatar' => $request->user()->avatar,
                     'message' => 'updated '.$pronoun.' PDS civil service eligbility.'
                 ])->toArray()
             ]);
@@ -93,11 +90,10 @@ class PdsCivilServiceController extends Controller
 
             Notification::create([
                 'user_id' => $hr->id,
+                'from_user_id' => $request->user()->id,
                 'type' => 'pdsupdate',
                 'details' => collect([
                     'link' => route('myapproval.pds'),
-                    'name' =>  $request->user()->full_name,
-                    'avatar' => $request->user()->avatar,
                     'message' => 'updated '.$pronoun.' PDS civil service eligbility.'
                 ])->toArray()
             ]);

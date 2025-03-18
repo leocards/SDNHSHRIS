@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
@@ -14,7 +13,10 @@ class NotificationController extends Controller
         $filter = $request->filter;
 
         return response()->json(
-            Notification::where("user_id", Auth::id())
+            Notification::with(['fromUser' => function ($query) {
+                $query->withoutGlobalScopes()
+                    ->select(['id', 'firstname', 'middlename', 'lastname', 'role', 'avatar']);
+            }])->where("user_id", Auth::id())
                 ->when($filter == "unread", function ($query) {
                     $query->whereNull('viewed');
                 })

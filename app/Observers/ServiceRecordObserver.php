@@ -22,11 +22,10 @@ class ServiceRecordObserver implements ShouldHandleEventsAfterCommit
 
         Notification::create([
             'user_id' => $hr,
+            'from_user_id' => $user->id,
             'type' => 'leave',
             'details' => collect([
                 'link' => route('myapproval.sr'),
-                'name' =>  $user->firstname.' '.$user->lastname,
-                'avatar' => $user->avatar,
                 'message' => 'uploaded a '.$serviceRecord->details['name']??"service record".' '.$type.'.'
             ])->toArray()
         ]);
@@ -62,11 +61,10 @@ class ServiceRecordObserver implements ShouldHandleEventsAfterCommit
 
         Notification::create([
             'user_id' => $serviceRecord->user_id,
+            'from_user_id' => $hr->id,
             'type' => 'leave',
             'details' => collect([
                 'link' => route('sr'),
-                'name' =>  "HR",
-                'avatar' => $hr->avatar,
                 'message' => 'has '.$serviceRecord->status.' your '.$serviceRecord->details['name']??"service record".' '.$type.'.'
             ])->toArray()
         ]);

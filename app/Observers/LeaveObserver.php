@@ -22,11 +22,10 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
 
         Notification::create([
             'user_id' => $hr,
+            'from_user_id' => $user->id,
             'type' => 'leave',
             'details' => collect([
                 'link' => route('myapproval.leave.view', [$leave->id]),
-                'name' =>  $user->firstname.' '.$user->lastname,
-                'avatar' => $user->avatar,
                 'message' => 'sends an application for leave.'
             ])->toArray()
         ]);
@@ -49,22 +48,20 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
 
                 Notification::create([
                     'user_id' => $user->id,
+                    'from_user_id' => $hr->id,
                     'type' => 'leave',
                     'details' => collect([
                         'link' => route('leave.view', [$leave->id]),
-                        'name' =>  "HR",
-                        'avatar' => $hr->avatar,
                         'message' => 'has '.$leave->hrstatus.' your application for leave, and it is now pending the principal\'s approval.'
                     ])->toArray()
                 ]);
 
                 Notification::create([
                     'user_id' => $principal->id,
+                    'from_user_id' => $hr->id,
                     'type' => 'leave',
                     'details' => collect([
                         'link' => route('myapproval.leave.view', [$leave->id]),
-                        'name' =>  "HR",
-                        'avatar' => $hr->avatar,
                         'message' => 'has '.$leave->hrstatus.' application for leave of '.$user->full_name.', and it is now pending for your approval.'
                     ])->toArray()
                 ]);
@@ -84,11 +81,10 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
             } else if($leave->hrstatus != "pending" && $leave->principalstatus != "pending") {
                 Notification::create([
                     'user_id' => $user->id,
+                    'from_user_id' => $principal->id,
                     'type' => 'leave',
                     'details' => collect([
                         'link' => route('myapproval.leave.view', [$leave->id]),
-                        'name' =>  'Principal',
-                        'avatar' => $principal->avatar,
                         'message' => 'has '.$leave->hrstatus.' your application for leave.'
                     ])->toArray()
                 ]);
@@ -111,11 +107,10 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
         } else {
             Notification::create([
                 'user_id' => $leave->user_id,
+                'from_user_id' => $hr->id,
                 'type' => 'leave',
                 'details' => collect([
                     'link' => route('leave.view', [$leave->id]),
-                    'name' =>  "HR",
-                    'avatar' => $hr->avatar,
                     'message' => 'has '.$leave->hrstatus.' your application for leave.'
                 ])->toArray()
             ]);

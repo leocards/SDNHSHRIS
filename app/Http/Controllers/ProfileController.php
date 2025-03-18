@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Request as FacadesRequest;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -60,11 +59,10 @@ class ProfileController extends Controller
 
         Notification::create([
             'user_id' => $hr->id,
+            'from_user_id' => $request->user()->id,
             'type' => 'pdsupdate',
             'details' => collect([
                 'link' => route('myapproval.pds'),
-                'name' =>  $request->user()->full_name,
-                'avatar' => $request->user()->avatar,
                 'message' => 'updated ' . $pronoun . ' profile.'
             ])->toArray()
         ]);
