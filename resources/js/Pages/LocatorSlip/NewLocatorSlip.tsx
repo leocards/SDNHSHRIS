@@ -125,6 +125,7 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             let time = `${hours}:${minutes}`
+            form.setValue('agenda.date', new Date())
             form.setValue('agenda.time', time)
             form.setValue('memoid', null)
 
@@ -155,9 +156,21 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
                             name="destination"
                         />
 
+                        <FormRadioGroup
+                            form={form}
+                            label="Please Check"
+                            name="type"
+                        >
+                            <FormRadioItem
+                                value="business"
+                                label="Official Business"
+                            />
+                            <FormRadioItem value="time" label="Official Time" />
+                        </FormRadioGroup>
+
                         <FormCalendar
                             form={form}
-                            label="Date of event/transaction/meeting"
+                            label="Date of Event/Transaction/Meeting"
                             name="agenda.date"
                             disableDate={(date) => {
                                 return (
@@ -172,7 +185,7 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
                             name="agenda.time"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel children="Time of Event" />
+                                    <FormLabel children="Time of Event/Transaction/Meeting" />
                                     <FormControl>
                                         <Input {...field} type="time" className="formInput" />
                                     </FormControl>
@@ -181,26 +194,7 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
                             )}
                         />)}
 
-                        {/* <FormInput
-                            form={form}
-                            label="Transaction/Meeting"
-                            name="agenda.transaction"
-                            required={false}
-                        /> */}
-
-                        <FormRadioGroup
-                            form={form}
-                            label="Please Check"
-                            name="type"
-                        >
-                            <FormRadioItem
-                                value="business"
-                                label="Official Business"
-                            />
-                            <FormRadioItem value="time" label="Official Time" />
-                        </FormRadioGroup>
-
-                        {form.watch("type") === "business" && (
+                        {watchType === "business" && (
                             <div className="space-y-2">
                                 <TypographySmall
                                     className={cn(

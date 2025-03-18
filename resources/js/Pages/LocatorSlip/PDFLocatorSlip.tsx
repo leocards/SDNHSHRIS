@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import deped from "@/Assets/images/DepEd.png";
-import { useReactToPrint } from "react-to-print";
 import { format } from "date-fns";
 import { LOCATORSLIPTYPE } from "./LocatorSlip";
 import { Square, SquareCheck } from "lucide-react";
@@ -172,12 +171,12 @@ const PDFLocatorSlip = React.forwardRef<
                     </tr>
                     <tr>
                         <td className="w-[12.5rem] shrink-0 uppercase p-0 pl-2 font-semibold">
-                            Date and time or event/ Transaction/Meeting
+                            Date and time of event/ Transaction/Meeting
                         </td>
                         <td className="p-0 pl-1">
                             {format(locatorslip.agenda.date, "MMM d, y")}
                             {locatorslip.agenda.time && " / "}
-                            {locatorslip.agenda.time && format(locatorslip.agenda.date+' '+locatorslip.agenda.time, 'h:m')}
+                            {locatorslip.agenda.time && getTimeOfEvent(locatorslip.agenda.date, locatorslip.agenda.time)}
                         </td>
                     </tr>
                 </tbody>
@@ -271,5 +270,13 @@ const PDFLocatorSlip = React.forwardRef<
         </div>
     );
 });
+
+const getTimeOfEvent = (date: string, time: string) => {
+    const [hours, minutes] = time.split(":");
+    const fullDate = new Date(date);
+    fullDate.setHours(Number(hours), Number(minutes), 0);
+
+    return format(fullDate, "hh:mm a")
+}
 
 export default PDFLocatorSlip;
