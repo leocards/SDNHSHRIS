@@ -862,7 +862,7 @@ const AuthTabs: React.FC<{
         const allowedtabs = {
             hr: [...tabs.slice(0, 17), tabs[22]],
             principal: [
-                ...tabs.slice(0, 4),
+                ...tabs.slice(0, 5),
                 tabs[6],
                 tabs[7],
                 tabs[17],
