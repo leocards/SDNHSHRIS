@@ -13,6 +13,8 @@ class NotificationObserver implements ShouldHandleEventsAfterCommit
      */
     public function created(Notification $notification): void
     {
+        $notification->load(['fromUser:id,firstname,middlename,lastname,avatar,role']);
+
         NotificationEvent::dispatch($notification);
     }
 

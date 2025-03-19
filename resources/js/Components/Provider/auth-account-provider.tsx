@@ -8,13 +8,30 @@ import {
     useState,
 } from "react";
 import { useProcessIndicator } from "./process-indicator-provider";
-import notificationSound from "@/Assets/sounds/notification.mp3"
+import notificationSound from "@/Assets/sounds/notification.mp3";
 import { useToast } from "@/Hooks/use-toast";
 
-type ACTIVEUSERSTYPE = { id: number, name: string, active_at: string }
-type ACTIVEUSERSLIST = Array<ACTIVEUSERSTYPE>
+type ACTIVEUSERSTYPE = { id: number; name: string; active_at: string };
+type ACTIVEUSERSLIST = Array<ACTIVEUSERSTYPE>;
 
-type NOTIFICATION = { id: number, from_user: Pick<User, 'id'|'firstname'|'middlename'|'lastname'|'role'|'avatar'|'full_name'|'name'>, type: string, details: any, viewed: boolean, created_at: string }
+type NOTIFICATION = {
+    id: number;
+    from_user: Pick<
+        User,
+        | "id"
+        | "firstname"
+        | "middlename"
+        | "lastname"
+        | "role"
+        | "avatar"
+        | "full_name"
+        | "name"
+    >;
+    type: string;
+    details: any;
+    viewed: boolean;
+    created_at: string;
+};
 
 type AccountState = {
     auth: User | null;
@@ -24,9 +41,9 @@ type AccountState = {
     unreadNotification: number;
     notifications: NOTIFICATION[];
     setNotifications: (notifs: NOTIFICATION[]) => void;
-    onRedirectNotification: (notification: NOTIFICATION) => void,
-    onMarkAsRead: (notification: NOTIFICATION) => void
-    updateNotificationCounter: (counter: number, reset?: boolean) => void
+    onRedirectNotification: (notification: NOTIFICATION) => void;
+    onMarkAsRead: (notification: NOTIFICATION) => void;
+    updateNotificationCounter: (counter: number, reset?: boolean) => void;
 };
 
 const initialState = {
@@ -52,14 +69,16 @@ const AccountProvider: React.FC<AccountProviderProps> = ({
     children,
     ...props
 }) => {
-    const { setProcess } = useProcessIndicator()
-    const { toast } = useToast()
+    const { setProcess } = useProcessIndicator();
+    const { toast } = useToast();
     const [auth] = useState<User | null>(props.auth);
     const [logout, setLogout] = useState(false);
-    const [activeUsers, setActiveUsers] = useState<ACTIVEUSERSLIST>([])
-    const [notifications, setNotifications] = useState<NOTIFICATION[]>([])
-    const [newNotification, setNewNotification] = useState<NOTIFICATION|null>(null)
-    const [unreadNotification, setUnreadNotification] = useState<number>(0)
+    const [activeUsers, setActiveUsers] = useState<ACTIVEUSERSLIST>([]);
+    const [notifications, setNotifications] = useState<NOTIFICATION[]>([]);
+    const [newNotification, setNewNotification] = useState<NOTIFICATION | null>(
+        null
+    );
+    const [unreadNotification, setUnreadNotification] = useState<number>(0);
 
     const onLogout = () => {
         setLogout(true);
@@ -74,51 +93,57 @@ const AccountProvider: React.FC<AccountProviderProps> = ({
     };
 
     const updateNotificationCounter = (count: number, reset?: boolean) => {
-        if(reset) {
-            setUnreadNotification(0)
+        if (reset) {
+            setUnreadNotification(0);
         } else {
-            setUnreadNotification(unreadNotification + (count))
+            setUnreadNotification(unreadNotification + count);
         }
-    }
+    };
 
     const onMarkAsRead = (notification: NOTIFICATION) => {
-        const list = [...notifications]
+        const list = [...notifications];
 
-        let notifindex = list.findIndex(n => n.id === notification.id)
-        list[notifindex].viewed = true
+        let notifindex = list.findIndex((n) => n.id === notification.id);
+        list[notifindex].viewed = true;
 
-        window.axios.get(route('notification.read', [notification.id]))
+        window.axios
+            .get(route("notification.read", [notification.id]))
             .then(() => {
-                unreadNotification !== 0 && updateNotificationCounter(-1)
-                setNotifications(list)
+                unreadNotification !== 0 && updateNotificationCounter(-1);
+                setNotifications(list);
             })
             .catch((error) => {
-                console.log(error)
-            })
-    }
+                console.log(error);
+            });
+    };
 
     const onRedirectNotification = (notification: NOTIFICATION) => {
-        if(!notification.viewed)
-            onMarkAsRead(notification)
+        if (!notification.viewed) onMarkAsRead(notification);
 
-        router.get(route('notification.view', [notification.id]), {}, {
-            onBefore: () => setProcess(true)
-        })
-    }
+        router.get(
+            route("notification.view", [notification.id]),
+            {},
+            {
+                onBefore: () => setProcess(true),
+            }
+        );
+    };
 
     useEffect(() => {
-        if(auth) {
+        if (auth) {
             window.Echo.join("active")
                 .here((users: ACTIVEUSERSLIST) => {
                     setActiveUsers(users);
-                    console.log(users)
+                    console.log(users);
                 })
                 .joining((user: ACTIVEUSERSTYPE) => {
-                    let active_user = activeUsers.find((au) => au.id === user.id);
+                    let active_user = activeUsers.find(
+                        (au) => au.id === user.id
+                    );
 
                     if (!active_user) setActiveUsers([...activeUsers, user]);
 
-                    console.log(user)
+                    console.log(user);
                 })
                 .leaving((user: ACTIVEUSERSTYPE) => {
                     let active_users = [...activeUsers];
@@ -135,33 +160,41 @@ const AccountProvider: React.FC<AccountProviderProps> = ({
                     console.log("error", error);
                 });
 
-            window.Echo.private('notification.'+auth.id)
-                .listen('NotificationEvent', (notification: any) => {
-                    let notif = notification.notification as NOTIFICATION
+            window.Echo.private("notification." + auth.id).listen(
+                "NotificationEvent",
+                (notification: any) => {
+                    let notif = notification.notification as NOTIFICATION;
 
-                    notif.details = typeof notif.details === "string" ? JSON.parse(notif.details) : notif.details
+                    notif.details =
+                        typeof notif.details === "string"
+                            ? JSON.parse(notif.details)
+                            : notif.details;
 
-                    setNewNotification(notif)
-                })
+                    setNewNotification(notif);
+                }
+            );
 
-            window.axios.get<NOTIFICATION[]>(route('notification'))
+            window.axios
+                .get<NOTIFICATION[]>(route("notification"))
                 .then((response) => {
-                    let data = response.data
-                    const unread = data.filter(n => !n.viewed);
+                    let data = response.data;
+                    const unread = data.filter((n) => !n.viewed);
 
-                    setUnreadNotification(unread.length)
+                    setUnreadNotification(unread.length);
 
-                    setNotifications(data)
-                })
+                    setNotifications(data);
+                });
         }
     }, []);
 
     useEffect(() => {
-        if(newNotification) {
-            const newNotificationVolume = localStorage.getItem("notification-volume");
+        if (newNotification) {
+            const newNotificationVolume = localStorage.getItem(
+                "notification-volume"
+            );
 
-            updateNotificationCounter(1)
-            setNotifications([newNotification, ...notifications])
+            updateNotificationCounter(1);
+            setNotifications([newNotification, ...notifications]);
 
             if (!document.hasFocus()) {
                 const sound = new Audio(notificationSound);
@@ -173,11 +206,18 @@ const AccountProvider: React.FC<AccountProviderProps> = ({
 
             toast({
                 title: "New notification",
-                description: newNotification?.details.name+' '+newNotification?.details.message,
-                status: "notification"
-            })
+                description:
+                    (newNotification?.from_user.role === "hr"
+                        ? "HR"
+                        : newNotification?.from_user.role === "principal"
+                        ? "Principal"
+                        : newNotification?.from_user?.full_name) +
+                          " " +
+                          newNotification?.details.message,
+                status: "notification",
+            });
         }
-    }, [newNotification])
+    }, [newNotification]);
 
     const value = {
         auth,

@@ -45,7 +45,7 @@ const NotificationList = () => {
                                 !list.viewed && "font-medium"
                             )}
                         >
-                            <b>{list.from_user?.full_name}</b> {list.details?.message}
+                            <b>{list?.from_user.role === "hr" ? "HR" : list?.from_user.role === "principal" ? "Principal" : list.from_user?.full_name}</b> {list.details?.message}
                         </span>
                         <div className="text-xs mt-1">{formatDistanceToNow(list.created_at).replace("about", "").concat(' ago')}</div>
                     </div>
