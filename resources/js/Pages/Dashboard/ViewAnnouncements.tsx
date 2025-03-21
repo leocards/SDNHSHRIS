@@ -58,13 +58,16 @@ const ViewAnnouncements = ({ announcement, show, onClose }: Porps) => {
                 </div>
             )}
 
-            <div className="bg-secondary p-3 whitespace-pre break-words mt-5 rounded-lg">
+            <div className="bg-secondary p-3 mt-5 rounded-lg">
                 <div className="mb-3">
-                <TypographySmall className="text-foreground/40 italic">
-                    Subject:
-                </TypographySmall>
+                    <TypographySmall className="text-foreground/40 italic">
+                        Subject:
+                    </TypographySmall>
                 </div>
-                {announcement?.details.description}
+                <div className="whitespace-pre-line break-words text-wrap">
+                    {announcement?.details.description}
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe ut id facere laboriosam rem quibusdam minus quaerat voluptas, ex blanditiis officiis necessitatibus enim aliquam possimus amet earum ea adipisci omnis.
+                </div>
             </div>
         </Modal>
     );
