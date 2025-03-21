@@ -66,7 +66,6 @@ const ViewAnnouncements = ({ announcement, show, onClose }: Porps) => {
                 </div>
                 <div className="whitespace-pre-line break-words text-wrap">
                     {announcement?.details.description}
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe ut id facere laboriosam rem quibusdam minus quaerat voluptas, ex blanditiis officiis necessitatibus enim aliquam possimus amet earum ea adipisci omnis.
                 </div>
             </div>
         </Modal>
