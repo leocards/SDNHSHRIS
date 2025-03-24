@@ -108,15 +108,15 @@ export const ACCOUNTSCHEMA = z.object({
         gradelevel: z.enum(['7','8','9','10','11','12'], {
             required_error: requiredError("grade level"),
             invalid_type_error: 'Please select grade levels 7 to 12.',
-        }),
+        }).optional().nullable(),
         curriculumnhead: z.enum(['7','8','9','10','11','12'], {
             required_error: requiredError("curriculumn head"),
             invalid_type_error: 'Please select grade levels 7 to 12.',
-        }).optional().nullable(),
-        academichead: z.enum(["jhs", "shs"], {
+        }).optional().nullable().default(null),
+        academichead: z.enum(["junior", "senior"], {
             required_error: requiredError("academic head"),
             invalid_type_error: 'Please select junior or senior high school',
-        }).optional().nullable(),
+        }).optional().nullable().default(null),
         credits: z.string().optional().default('0'),
         splcredits: z.string().optional().default('0'),
     }),
@@ -495,15 +495,25 @@ const AccountInformationForm: React.FC<Props> = ({
                                     label="Curriculumn Head"
                                     displayValue={watchCurriculumnHead ? `Grade ${watchCurriculumnHead} Curriculumn Head` : ''}
                                     items={
-                                        CurriculumnHeads.map((gradelevel, index) => (
+                                        <Fragment>
                                             <SelectItem
-                                                key={index}
-                                                value={gradelevel}
-                                                children={'Grade '+gradelevel+' Curriculumn Head'}
+                                                children={'-Select-'}
+                                                isNonValue
+                                                onClick={() => {
+                                                    form.setValue('personnel.curriculumnhead', undefined)
+                                                }}
                                             />
-                                        ))
+                                            {CurriculumnHeads.map((gradelevel, index) => (
+                                                <SelectItem
+                                                    key={index}
+                                                    value={gradelevel}
+                                                    children={'Grade '+gradelevel+' Curriculumn Head'}
+                                                />
+                                            ))}
+                                        </Fragment>
                                     }
                                     disabled={watchAcademicHead}
+                                    required={false}
                                 />
 
                                 <FormSelect
@@ -512,15 +522,25 @@ const AccountInformationForm: React.FC<Props> = ({
                                     label="Academic Head"
                                     displayValue={watchAcademicHead ? Departments[watchAcademicHead] : ''}
                                     items={
-                                        AcademicHeads.map((gradelevel, index) => (
+                                        <Fragment>
                                             <SelectItem
-                                                key={index}
-                                                value={gradelevel}
-                                                children={Departments[gradelevel]}
+                                                children={'-Select-'}
+                                                isNonValue
+                                                onClick={() => {
+                                                    form.setValue('personnel.academichead', undefined)
+                                                }}
                                             />
-                                        ))
+                                            {AcademicHeads.map((gradelevel, index) => (
+                                                <SelectItem
+                                                    key={index}
+                                                    value={gradelevel}
+                                                    children={Departments[gradelevel]}
+                                                />
+                                            ))}
+                                        </Fragment>
                                     }
                                     disabled={watchCurriculumnHead}
+                                    required={false}
                                 />
                             </div>
                         </div>

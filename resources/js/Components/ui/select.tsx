@@ -22,7 +22,7 @@ type SelectState = {
     selectWidth: number;
 
     selectedValue?: string;
-    setSelectedValue: (value: string) => void;
+    setSelectedValue: (value?: string) => void;
 };
 
 const SelectContext = createContext<SelectState>({
@@ -138,11 +138,12 @@ const SelectContent: React.FC<
 const SelectItem: React.FC<
     PropsWithChildren & {
         className?: string;
-        value: string;
+        value?: string;
+        isNonValue?: boolean;
         onClick?: CallableFunction;
         disabled?: boolean;
     }
-> = ({ className, value, children, disabled, onClick }) => {
+> = ({ className, value, isNonValue, children, disabled, onClick }) => {
     const { selectedValue, setSelectedValue } = useSelectOption();
     const itemRef = useRef<HTMLDivElement>(null);
 
@@ -165,8 +166,9 @@ const SelectItem: React.FC<
                 className
             )}
             onClick={() => {
-                setSelectedValue(value)
-                if(onClick) onClick()
+                setSelectedValue(isNonValue?undefined:value)
+
+                onClick?.()
             }}
             disabled={disabled}
         >

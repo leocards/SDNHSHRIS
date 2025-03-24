@@ -10,12 +10,22 @@ import { User } from "@/Types";
 import { useToast } from "@/Hooks/use-toast";
 import { useProcessIndicator } from "@/Components/Provider/process-indicator-provider";
 import { useEffect } from "react";
+import { z } from "zod";
 
 type NewPersonnelProps = {
     personnel?: User | null;
     hasPrincipal: boolean;
     personneltype: "teaching" | "non-teaching";
 };
+
+let REFINEDSCHEMA = ACCOUNTSCHEMA.superRefine(({ personnel }, ctx) => {
+    if(!personnel.gradelevel)
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Please select grade levels 7 to 12.',
+            path: ['personnel.gradelevel']
+        })
+})
 
 const NewPersonnel: React.FC<NewPersonnelProps> = ({
     personnel,
@@ -26,7 +36,7 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({
     const { setLabel } = useProcessIndicator();
 
     const form = useFormSubmit<IFormAccount>({
-        schema: ACCOUNTSCHEMA,
+        schema: REFINEDSCHEMA,
         route: route("personnel.store", {
             personnelid: personnel?.id,
             _query: { pt: personneltype },
@@ -67,6 +77,9 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({
                         ? "deped"
                         : undefined),
                 position: personnel?.position || undefined,
+                gradelevel: personnel ? personnel.gradelevel??null : null,
+                curriculumnhead: personnel ? personnel.curriculumnhead??null : null,
+                academichead: personnel ? personnel.academichead??null : null,
                 credits: !personnel && personneltype != "teaching" ? "30" : "0",
                 splcredits:
                     !personnel && personneltype != "teaching" ? "15" : "0",
