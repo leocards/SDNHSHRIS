@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import deped from "@/Assets/images/DepEd.png";
 import { format } from "date-fns";
 import { LOCATORSLIPTYPE } from "./LocatorSlip";
 import { Square, SquareCheck } from "lucide-react";
 import { User } from "@/Types";
+import { formatDateRanges } from "../Leave/Types/Methods";
 
 const PDFLocatorSlip = React.forwardRef<
     HTMLDivElement,
@@ -174,7 +175,7 @@ const PDFLocatorSlip = React.forwardRef<
                             Date and time of event/ Transaction/Meeting
                         </td>
                         <td className="p-0 pl-1">
-                            {format(locatorslip.agenda.date, "MMM d, y")}
+                            {locatorslip.agenda.dateTo ? formatDateRanges(locatorslip.agenda.inclusivedates) : format(locatorslip.agenda.date, "MMM d, y")}
                             {locatorslip.agenda.time && " / "}
                             {locatorslip.agenda.time && getTimeOfEvent(locatorslip.agenda.date, locatorslip.agenda.time)}
                         </td>

@@ -40,6 +40,7 @@ return new class extends Migration
             $table->integer('daysapplied');
             $table->date('from')->nullable();
             $table->date('to')->nullable();
+            $table->json('inclusivedates')->nullable();
             $table->enum('commutation', ['requested', 'not'])->nullable();
             $table->enum('principalstatus', ['disapproved', 'approved', 'pending'])->default('pending');
             $table->text('principaldisapprovedmsg')->nullable();

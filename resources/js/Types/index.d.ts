@@ -18,6 +18,9 @@ export interface User {
     department: DepartmentsType;
     role: 'hr' | 'principal' | 'teaching' | 'non-teaching';
     position: PERSONNELPOSITIONS | null;
+    gradelevel: '7' | '8' | '9' | '10' | '11' | '12';
+    curriculumnhead: '7' | '8' | '9' | '10' | '11' | '12';
+    academichead: 'jhs' | 'shs';
     hiredate: string;
     credits: number;
     splcredits: number;

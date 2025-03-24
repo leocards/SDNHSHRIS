@@ -4,7 +4,7 @@ import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { convertToAbbreviation } from "@/Types/types";
 import { usePage } from "@inertiajs/react";
 import { ArrowRight2 } from "iconsax-react";
-import { Fragment, PropsWithChildren, useEffect } from "react";
+import { Fragment, PropsWithChildren, useEffect, useMemo } from "react";
 import { defaultLeave, IFormLeave, LEAVESCHEMA } from "./Types/LeaveFormSchema";
 import { useToast } from "@/Hooks/use-toast";
 import {
@@ -18,17 +18,14 @@ import {
 import { SelectItem } from "@/Components/ui/select";
 import { LEAVETYPEKEYSARRAY, LEAVETYPESOBJ } from "./Types/leavetypes";
 import { Button } from "@/Components/ui/button";
-import {
-    eachDayOfInterval,
-    isToday,
-    isWeekend,
-} from "date-fns";
+import { eachDayOfInterval, format, isEqual, isToday, isWeekend } from "date-fns";
 import { countWeekdaysInRange } from "./Types/Methods";
 import FilePondUploader from "@/Components/FilePondUploader";
 import { cn } from "@/Lib/utils";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import { registerPlugin } from "react-filepond";
+import { Check, X } from "lucide-react";
 
 const ApplyLeave = () => {
     const { toast } = useToast();
@@ -65,6 +62,16 @@ const ApplyLeave = () => {
     const watchDetails = form.watch("details");
     const watchDatesFrom = form.watch("from");
     const watchDatesTo = form.watch("to");
+    const watchInclusiveDates = form.watch("inclusivedates");
+
+    const disableInclusiveDates = useMemo(() => {
+        if(watchInclusiveDates) {
+            let dates = [...watchInclusiveDates]
+            let checkedDates = dates.filter((dates) => dates.checked);
+
+            return checkedDates.length === 2
+        }
+    }, [watchInclusiveDates])
 
     registerPlugin(
         FilePondPluginFileValidateType,
@@ -79,11 +86,66 @@ const ApplyLeave = () => {
         form.setValue(`medical`, null, { shouldDirty: true });
     };
 
+    const onSelectDate = (dateFrom?: Date, dateTo?: Date) => {
+        if(dateFrom && dateTo && watchLeaveType != 'maternity') {
+            const weeks = countWeekdaysInRange(
+                new Date(dateFrom),
+                new Date(dateTo)
+            );
+
+            let inclusiveDates = weeks.dates.map((date) => ({
+                date: date,
+                checked: watchInclusiveDates?.find((d) => isEqual(date, d.date))?.checked??true,
+            }));
+
+            form.setValue("inclusivedates", inclusiveDates);
+        }
+    }
+
+    const onExcludeDate = (index: number, check: boolean) => {
+        let inclusiveDate = form.getValues("inclusivedates");
+
+        if (inclusiveDate) {
+            // uncheck the date to exclude
+            inclusiveDate[index].checked = !check;
+            // get the checked dates of inclusive dates
+            let checkedDates = inclusiveDate.filter((dates) => dates.checked);
+
+            if(checkedDates.length > 1) {
+                // get the last Date
+                let lastCheckedDate = checkedDates[checkedDates.length - 1]
+                // get the first Date
+                let firstCheckedDate = checkedDates[0]
+                // assign the first checked date as inclusive dates from
+                form.setValue("from", firstCheckedDate.date);
+                // assign the last checked date as inclusive dates to
+                form.setValue("to", lastCheckedDate.date);
+            } else {
+                form.setValue("to", null);
+
+                if(checkedDates.length === 1) {
+
+                }
+            }
+
+            // update the inclusive dates
+            form.setValue("inclusivedates", inclusiveDate);
+
+            // get the number of days applied
+            let countDays = parseInt(form.getValues('daysapplied'));
+            // update the days applied
+            form.setValue("daysapplied", (inclusiveDate[index].checked ? countDays + 1 : countDays - 1).toString());
+        }
+    };
+
     useEffect(() => {
         form.setValue("details", null);
         form.setValue("detailsinput", "");
-        if(!['vacation', 'sick', 'spl', 'study'].includes(watchLeaveType??''))
-            form.clearErrors("details")
+        form.setValue("inclusivedates", []);
+        if (
+            !["vacation", "sick", "spl", "study"].includes(watchLeaveType ?? "")
+        )
+            form.clearErrors("details");
     }, [watchLeaveType]);
 
     useEffect(() => {
@@ -118,23 +180,36 @@ const ApplyLeave = () => {
                 new Date(watchDatesFrom),
                 new Date(watchDatesTo)
             );
-            form.setValue("daysapplied", weeks.count.toString(), {
+
+            let daysCount = weeks.count
+
+            if(watchInclusiveDates && watchInclusiveDates.length > 0) {
+                daysCount = watchInclusiveDates?.filter((dates) => dates.checked)?.length
+            }
+
+            form.setValue("daysapplied", daysCount.toString(), {
+                shouldValidate: true,
+            });
+
+        } else if(!watchDatesFrom) {
+            form.setValue("daysapplied", '0', {
                 shouldValidate: true,
             });
         }
     }, [watchDatesFrom, watchDatesTo]);
 
     useEffect(() => {
-        if(watchDetails) {
-            if (
-                !["shospital", "spatient", "vabroad"].includes(watchDetails)
-            ) {
+        if (watchDetails) {
+            if (!["shospital", "spatient", "vabroad"].includes(watchDetails)) {
                 form.setValue("detailsinput", "");
             }
 
-            if(watchDetails === "monitization" || watchDetails === "terminal") {
-                form.setValue("from", null)
-                form.setValue("daysapplied", "")
+            if (
+                watchDetails === "monitization" ||
+                watchDetails === "terminal"
+            ) {
+                form.setValue("from", null);
+                form.setValue("daysapplied", "");
             }
         }
     }, [watchDetails]);
@@ -160,7 +235,9 @@ const ApplyLeave = () => {
                     user.lastname,
                     user.firstname,
                     user.middlename ?? "N/A",
-                    (user.role === "principal" ? 'SOUTHERN DAVAO NHS' : 'SOUTHERN DAVAO NHS'),
+                    user.role === "principal"
+                        ? "SOUTHERN DAVAO NHS"
+                        : "SOUTHERN DAVAO NHS",
                 ].map((name, index) => (
                     <div key={index} className="space-y-1.5">
                         <TypographySmall>
@@ -173,7 +250,9 @@ const ApplyLeave = () => {
                                 : "Office/Department"}
                         </TypographySmall>
                         <div className="rounded-md border border-border shadow-sm h-10 px-3 text-sm flex items-center text-muted-foreground dark:bg-white/5 overflow-hidden">
-                            <div className="line-clamp-1 h-fit text-nowrap whitespace-nowrap">{name}</div>
+                            <div className="line-clamp-1 h-fit text-nowrap whitespace-nowrap">
+                                {name}
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -244,15 +323,19 @@ const ApplyLeave = () => {
                                                         }
                                                         disabled={
                                                             (type ===
-                                                                "paternity" && user.gender ===
-                                                                "female") ||
+                                                                "paternity" &&
+                                                                user.gender ===
+                                                                    "female") ||
                                                             (user.gender ===
                                                                 "male" &&
                                                                 (type ===
-                                                                    "slbw" || type ===
-                                                                    "maternity")) ||
+                                                                    "slbw" ||
+                                                                    type ===
+                                                                        "maternity")) ||
                                                             ((type ===
-                                                                "vacation" || type === "spl") &&
+                                                                "vacation" ||
+                                                                type ===
+                                                                    "spl") &&
                                                                 user.role ===
                                                                     "teaching")
                                                         }
@@ -298,10 +381,11 @@ const ApplyLeave = () => {
                                                 position="vertical"
                                             >
                                                 {/* Vacation Leave */}
-                                                {(watchLeaveType == "vacation" || watchLeaveType == "spl") && (
-                                                    <DetailsOFLeaveItems
-                                                        label="In case of Vacation/Special Privilege Leave:"
-                                                    >
+                                                {(watchLeaveType ==
+                                                    "vacation" ||
+                                                    watchLeaveType ==
+                                                        "spl") && (
+                                                    <DetailsOFLeaveItems label="In case of Vacation/Special Privilege Leave:">
                                                         <div className="flex gap-10">
                                                             <FormRadioItem
                                                                 value="vphilippines"
@@ -332,8 +416,18 @@ const ApplyLeave = () => {
                                                 )}
 
                                                 {/* Study Leave */}
-                                                {(watchLeaveType == "study" || (watchLeaveType == "others" && user.role != "teaching")) && (
-                                                    <DetailsOFLeaveItems label="In case of Study Leave:" required={watchLeaveType != "others"}>
+                                                {(watchLeaveType == "study" ||
+                                                    (watchLeaveType ==
+                                                        "others" &&
+                                                        user.role !=
+                                                            "teaching")) && (
+                                                    <DetailsOFLeaveItems
+                                                        label="In case of Study Leave:"
+                                                        required={
+                                                            watchLeaveType !=
+                                                            "others"
+                                                        }
+                                                    >
                                                         <div className="flex gap-10">
                                                             <FormRadioItem
                                                                 value="degree"
@@ -348,8 +442,18 @@ const ApplyLeave = () => {
                                                 )}
 
                                                 {/* Other Purposes */}
-                                                {!["vacation", "sick", "study", "spl"].includes(watchLeaveType ?? "") && (
-                                                    <DetailsOFLeaveItems label="Other purpose:" required={false}>
+                                                {![
+                                                    "vacation",
+                                                    "sick",
+                                                    "study",
+                                                    "spl",
+                                                ].includes(
+                                                    watchLeaveType ?? ""
+                                                ) && (
+                                                    <DetailsOFLeaveItems
+                                                        label="Other purpose:"
+                                                        required={false}
+                                                    >
                                                         <div className="flex gap-10">
                                                             <FormRadioItem
                                                                 value="monitization"
@@ -369,7 +473,7 @@ const ApplyLeave = () => {
                                             "slbw",
                                             "vacation",
                                             "sick",
-                                            "spl"
+                                            "spl",
                                         ].includes(watchLeaveType ?? "") && (
                                             <FormInput
                                                 form={form}
@@ -381,8 +485,14 @@ const ApplyLeave = () => {
                                                 labelClass="italic"
                                                 itemClass="max-w-96"
                                                 disabled={
-                                                    (!["vabroad", "shospital", "spatient"].includes( watchDetails ?? "" ) &&
-                                                    watchLeaveType !== "slbw")
+                                                    ![
+                                                        "vabroad",
+                                                        "shospital",
+                                                        "spatient",
+                                                    ].includes(
+                                                        watchDetails ?? ""
+                                                    ) &&
+                                                    watchLeaveType !== "slbw"
                                                 }
                                             />
                                         )}
@@ -396,81 +506,170 @@ const ApplyLeave = () => {
                                     />
 
                                     <div className="mt-3 grid sm:grid-cols-2 [@media(min-width:870px)]:grid-cols-3 gap-4">
-                                        {!['monitization', 'terminal'].includes(watchDetails??'') && <>
-                                            <FormCalendar
-                                                form={form}
-                                                name="from"
-                                                label="From"
-                                                disableDate={(date) => {
-                                                    let toDay = date;
-                                                    let now = new Date();
-                                                    toDay.setHours(0, 0, 0, 0);
-                                                    now.setHours(0, 0, 0, 0);
-                                                    if (
-                                                        watchLeaveType !==
-                                                            "maternity" &&
-                                                        watchLeaveType != "sick"
-                                                    ) {
-                                                        return (
-                                                            isWeekend(date) ||
-                                                            toDay.getTime() <
-                                                                now.getTime()
+                                        {!["monitization", "terminal"].includes(
+                                            watchDetails ?? ""
+                                        ) && (
+                                            <>
+                                                <FormCalendar
+                                                    form={form}
+                                                    name="from"
+                                                    label="From"
+                                                    disableDate={(date) => {
+                                                        let toDay = date;
+                                                        let now = new Date();
+                                                        toDay.setHours(
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
                                                         );
-                                                    } else if (
-                                                        watchLeaveType == "sick"
-                                                    )
-                                                        return (
-                                                            isWeekend(date) ||
-                                                            !(
-                                                                // isYesterday(date) ||
-                                                                (
-                                                                    isToday(date) ||
-                                                                    toDay.getTime() <
-                                                                        now.getTime()
+                                                        now.setHours(
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        );
+                                                        if (
+                                                            watchLeaveType !==
+                                                                "maternity" &&
+                                                            watchLeaveType !=
+                                                                "sick"
+                                                        ) {
+                                                            return (
+                                                                isWeekend(
+                                                                    date
+                                                                ) ||
+                                                                toDay.getTime() <
+                                                                    now.getTime()
+                                                            );
+                                                        } else if (
+                                                            watchLeaveType ==
+                                                            "sick"
+                                                        )
+                                                            return (
+                                                                isWeekend(
+                                                                    date
+                                                                ) ||
+                                                                !(
+                                                                    // isYesterday(date) ||
+                                                                    (
+                                                                        isToday(
+                                                                            date
+                                                                        ) ||
+                                                                        toDay.getTime() <
+                                                                            now.getTime()
+                                                                    )
                                                                 )
-                                                            )
+                                                            );
+                                                        else return false;
+                                                    }}
+                                                    onSelect={(date) => onSelectDate(date, watchDatesTo??undefined)}
+                                                />
+                                                <FormCalendar
+                                                    form={form}
+                                                    name="to"
+                                                    label="To"
+                                                    required={false}
+                                                    triggerClass="disabled:!opacity-100 disabled:text-muted-foreground"
+                                                    disabled={!watchDatesFrom}
+                                                    disableDate={(date) => {
+                                                        let toDay = date;
+                                                        let from =
+                                                            watchDatesFrom!;
+                                                        let now = new Date();
+                                                        toDay.setHours(
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
                                                         );
-                                                    else return false;
-                                                }}
-                                            />
-                                            <FormCalendar
-                                                form={form}
-                                                name="to"
-                                                label="To"
-                                                required={false}
-                                                triggerClass="disabled:!opacity-100 disabled:text-muted-foreground"
-                                                disabled={!watchDatesFrom}
-                                                disableDate={(date) => {
-                                                    let toDay = date;
-                                                    let from = watchDatesFrom!;
-                                                    let now = new Date();
-                                                    toDay.setHours(0, 0, 0, 0);
-                                                    now.setHours(0, 0, 0, 0);
-                                                    from.setHours(0, 0, 0, 0);
+                                                        now.setHours(
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        );
+                                                        from.setHours(
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        );
 
-                                                    if (
-                                                        watchLeaveType !==
-                                                        "maternity"
-                                                    ) {
-                                                        return (
-                                                            isWeekend(date) ||
-                                                            toDay.getTime() <=
-                                                                from.getTime()
-                                                        );
-                                                    } else return false;
-                                                }}
-                                            />
-                                        </>}
+                                                        if (
+                                                            watchLeaveType !==
+                                                            "maternity"
+                                                        ) {
+                                                            return (
+                                                                isWeekend(
+                                                                    date
+                                                                ) ||
+                                                                toDay.getTime() <=
+                                                                    from.getTime()
+                                                            );
+                                                        } else return false;
+                                                    }}
+                                                    onSelect={(date) => onSelectDate(watchDatesFrom??undefined, date)}
+                                                />
+                                            </>
+                                        )}
                                         <FormInput
                                             form={form}
                                             name="daysapplied"
                                             label="Number of days applied"
-                                            disabled={!['monitization', 'terminal'].includes(watchDetails??'')}
+                                            disabled={
+                                                ![
+                                                    "monitization",
+                                                    "terminal",
+                                                ].includes(watchDetails ?? "")
+                                            }
                                             type="number"
                                             maxLength={5}
                                             isStrictNumber
                                         />
                                     </div>
+
+                                    {(watchInclusiveDates?.length || 0) > 0 && (
+                                        <div className="border border-border rounded-md shadow-sm mt-5 w-fit">
+                                            <div className="text-sm font-medium pb-0 p-2 px-3">
+                                                Dates Included
+                                            </div>
+                                            <div className="text-muted-foreground text-sm px-3">
+                                                Select dates to exclude
+                                            </div>
+                                            <div className="p-2 px-3 flex flex-wrap gap-2">
+                                                {watchInclusiveDates?.map(
+                                                    (incDate, index) => (
+                                                        <Button
+                                                            key={index}
+                                                            type="button"
+                                                            variant={
+                                                                incDate.checked
+                                                                    ? "default"
+                                                                    : "outline"
+                                                            }
+                                                            className="p-2 px-3 gap-2"
+                                                            onClick={() => onExcludeDate(
+                                                                index,
+                                                                incDate.checked
+                                                            )}
+                                                            disabled={disableInclusiveDates && incDate.checked}
+                                                        >
+                                                            <span>
+                                                                {format(
+                                                                    incDate.date,
+                                                                    "MMM-d"
+                                                                )}
+                                                            </span>
+                                                            {incDate.checked && (
+                                                                <Check />
+                                                            )}
+                                                        </Button>
+                                                    )
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="!mt-7">
@@ -540,7 +739,9 @@ const DetailsOFLeaveItems = ({
 }: PropsWithChildren & { label: string; required?: boolean }) => {
     return (
         <div className={cn("space-y-2")}>
-            <TypographySmall className={cn(required && "required")}>{label}</TypographySmall>
+            <TypographySmall className={cn(required && "required")}>
+                {label}
+            </TypographySmall>
             {children}
         </div>
     );

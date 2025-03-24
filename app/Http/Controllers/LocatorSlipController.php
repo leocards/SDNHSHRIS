@@ -89,7 +89,13 @@ class LocatorSlipController extends Controller
             'destination' => ['required'],
             'type' => ['required', 'in:business,time'],
             'agenda.date' => ['required', 'date'],
-            'agenda.time' => ['required_if:type,time'],
+            'agenda.time' => [
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('type') === 'time' && empty($request->input('agenda.dateTo')) && empty($value)) {
+                        $fail('The time field is required');
+                    }
+                }
+            ],
             'memoid' => ['required_if:type,business']
         ], [
             'purposeoftravel.required' => 'The purpose of travel field is required.',
@@ -97,7 +103,6 @@ class LocatorSlipController extends Controller
             'type.required' => 'This field is required.',
             'type.in' => 'Please select official business or official time.',
             'agenda.date.required' => 'The date of event/transaction/meeting field is required.',
-            'agenda.time.required_if' => 'The time of event/transaction/meeting field is required.',
             'memoid.required_if' => 'The memo field is required.'
         ]);
 

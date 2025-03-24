@@ -20,6 +20,9 @@ export const LEAVESCHEMA = z.object({
     from: z.date().nullable().default(null),
     to: z.date().optional().nullable().default(null),
     daysapplied: z.string().min(1, requiredError("number of days applied")).default(""),
+    inclusivedates: z.array(z.object({
+        date: z.date(), checked: z.boolean().default(true)
+    })).optional().nullable().default([]),
     // Commutation
     commutation: z.enum(['requested', 'not']).optional(),
     // Medical for maternity
@@ -98,6 +101,7 @@ export const defaultLeave = {
     from: null,
     to: null,
     daysapplied: "",
+    inclusivedates: [],
     // Commutation
     commutation: undefined,
     // Medical for maternity

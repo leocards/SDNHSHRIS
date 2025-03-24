@@ -19,13 +19,16 @@ return new class extends Migration
             $table->string('extensionname')->nullable();
             $table->date('birthday');
             $table->enum('gender', ['male', 'female']);
-            // $table->string('birthplace', 1000)->nullable();
             $table->string('status')->nullable();
             $table->string('email')->unique();
             $table->string('mobilenumber', 13)->nullable();
             $table->string('personnelid')->unique();
             $table->string('department')->nullable();
             $table->enum('role', ['hr', 'principal', 'teaching', 'non-teaching']);
+            $table->string('position')->nullable();
+            $table->enum('gradelevel', ['7','8','9','10','11','12'])->nullable();
+            $table->enum('curriculumnhead', ['7','8','9','10','11','12'])->nullable();
+            $table->enum('academichead', ['junior','senior'])->nullable();
             $table->string('position')->nullable();
             $table->date('hiredate');
             $table->string('credits')->nullable();

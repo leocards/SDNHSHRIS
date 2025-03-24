@@ -20,13 +20,17 @@ export const PersonnelPosition = [
     "N/A"
 ] as const;
 
-export const Departments = {
+export const Departments: Record<string, string> = {
     "junior": "Junior High School",
     "senior": "Senior High School",
     "accounting": "Accounting",
     "N/A": "N/A",
     "deped": "DepEd"
 }
+
+export const GradeLevels = ['7','8','9','10','11','12'];
+export const CurriculumnHeads = GradeLevels;
+export const AcademicHeads = ['junior','senior'];
 
 export const requiredError = (field: string) => `The ${field} field is required.`;
 

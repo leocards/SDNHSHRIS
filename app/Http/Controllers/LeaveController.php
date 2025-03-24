@@ -208,6 +208,7 @@ class LeaveController extends Controller
                 "daysapplied" => (int) $request->daysapplied,
                 "from" => $request->from ? Carbon::parse($request->from)->format('Y-m-d') : null,
                 "to" => $request->to ? Carbon::parse($request->to)->format('Y-m-d') : null,
+                "inclusivedates" => $request->inclusivedates,
                 "commutation" => $request->commutation,
                 "details" => $request->details,
                 "detailsinput" => $request->detailsinput,

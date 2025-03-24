@@ -16,13 +16,14 @@ import {
 import { useToast } from "@/Hooks/use-toast";
 import { useFormSubmit } from "@/Hooks/useFormSubmit";
 import { requiredError } from "@/Types/types";
-import { format, isBefore, isToday } from "date-fns";
-import React, { useEffect } from "react";
+import { eachDayOfInterval, format, isBefore, isEqual, isToday } from "date-fns";
+import React, { useEffect, useMemo } from "react";
 import { z } from "zod";
 import { allowedMimeTypes } from "../ServiceRecord/NewCOC";
 import TypographySmall from "@/Components/Typography";
 import { cn } from "@/Lib/utils";
 import { Input } from "@/Components/ui/input";
+import { Check } from "lucide-react";
 
 const LOCATORSLIPOBJECT = z
     .object({
@@ -37,7 +38,14 @@ const LOCATORSLIPOBJECT = z
         }),
         agenda: z.object({
             date: z.date({ required_error: requiredError("date of event/transaction/meeting") }),
+            dateTo: z.date().optional().nullable().default(null),
             time: z.string().optional().default(""),
+            inclusivedates: z.array(
+                z.object({
+                    date: z.date(),
+                    checked: z.boolean(),
+                })
+            ).optional().default([]),
         }),
         memoid: z.number().optional().nullable().default(null),
     })
@@ -50,10 +58,11 @@ const LOCATORSLIPOBJECT = z
             });
         }
 
-        if (type === "time" && !agenda.time) {
+        if ((type === "time" && !agenda.time) && !agenda.dateTo) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "The time of event/transaction/meeting field is required.",
+                message:
+                    "The time of event/transaction/meeting field is required.",
                 path: ["agenda.time"],
             });
         }
@@ -74,7 +83,7 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
             purposeoftravel: "",
             destination: "",
             type: undefined,
-            agenda: { date: undefined, time: "" },
+            agenda: { date: undefined, dateTo: null, time: "", inclusivedates: [] },
         },
         async: true,
         callback: {
@@ -101,7 +110,19 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
         },
     });
 
-    const watchType = form.watch('type')
+    const watchType = form.watch("type");
+    const watchDateFrom = form.watch("agenda.date");
+    const watchDateTo = form.watch("agenda.dateTo");
+    const watchInclusivedates = form.watch("agenda.inclusivedates");
+
+    const disableInclusiveDates = useMemo(() => {
+        if(watchInclusivedates) {
+            let dates = [...watchInclusivedates]
+            let checkedDates = dates.filter((dates) => dates.checked);
+
+            return checkedDates.length === 2
+        }
+    }, [watchInclusivedates])
 
     const handleFilepondLoad = (id: number): any => {
         form.setValue(`memoid`, id, {
@@ -113,6 +134,70 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
         form.setValue(`memoid`, null, { shouldDirty: true });
     };
 
+    const onSelectDates = (dateFrom?: Date, dateTo?: Date) => {
+        if (dateFrom && dateTo) {
+            let dates = eachDayOfInterval({ start: dateFrom, end: dateTo });
+
+            form.setValue(
+                "agenda.inclusivedates",
+                dates.map((date) => ({
+                    date: date,
+                    checked:
+                        watchInclusivedates?.find((d) => isEqual(date, d.date))
+                            ?.checked ?? true,
+                }))
+            );
+            form.setValue("agenda.time", '');
+        } else {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, "0");
+            const minutes = String(now.getMinutes()).padStart(2, "0");
+            let time = `${hours}:${minutes}`;
+
+            form.setValue('agenda.inclusivedates', [])
+            if(!dateFrom) {
+                form.setValue('agenda.dateTo', null)
+                form.setValue('agenda.date', now)
+                form.setValue("agenda.time", time);
+            }
+
+            if(!dateTo) {
+                form.setValue("agenda.time", time);
+            }
+
+        }
+    };
+
+    const onExcludeDate = (index: number, check: boolean) => {
+        let inclusiveDate = form.getValues("agenda.inclusivedates");
+
+        if (inclusiveDate) {
+            // uncheck the date to exclude
+            inclusiveDate[index].checked = !check;
+            // get the checked dates of inclusive dates
+            let checkedDates = inclusiveDate.filter((dates) => dates.checked);
+
+            if (checkedDates.length > 1) {
+                // get the last Date
+                let lastCheckedDate = checkedDates[checkedDates.length - 1];
+                // get the first Date
+                let firstCheckedDate = checkedDates[0];
+                // assign the first checked date as inclusive dates from
+                form.setValue("agenda.date", firstCheckedDate.date);
+                // assign the last checked date as inclusive dates to
+                form.setValue("agenda.dateTo", lastCheckedDate.date);
+            } else {
+                form.setValue("agenda.dateTo", null);
+
+                if (checkedDates.length === 1) {
+                }
+            }
+
+            // update the inclusive dates
+            form.setValue("agenda.inclusivedates", inclusiveDate);
+        }
+    };
+
     useEffect(() => {
         if (show) {
             form.reset();
@@ -120,19 +205,23 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
     }, [show]);
 
     useEffect(() => {
-        if(watchType && watchType === 'time') {
+        if (watchType && watchType === "time") {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            let time = `${hours}:${minutes}`
-            form.setValue('agenda.date', new Date())
-            form.setValue('agenda.time', time)
-            form.setValue('memoid', null)
+            const hours = String(now.getHours()).padStart(2, "0");
+            const minutes = String(now.getMinutes()).padStart(2, "0");
+            let time = `${hours}:${minutes}`;
+            form.setValue("agenda.date", new Date(), {
+                shouldValidate: true
+            });
 
-        } else if(watchType && watchType === 'business') {
-            form.setValue('agenda.time', '')
+            if(!watchDateTo)
+                form.setValue("agenda.time", time);
+
+            form.setValue("memoid", null);
+        } else if (watchType && watchType === "business") {
+            form.setValue("agenda.time", "");
         }
-    }, [watchType])
+    }, [watchType]);
 
     return (
         <Modal
@@ -168,31 +257,118 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
                             <FormRadioItem value="time" label="Official Time" />
                         </FormRadioGroup>
 
-                        <FormCalendar
-                            form={form}
-                            label="Date of Event/Transaction/Meeting"
-                            name="agenda.date"
-                            disableDate={(date) => {
-                                return (
-                                    !isBefore(new Date(), date) &&
-                                    !isToday(date)
-                                );
-                            }}
-                        />
+                        <div>
+                            <TypographySmall
+                                className={cn(
+                                    "required",
+                                    form.formState.errors?.agenda?.date &&
+                                        "text-destructive"
+                                )}
+                            >
+                                Date of Event/Transaction/Meeting
+                            </TypographySmall>
+                            <div
+                                className={cn(
+                                    "grid gap-4 [@media(min-width:556px)]:grid-cols-2"
+                                )}
+                            >
+                                <FormCalendar
+                                    form={form}
+                                    label={"From"}
+                                    name="agenda.date"
+                                    disableDate={(date) => {
+                                        return (
+                                            !isBefore(new Date(), date) &&
+                                            !isToday(date)
+                                        );
+                                    }}
+                                    required={false}
+                                    onSelect={(date) => onSelectDates(date, watchDateTo??undefined)}
+                                    disabled={!watchType}
+                                />
+                                <FormCalendar
+                                    form={form}
+                                    label="To"
+                                    name="agenda.dateTo"
+                                    disableDate={(date) => {
+                                        return !isBefore(watchDateFrom, date);
+                                    }}
+                                    required={false}
+                                    onSelect={(date) => onSelectDates(watchDateFrom, date)}
+                                    disabled={!watchDateFrom}
+                                />
+                            </div>
 
-                        {watchType === 'time' && (<FormField
-                            control={form.control}
-                            name="agenda.time"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel children="Time of Event/Transaction/Meeting" />
-                                    <FormControl>
-                                        <Input {...field} type="time" className="formInput" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                            <div className="mt-4">
+                                {(watchInclusivedates?.length || 0) > 0 && (
+                                    <div className="border border-border rounded-md shadow-sm w-fit">
+                                        <div className="text-sm font-medium pb-0 p-2 px-3">
+                                            Dates Included
+                                        </div>
+                                        <div className="text-muted-foreground text-sm px-3">
+                                            Select dates to exclude
+                                        </div>
+                                        <div className="p-2 px-3 flex flex-wrap gap-2">
+                                            {watchInclusivedates?.map(
+                                                (incDate, index) => (
+                                                    <Button
+                                                        key={index}
+                                                        type="button"
+                                                        variant={
+                                                            incDate.checked
+                                                                ? "default"
+                                                                : "outline"
+                                                        }
+                                                        className="p-2 px-3 gap-2"
+                                                        onClick={() =>
+                                                            onExcludeDate(
+                                                                index,
+                                                                incDate.checked
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            disableInclusiveDates &&
+                                                            incDate.checked
+                                                        }
+                                                    >
+                                                        <span>
+                                                            {format(
+                                                                incDate.date,
+                                                                "MMM-d"
+                                                            )}
+                                                        </span>
+                                                        {incDate.checked && (
+                                                            <Check />
+                                                        )}
+                                                    </Button>
+                                                )
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {watchType === "time" &&
+                            !form.watch("agenda.dateTo") && (
+                                <FormField
+                                    control={form.control}
+                                    name="agenda.time"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel children="Time of Event/Transaction/Meeting" />
+                                            <FormControl>
+                                                <Input
+                                                    {...field}
+                                                    type="time"
+                                                    className="formInput"
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             )}
-                        />)}
 
                         {watchType === "business" && (
                             <div className="space-y-2">
@@ -225,7 +401,11 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
                     </div>
 
                     <div className="flex items-center mt-10">
-                        <Button type="button" variant="outline" onClick={() => onClose(false)}>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => onClose(false)}
+                        >
                             Cancel
                         </Button>
                         <Button className="ml-auto">Send Application</Button>

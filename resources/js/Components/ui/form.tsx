@@ -467,6 +467,7 @@ const FormCalendar: React.FC<
         onCancel?: () => void;
         noFutureDates?: boolean;
         itemClass?: string;
+        onSelect?: (date?: Date) => void
     }
 > = ({
     form,
@@ -479,6 +480,7 @@ const FormCalendar: React.FC<
     withNA,
     onCancel,
     labelClass,
+    onSelect,
     ...props
 }) => {
     const isValidDate = (input: string | Date): boolean => {
@@ -526,6 +528,7 @@ const FormCalendar: React.FC<
                                                     "h-10 w-full justify-between !font-normal !bg-background hover:!bg-background dark:!bg-white/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-fuchsia-500 focus-visible:border-fuchsia-700",
                                                     "data-[state=open]:border-fuchsia-700 data-[state=open]:ring-1 data-[state=open]:ring-fuchsia-500",
                                                     "aria-[invalid=true]:!ring-destructive aria-[invalid=true]:!border-destructive",
+                                                    "disabled:opacity-100 disabled:text-muted-foreground",
                                                     triggerClass
                                                 )}
                                             >
@@ -578,6 +581,8 @@ const FormCalendar: React.FC<
                                                     );
                                                 else field.onChange(date);
                                                 close && close();
+
+                                                onSelect?.(date)
                                             }}
                                             initialFocus
                                             disabled={disableDate}

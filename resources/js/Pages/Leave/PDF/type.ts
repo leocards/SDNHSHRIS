@@ -1,6 +1,7 @@
 import { DETAILS } from './../Types/LeaveFormSchema';
 import { APPROVALTYPE, User } from "@/Types";
 import { LEAVETYPEKEYS } from "../Types/leavetypes";
+import { InclusiveDateInterface } from '../Types/Methods';
 
 export type PRINCIPAL = {
     name: string
@@ -19,6 +20,7 @@ export type APPLICATIONFORLEAVETYPES = Pick<User, "firstname"|"lastname"|"middle
     detailsinput: string;
     from: string;
     to: string;
+    inclusivedates: InclusiveDateInterface[];
     daysapplied: string;
     commutation: "requested" | "not"
     principalstatus: APPROVALTYPE

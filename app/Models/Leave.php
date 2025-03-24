@@ -19,6 +19,7 @@ class Leave extends Model
         "daysapplied",
         "from",
         "to",
+        "inclusivedates",
         "commutation",
         "principalstatus",
         "principaldisapprovedmsg",
@@ -34,7 +35,8 @@ class Leave extends Model
     {
         return [
             "notifiedDueMedical" => "boolean",
-            "approvedfor" => "json"
+            "approvedfor" => "json",
+            "inclusivedates" => "json"
         ];
     }
 

@@ -6,6 +6,7 @@ import React from "react";
 import { APPLICATIONFORLEAVETYPES } from "./type";
 import { LEAVETYPEKEYSARRAY, LEAVETYPESOBJ, LEAVETYPESSECTIONOBJ } from "../Types/leavetypes";
 import { User } from "@/Types";
+import { formatDateRanges } from "../Types/Methods";
 
 type Props = {
     isDownload?: boolean;
@@ -18,7 +19,7 @@ const LeavePDFDetailsOfApplication = (
 ) => {
     const {
         isDownload,
-        leave: { type, details, detailsinput, from, to, others, commutation, daysapplied },
+        leave: { type, details, detailsinput, from, to, others, commutation, daysapplied, inclusivedates },
         applicant
     } = props;
 
@@ -261,10 +262,10 @@ const LeavePDFDetailsOfApplication = (
                         )}
                     >
                         <div className={cn(isDownload && "mb-1.5 mt-1", !from && "h-4")}>
-                            {from ? formatDateRange({
+                            {from && !to ? formatDateRange({
                                 from: from,
                                 to: to,
-                            }) : ''}
+                            }) : from && to ? formatDateRanges(inclusivedates) : ''}
                         </div>
                     </div>
                 </div>
