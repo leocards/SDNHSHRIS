@@ -82,8 +82,8 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({
                         : undefined),
                 position: personnel?.position || undefined,
                 gradelevel: personnel ? personnel.gradelevel??null : null,
-                curriculumnhead: personnel ? personnel.curriculumnhead??null : null,
-                academichead: personnel ? personnel.academichead??null : null,
+                curriculumnhead: null,
+                academichead: null,
                 credits: !personnel && personneltype != "teaching" ? "30" : "0",
                 splcredits:
                     !personnel && personneltype != "teaching" ? "15" : "0",
@@ -126,6 +126,10 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({
                     "Create a principal first before creating a new personnel",
                 status: "info",
             });
+        }
+        if(personnel) {
+            form.setValue('personnel.curriculumnhead', personnel.curriculumnhead??null)
+            form.setValue('personnel.academichead', personnel.academichead??null)
         }
     }, []);
 

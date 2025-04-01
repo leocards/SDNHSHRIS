@@ -59,8 +59,8 @@ class PersonnelController extends Controller
             "hasPrincipal" => $principal,
             "personneltype" => $pt,
             "personnel" => $personnel,
-            "curriculumnheads" => User::whereNotNull('curriculumnhead')->value('curriculumnhead'),
-            "academicheads" => User::whereNotNull('academichead')->value('academichead'),
+            "curriculumnheads" => User::whereNotNull('curriculumnhead')->pluck('curriculumnhead'),
+            "academicheads" => User::whereNotNull('academichead')->pluck('academichead'),
         ]);
     }
 

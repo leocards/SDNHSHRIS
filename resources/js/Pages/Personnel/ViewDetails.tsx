@@ -9,6 +9,7 @@ import MaleGender from "@/Assets/malegender.png";
 import FemaleGender from "@/Assets/femalegender.png";
 import { Cake } from "iconsax-react";
 import { format } from "date-fns";
+import { Departments } from "@/Types/types";
 
 type Props = ModalProps & {
     user: User | null;
@@ -81,7 +82,7 @@ const ViewDetails: React.FC<Props> = ({ user, show, onClose }) => {
 
                     <div className="flex items-center gap-2 text-sm mt-2">
                         <div>Department:</div>
-                        {user?.department}
+                        {Departments[user?.department??'N/A']}
                     </div>
 
                     <div className="flex items-center gap-2 text-sm mt-2">

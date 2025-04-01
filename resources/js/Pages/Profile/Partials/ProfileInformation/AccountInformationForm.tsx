@@ -149,8 +149,8 @@ interface Props {
     hasPrincipal?: boolean;
     onFormSubmit?: () => void;
     cancelButton?: React.ReactNode;
-    curriculumnheads: string[];
-    academicheads: string[];
+    curriculumnheads?: string[];
+    academicheads?: string[];
 }
 
 const AccountInformationForm: React.FC<Props> = ({
@@ -176,6 +176,17 @@ const AccountInformationForm: React.FC<Props> = ({
     const watchAcademicHead = form.watch("personnel.academichead");
 
     const [positions, setPositions] = useState<Array<string>>([]);
+
+    const disableAcademicHead = (acadLevel: 'junior'|'senior'): boolean => {
+        let userIsHead = user?.academichead
+        if(academicheads?.includes(acadLevel) || (acadLevel === "junior" && ["11", "12"].includes(watchGradeLevel))) {
+            return userIsHead === acadLevel ? false : true
+        }
+        if(academicheads?.includes(acadLevel) || (acadLevel === "senior" && !["11", "12"].includes(watchGradeLevel))) {
+            return userIsHead === acadLevel ? false : true
+        }
+        return false;
+    }
 
     useEffect(() => {
         if (watchRole === "principal") {
@@ -530,7 +541,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                     )}
                                 />
 
-                                {curriculumnheads.length < 6 && (
+                                {(curriculumnheads?.length || 0) < 6 && (
                                     <FormSelect
                                         form={form}
                                         name="personnel.curriculumnhead"
@@ -540,6 +551,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                                 ? `Grade ${watchCurriculumnHead} Curriculumn Head`
                                                 : ""
                                         }
+                                        watchDefault
                                         items={
                                             <Fragment>
                                                 <SelectItem
@@ -552,38 +564,26 @@ const AccountInformationForm: React.FC<Props> = ({
                                                         );
                                                     }}
                                                 />
-                                                {(['7','8','9','10'].includes(watchGradeLevel)) && ['7','8','9','10'].filter(
-                                                    (ch) =>
-                                                        !curriculumnheads.includes(
-                                                            ch
-                                                        )
-                                                ).map((gradelevel, index) => (
-                                                    <SelectItem
-                                                        key={index}
-                                                        value={gradelevel}
-                                                        children={
-                                                            "Grade " +
-                                                            gradelevel +
-                                                            " Curriculumn Head"
-                                                        }
-                                                    />
-                                                ))}
-                                                {(['11','12'].includes(watchGradeLevel)) && ['11','12'].filter(
-                                                    (ch) =>
-                                                        !curriculumnheads.includes(
-                                                            ch
-                                                        )
-                                                ).map((gradelevel, index) => (
-                                                    <SelectItem
-                                                        key={index}
-                                                        value={gradelevel}
-                                                        children={
-                                                            "Grade " +
-                                                            gradelevel +
-                                                            " Curriculumn Head"
-                                                        }
-                                                    />
-                                                ))}
+                                                {["7", "8", "9", "10"].map(
+                                                    (gradelevel, index) => (
+                                                        <SelectItem
+                                                            key={index}
+                                                            value={gradelevel}
+                                                            children={`Grade ${gradelevel} Curriculum head`}
+                                                            disabled={(!watchGradeLevel || (curriculumnheads?.includes(gradelevel) && gradelevel !== user?.curriculumnhead) || (["11", "12"].includes(watchGradeLevel) || (watchGradeLevel != gradelevel)))}
+                                                        />
+                                                    )
+                                                )}
+                                                {["11", "12"].map(
+                                                    (gradelevel, index) => (
+                                                        <SelectItem
+                                                            key={index}
+                                                            value={gradelevel}
+                                                            children={`Grade ${gradelevel} Curriculum head`}
+                                                            disabled={(!watchGradeLevel || (curriculumnheads?.includes(gradelevel) && gradelevel !== user?.curriculumnhead) || (!["11", "12"].includes(watchGradeLevel) || (watchGradeLevel != gradelevel)))}
+                                                        />
+                                                    )
+                                                )}
                                             </Fragment>
                                         }
                                         disabled={watchAcademicHead}
@@ -591,8 +591,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                     />
                                 )}
 
-                                {(academicheads?.length < 2 ||
-                                    academicheads == null) && (
+                                {(academicheads?.length ?? 0) < 2 && (
                                     <FormSelect
                                         form={form}
                                         name="personnel.academichead"
@@ -615,26 +614,18 @@ const AccountInformationForm: React.FC<Props> = ({
                                                         );
                                                     }}
                                                 />
-                                                {!academicheads?.includes(
-                                                    "junior"
-                                                ) &&
-                                                    ['7','8','9','10'].includes(
-                                                        watchGradeLevel
-                                                    ) && (
-                                                        <SelectItem value="junior">
-                                                            Junior High School
-                                                        </SelectItem>
-                                                    )}
-                                                {!academicheads?.includes(
-                                                    "senior"
-                                                ) &&
-                                                    ['11','12'].includes(
-                                                        watchGradeLevel
-                                                    ) && (
-                                                        <SelectItem value="senior">
-                                                            Senior High School
-                                                        </SelectItem>
-                                                    )}
+                                                <SelectItem
+                                                    value="junior"
+                                                    disabled={disableAcademicHead('junior')}
+                                                >
+                                                    Junior High School
+                                                </SelectItem>
+                                                <SelectItem
+                                                    value="senior"
+                                                    disabled={disableAcademicHead('senior')}
+                                                >
+                                                    Senior High School
+                                                </SelectItem>
                                             </Fragment>
                                         }
                                         disabled={watchCurriculumnHead}
