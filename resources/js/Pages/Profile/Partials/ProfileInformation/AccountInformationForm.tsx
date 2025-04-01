@@ -113,7 +113,7 @@ export const ACCOUNTSCHEMA = z.object({
             .nullable(),
         curriculumnhead: z
             .enum(["7", "8", "9", "10", "11", "12"], {
-                required_error: requiredError("curriculumn head"),
+                required_error: requiredError("curriculum head"),
                 invalid_type_error: "Please select grade levels 7 to 12.",
             })
             .optional()
@@ -545,10 +545,10 @@ const AccountInformationForm: React.FC<Props> = ({
                                     <FormSelect
                                         form={form}
                                         name="personnel.curriculumnhead"
-                                        label="Curriculumn Head"
+                                        label="Curriculum Head"
                                         displayValue={
                                             watchCurriculumnHead
-                                                ? `Grade ${watchCurriculumnHead} Curriculumn Head`
+                                                ? `Grade ${watchCurriculumnHead} Curriculum Head`
                                                 : ""
                                         }
                                         watchDefault
