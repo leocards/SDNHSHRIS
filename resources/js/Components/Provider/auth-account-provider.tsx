@@ -40,6 +40,8 @@ type AccountState = {
     activeUsers: ACTIVEUSERSLIST;
     unreadNotification: number;
     notifications: NOTIFICATION[];
+    serviceRecordReminder: boolean;
+    setServiceRecordReminder: (donotremind?: boolean) => void;
     setNotifications: (notifs: NOTIFICATION[]) => void;
     onRedirectNotification: (notification: NOTIFICATION) => void;
     onMarkAsRead: (notification: NOTIFICATION) => void;
@@ -57,6 +59,8 @@ const initialState = {
     notifications: [],
     setNotifications: () => null,
     updateNotificationCounter: () => null,
+    serviceRecordReminder: true,
+    setServiceRecordReminder: () => null
 };
 
 const AccountContext = createContext<AccountState>(initialState);
@@ -79,6 +83,7 @@ const AccountProvider: React.FC<AccountProviderProps> = ({
         null
     );
     const [unreadNotification, setUnreadNotification] = useState<number>(0);
+    const [serviceRecordReminder, setServiceRecordReminder] = useState<boolean>(true);
 
     const onLogout = () => {
         setLogout(true);
@@ -219,6 +224,20 @@ const AccountProvider: React.FC<AccountProviderProps> = ({
         }
     }, [newNotification]);
 
+    useEffect(() => {
+        if(localStorage.getItem('srDoNotRemind') === null) {
+            localStorage.setItem('srDoNotRemind', 'true')
+            setServiceRecordReminder(true)
+        } else {
+            let srDoNotRemindLocalStore = localStorage.getItem('srDoNotRemind')??'true';
+
+            let parseSrDoNotRemind = JSON.parse(srDoNotRemindLocalStore) as boolean
+            let isRemmind = parseSrDoNotRemind === false ? false : !!parseSrDoNotRemind
+
+            setServiceRecordReminder(isRemmind)
+        }
+    }, [])
+
     const value = {
         auth,
         logout,
@@ -234,6 +253,14 @@ const AccountProvider: React.FC<AccountProviderProps> = ({
 
         onRedirectNotification,
         onMarkAsRead,
+
+        serviceRecordReminder,
+        setServiceRecordReminder: (donotremind?: boolean) => {
+            if(donotremind)
+                localStorage.setItem('srDoNotRemind', 'false')
+
+            setServiceRecordReminder(false)
+        }
     };
 
     return (

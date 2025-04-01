@@ -13,9 +13,10 @@ import ProcessIndicator from "@/Components/ProcessIndicator";
 import { ProcessIndicatorProvider } from "@/Components/Provider/process-indicator-provider";
 import { format } from "date-fns";
 import { useToast } from "@/Hooks/use-toast";
+import { Button } from "@/Components/ui/button";
 
 export default function Authenticated({ children }: PropsWithChildren) {
-    const { logout } = useAccount();
+    const { logout, serviceRecordReminder, setServiceRecordReminder } = useAccount();
     const { minimize, openMessageBox } = useMessage();
     const { toast } = useToast();
     const page = usePage()
@@ -55,6 +56,19 @@ export default function Authenticated({ children }: PropsWithChildren) {
                 <HeaderNavigationBar />
 
                 <main className={cn("p-4", minimize && "mb-16")}>
+
+                    {(serviceRecordReminder && !page.props.hasservicerecords && page.props.auth.user.role === 'teaching') && <div className="flex max-sm:flex-col sm:items-center justify-between gap-5 bg-orange-100 p-2 px-3 border border-orange-600 rounded-md mb-3">
+                        <div className="text-orange-900 text-sm font-medium">Upload your service records to earn service credits.</div>
+                        <div className="flex [@media(max-width:350px)]:flex-col gap-2 [@media(max-width:350px)]:ml-0 max-sm:ml-auto">
+                            <Button className="[@media(max-width:350px)]:w-full h-8" variant="outline" onClick={() => setServiceRecordReminder(true)}>
+                                Ok, Do not remind me again.
+                            </Button>
+                            <Button className="[@media(max-width:350px)]:w-full h-8" variant="outline" onClick={() => setServiceRecordReminder()}>
+                                Ok
+                            </Button>
+                        </div>
+                    </div>}
+
                     {children}
                 </main>
             </div>

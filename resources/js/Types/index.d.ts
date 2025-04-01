@@ -50,6 +50,7 @@ export type PageProps<
     flash: Flash;
     schoolyear: SCHOOLYEAR | null;
     ct: string;
+    hasservicerecords: boolean;
 };
 
 export type SCHOOLYEAR = {
