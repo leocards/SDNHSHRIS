@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\ClassAssumptionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GeneralSearchController;
 use App\Http\Controllers\IpcrReportController;
@@ -51,6 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', 'index')->name('general-search');
             Route::get('/view/{user}', 'view')->name('general-search.view');
             Route::get('/view/locatorslip/view/{ls}', [LocatorSlipController::class, 'view'])->name('general-search.view.ls.view');
+            Route::get('/view/classassumption/view/{ca}', [ClassAssumptionController::class, 'view'])->name('general-search.view.ca.view');
         });
     });
 
@@ -87,6 +89,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         Route::get('/personnel-archive/saln/view/{saln}', [SalnController::class, 'view'])->middleware(['role:hr'])->name('personnel.archive.saln.view');
+        Route::get('/personnel-archive/classassumption/view/{ca}', [ClassAssumptionController::class, 'view'])->middleware(['role:hr'])->name('personnel.archive.ca.view');
 
         // Tardiness routes
         Route::controller(TardinessController::class)->group(function () {
@@ -132,6 +135,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             Route::post('/service-record/respond/{sr}', 'respond')->name('myapproval.sr.respond');
         });
+
+        Route::get('/classassumption', [ClassAssumptionController::class, 'index'])->middleware(['role:principal'])->name('myapproval.classassumption');
+        Route::get('/classassumption/view/{ca}', [ClassAssumptionController::class, 'view'])->middleware(['role:principal'])->name('myapproval.classassumption.view');
+        Route::post('/classassumption/approval/{ca}', [ClassAssumptionController::class, 'approval'])->middleware(['role:principal'])->name('myapproval.classassumption.approval');
     });
 
     Route::prefix('myreports')->middleware(['role:hr'])->group(function () {
@@ -249,6 +256,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/', 'store')->name('sr.store');
             Route::post('/storeCOC', 'storeCOC')->name('sr.store.coc');
             Route::post('/temporary-file-upload', 'storeTemporaryFile')->name('sr.temporary');
+        });
+    });
+
+    Route::prefix('classassumption')->group(function () {
+        Route::controller(ClassAssumptionController::class)->group(function () {
+            Route::get('/', 'index')->name('classassumption');
+            Route::get('/get-teachers', 'getTeachers')->name('classassumption.getteachers');
+            Route::get('/view/{ca}', 'view')->name('classassumption.view');
+
+            Route::post('/store', 'store')->name('classassumption.save');
+            Route::post('/update/{ca}', 'update')->name('classassumption.update');
         });
     });
 

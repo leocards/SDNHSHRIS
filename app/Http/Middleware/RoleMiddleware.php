@@ -13,7 +13,7 @@ class RoleMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role1, string $role2 = null, string $role3 = null): Response
+    public function handle(Request $request, Closure $next, string $role1, ?string $role2 = null, ?string $role3 = null): Response
     {
         if($request->user()->hasRole($role1) || $request->user()->hasRole($role2) || $request->user()->hasRole($role3))
             return $next($request);

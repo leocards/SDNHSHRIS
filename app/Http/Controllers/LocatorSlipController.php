@@ -55,7 +55,7 @@ class LocatorSlipController extends Controller
                         });
                 })
                 ->when($sort == 'date',
-                    fn($query) => $query->orderBy('updated_at', $order),
+                    fn($query) => $query->orderBy('created_at', $order),
                     fn($query) => $query->orderByRaw('(SELECT lastname FROM users WHERE users.id = locator_slips.user_id) '.strtoupper($order)))
                 ->paginate($this->page);
         } else {

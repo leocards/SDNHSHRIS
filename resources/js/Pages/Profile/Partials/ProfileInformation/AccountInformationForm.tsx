@@ -11,7 +11,6 @@ import { SelectItem } from "@/Components/ui/select";
 import { cn } from "@/Lib/utils";
 import { User, DepartmentsType } from "@/Types";
 import {
-    AcademicHeads,
     CurriculumnHeads,
     Departments,
     GradeLevels,
@@ -105,20 +104,32 @@ export const ACCOUNTSCHEMA = z.object({
 
                 return true;
             }, requiredError("position")),
-        gradelevel: z.enum(['7','8','9','10','11','12'], {
-            required_error: requiredError("grade level"),
-            invalid_type_error: 'Please select grade levels 7 to 12.',
-        }).optional().nullable(),
-        curriculumnhead: z.enum(['7','8','9','10','11','12'], {
-            required_error: requiredError("curriculumn head"),
-            invalid_type_error: 'Please select grade levels 7 to 12.',
-        }).optional().nullable().default(null),
-        academichead: z.enum(["junior", "senior"], {
-            required_error: requiredError("academic head"),
-            invalid_type_error: 'Please select junior or senior high school',
-        }).optional().nullable().default(null),
-        credits: z.string().optional().default('0'),
-        splcredits: z.string().optional().default('0'),
+        gradelevel: z
+            .enum(["7", "8", "9", "10", "11", "12"], {
+                required_error: requiredError("grade level"),
+                invalid_type_error: "Please select grade levels 7 to 12.",
+            })
+            .optional()
+            .nullable(),
+        curriculumnhead: z
+            .enum(["7", "8", "9", "10", "11", "12"], {
+                required_error: requiredError("curriculumn head"),
+                invalid_type_error: "Please select grade levels 7 to 12.",
+            })
+            .optional()
+            .nullable()
+            .default(null),
+        academichead: z
+            .enum(["junior", "senior"], {
+                required_error: requiredError("academic head"),
+                invalid_type_error:
+                    "Please select junior or senior high school",
+            })
+            .optional()
+            .nullable()
+            .default(null),
+        credits: z.string().optional().default("0"),
+        splcredits: z.string().optional().default("0"),
     }),
     password: z
         .string()
@@ -138,6 +149,8 @@ interface Props {
     hasPrincipal?: boolean;
     onFormSubmit?: () => void;
     cancelButton?: React.ReactNode;
+    curriculumnheads: string[];
+    academicheads: string[];
 }
 
 const AccountInformationForm: React.FC<Props> = ({
@@ -150,6 +163,8 @@ const AccountInformationForm: React.FC<Props> = ({
     form,
     hasPrincipal,
     cancelButton,
+    curriculumnheads,
+    academicheads,
     ...props
 }) => {
     const watchDepartment = form.watch(
@@ -178,26 +193,36 @@ const AccountInformationForm: React.FC<Props> = ({
             setPositions([...PersonnelPosition].slice(0, 7));
         }
 
-        if(!isProfile) {
-            if(watchRole !== "teaching"){
-                form.setValue("personnel.credits", '30');
-                form.setValue("personnel.splcredits", '15');
+        if (!isProfile) {
+            if (watchRole !== "teaching") {
+                form.setValue("personnel.credits", "30");
+                form.setValue("personnel.splcredits", "15");
             } else {
-                form.setValue("personnel.credits", '0');
-                form.setValue("personnel.splcredits", '0');
+                form.setValue("personnel.credits", "0");
+                form.setValue("personnel.splcredits", "0");
             }
         }
     }, [watchRole]);
 
     useEffect(() => {
-        if(watchAcademicHead) {
-            form.setValue('personnel.curriculumnhead', null)
+        if (watchAcademicHead) {
+            form.setValue("personnel.curriculumnhead", null);
         }
 
-        if(watchCurriculumnHead) {
-            form.setValue('personnel.academichead', null)
+        if (watchCurriculumnHead) {
+            form.setValue("personnel.academichead", null);
+            form.setValue("personnel.gradelevel", watchCurriculumnHead);
         }
-    }, [watchCurriculumnHead, watchAcademicHead])
+    }, [watchCurriculumnHead, watchAcademicHead]);
+
+    useEffect(() => {
+        if (watchGradeLevel && watchCurriculumnHead) {
+            if (watchGradeLevel != watchCurriculumnHead)
+                form.setValue("personnel.curriculumnhead", null);
+        }
+
+        form.setValue("personnel.academichead", undefined);
+    }, [watchGradeLevel]);
 
     return (
         <div>
@@ -343,7 +368,17 @@ const AccountInformationForm: React.FC<Props> = ({
                                 className="text-base bg-background pr-3 before:absolute before:w-full before:h-px before:bg-border before:top-3 before:-z-10"
                             />
 
-                            <div className={cn("grid grid-cols-1 sm:grid-cols-2 gap-4", (!user || !isProfile || watchRole === "teaching") ? 'md:grid-cols-3' : watchRole != "teaching" && 'md:grid-cols-4')}>
+                            <div
+                                className={cn(
+                                    "grid grid-cols-1 sm:grid-cols-2 gap-4",
+                                    !user ||
+                                        !isProfile ||
+                                        watchRole === "teaching"
+                                        ? "md:grid-cols-3"
+                                        : watchRole != "teaching" &&
+                                              "md:grid-cols-4"
+                                )}
+                            >
                                 <FormSelect
                                     form={form}
                                     name="personnel.role"
@@ -454,94 +489,158 @@ const AccountInformationForm: React.FC<Props> = ({
                                     disabled={!watchRole}
                                 />
 
-                                {(!isProfile && !user && watchRole != "teaching") && (
-                                    <Fragment>
-                                        <FormInput
-                                            form={form}
-                                            name="personnel.credits"
-                                            label="Credits"
-                                            type="number"
-                                            required={false}
-                                        />
-                                        <FormInput
-                                            form={form}
-                                            name="personnel.splcredits"
-                                            label="SPL Credits"
-                                            type="number"
-                                            required={false}
-                                        />
-                                    </Fragment>
-                                )}
+                                {!isProfile &&
+                                    !user &&
+                                    watchRole != "teaching" && (
+                                        <Fragment>
+                                            <FormInput
+                                                form={form}
+                                                name="personnel.credits"
+                                                label="Credits"
+                                                type="number"
+                                                required={false}
+                                            />
+                                            <FormInput
+                                                form={form}
+                                                name="personnel.splcredits"
+                                                label="SPL Credits"
+                                                type="number"
+                                                required={false}
+                                            />
+                                        </Fragment>
+                                    )}
 
                                 <FormSelect
                                     form={form}
                                     name="personnel.gradelevel"
                                     label="Grade Level"
-                                    displayValue={watchGradeLevel ? `Grade ${watchGradeLevel}` : ''}
-                                    items={
-                                        GradeLevels.map((gradelevel, index) => (
+                                    displayValue={
+                                        watchGradeLevel
+                                            ? `Grade ${watchGradeLevel}`
+                                            : ""
+                                    }
+                                    items={GradeLevels.map(
+                                        (gradelevel, index) => (
                                             <SelectItem
                                                 key={index}
                                                 value={gradelevel}
-                                                children={'Grade '+gradelevel}
+                                                children={"Grade " + gradelevel}
                                             />
-                                        ))
-                                    }
+                                        )
+                                    )}
                                 />
 
-                                <FormSelect
-                                    form={form}
-                                    name="personnel.curriculumnhead"
-                                    label="Curriculumn Head"
-                                    displayValue={watchCurriculumnHead ? `Grade ${watchCurriculumnHead} Curriculumn Head` : ''}
-                                    items={
-                                        <Fragment>
-                                            <SelectItem
-                                                children={'-Select-'}
-                                                isNonValue
-                                                onClick={() => {
-                                                    form.setValue('personnel.curriculumnhead', undefined)
-                                                }}
-                                            />
-                                            {CurriculumnHeads.map((gradelevel, index) => (
+                                {curriculumnheads.length < 6 && (
+                                    <FormSelect
+                                        form={form}
+                                        name="personnel.curriculumnhead"
+                                        label="Curriculumn Head"
+                                        displayValue={
+                                            watchCurriculumnHead
+                                                ? `Grade ${watchCurriculumnHead} Curriculumn Head`
+                                                : ""
+                                        }
+                                        items={
+                                            <Fragment>
                                                 <SelectItem
-                                                    key={index}
-                                                    value={gradelevel}
-                                                    children={'Grade '+gradelevel+' Curriculumn Head'}
+                                                    children={"-Select-"}
+                                                    isNonValue
+                                                    onClick={() => {
+                                                        form.setValue(
+                                                            "personnel.curriculumnhead",
+                                                            undefined
+                                                        );
+                                                    }}
                                                 />
-                                            ))}
-                                        </Fragment>
-                                    }
-                                    disabled={watchAcademicHead}
-                                    required={false}
-                                />
+                                                {(['7','8','9','10'].includes(watchGradeLevel)) && ['7','8','9','10'].filter(
+                                                    (ch) =>
+                                                        !curriculumnheads.includes(
+                                                            ch
+                                                        )
+                                                ).map((gradelevel, index) => (
+                                                    <SelectItem
+                                                        key={index}
+                                                        value={gradelevel}
+                                                        children={
+                                                            "Grade " +
+                                                            gradelevel +
+                                                            " Curriculumn Head"
+                                                        }
+                                                    />
+                                                ))}
+                                                {(['11','12'].includes(watchGradeLevel)) && ['11','12'].filter(
+                                                    (ch) =>
+                                                        !curriculumnheads.includes(
+                                                            ch
+                                                        )
+                                                ).map((gradelevel, index) => (
+                                                    <SelectItem
+                                                        key={index}
+                                                        value={gradelevel}
+                                                        children={
+                                                            "Grade " +
+                                                            gradelevel +
+                                                            " Curriculumn Head"
+                                                        }
+                                                    />
+                                                ))}
+                                            </Fragment>
+                                        }
+                                        disabled={watchAcademicHead}
+                                        required={false}
+                                    />
+                                )}
 
-                                <FormSelect
-                                    form={form}
-                                    name="personnel.academichead"
-                                    label="Academic Head"
-                                    displayValue={watchAcademicHead ? Departments[watchAcademicHead] : ''}
-                                    items={
-                                        <Fragment>
-                                            <SelectItem
-                                                children={'-Select-'}
-                                                isNonValue
-                                                onClick={() => {
-                                                    form.setValue('personnel.academichead', undefined)
-                                                }}
-                                            />
-                                            {AcademicHeads.map((gradelevel, index) => (
+                                {(academicheads?.length < 2 ||
+                                    academicheads == null) && (
+                                    <FormSelect
+                                        form={form}
+                                        name="personnel.academichead"
+                                        label="Academic Head"
+                                        displayValue={
+                                            watchAcademicHead
+                                                ? Departments[watchAcademicHead]
+                                                : ""
+                                        }
+                                        watchDefault
+                                        items={
+                                            <Fragment>
                                                 <SelectItem
-                                                    key={index}
-                                                    value={gradelevel}
-                                                    children={Departments[gradelevel]}
+                                                    children={"-Select-"}
+                                                    isNonValue
+                                                    onClick={() => {
+                                                        form.setValue(
+                                                            "personnel.academichead",
+                                                            undefined
+                                                        );
+                                                    }}
                                                 />
-                                            ))}
-                                        </Fragment>
-                                    }
-                                    disabled={watchCurriculumnHead}
-                                    required={false}
-                                />
+                                                {!academicheads?.includes(
+                                                    "junior"
+                                                ) &&
+                                                    ['7','8','9','10'].includes(
+                                                        watchGradeLevel
+                                                    ) && (
+                                                        <SelectItem value="junior">
+                                                            Junior High School
+                                                        </SelectItem>
+                                                    )}
+                                                {!academicheads?.includes(
+                                                    "senior"
+                                                ) &&
+                                                    ['11','12'].includes(
+                                                        watchGradeLevel
+                                                    ) && (
+                                                        <SelectItem value="senior">
+                                                            Senior High School
+                                                        </SelectItem>
+                                                    )}
+                                            </Fragment>
+                                        }
+                                        disabled={watchCurriculumnHead}
+                                        required={false}
+                                    />
+                                )}
                             </div>
                         </div>
                     )}
@@ -584,7 +683,9 @@ const AccountInformationForm: React.FC<Props> = ({
                             </Button>
                         )}
                         {cancelButton && cancelButton}
-                        <Button className="ml-auto">{user ? 'Save changes' : 'Add Peresonnel'}</Button>
+                        <Button className="ml-auto">
+                            {user ? "Save changes" : "Add Peresonnel"}
+                        </Button>
                     </div>
                 </form>
             </Form>

@@ -21,7 +21,7 @@ class LocatorSlipObserver implements ShouldHandleEventsAfterCommit
             'type' => 'locatorslip',
             'details' => collect([
                 'link' => route('myapproval.locatorslip.view', [$ls->id]),
-                'message' => 'sends a locator slip.'
+                'message' => 'sent a locator slip.'
             ])->toArray()
         ]);
     }

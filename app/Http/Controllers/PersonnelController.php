@@ -51,14 +51,16 @@ class PersonnelController extends Controller
         ]);
     }
 
-    public function create($pt = "teaching", User $personnel = null)
+    public function create($pt = "teaching", ?User $personnel = null)
     {
         $principal = User::where('role', 'principal')->exists();
 
         return Inertia::render('Personnel/NewPersonnel', [
             "hasPrincipal" => $principal,
             "personneltype" => $pt,
-            "personnel" => $personnel
+            "personnel" => $personnel,
+            "curriculumnheads" => User::whereNotNull('curriculumnhead')->value('curriculumnhead'),
+            "academicheads" => User::whereNotNull('academichead')->value('academichead'),
         ]);
     }
 
@@ -212,6 +214,7 @@ class PersonnelController extends Controller
             'leaves' => Inertia::defer(fn() => $user->leave()->get(['id', 'user_id', 'type'])),
             'saln' => Inertia::defer(fn() => $user->salnreport),
             'locatorslip' => Inertia::defer(fn() => $user->locatorSlip()->with('principal')->where('status', 'approved')->get()),
+            'classassumption' => Inertia::defer(fn() => $user->classAssumption()->where('status', 'approved')->get())
         ]);
     }
 

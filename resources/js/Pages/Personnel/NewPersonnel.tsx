@@ -16,6 +16,8 @@ type NewPersonnelProps = {
     personnel?: User | null;
     hasPrincipal: boolean;
     personneltype: "teaching" | "non-teaching";
+    curriculumnheads: string[];
+    academicheads: string[];
 };
 
 let REFINEDSCHEMA = ACCOUNTSCHEMA.superRefine(({ personnel }, ctx) => {
@@ -31,6 +33,8 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({
     personnel,
     hasPrincipal,
     personneltype,
+    curriculumnheads,
+    academicheads,
 }) => {
     const { toast } = useToast();
     const { setLabel } = useProcessIndicator();
@@ -139,6 +143,8 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({
                 user={personnel}
                 isProfile={false}
                 hasPrincipal={hasPrincipal}
+                curriculumnheads={curriculumnheads}
+                academicheads={academicheads}
             />
         </div>
     );

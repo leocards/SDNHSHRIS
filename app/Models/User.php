@@ -300,4 +300,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(LocatorSlip::class);
     }
+
+    public function classAssumption()
+    {
+        return $this->hasMany(ClassAssumption::class);
+    }
 }

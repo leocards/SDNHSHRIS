@@ -112,6 +112,7 @@ class GeneralSearchController extends Controller
             "certificates" => $user->serviceRecord()->where('status', 'approved')->get(),
             "leavecount" => $user->leave()->where('hrstatus', 'approved')->where('principalstatus', 'approved')->count(),
             "locatorslip" => $user->locatorSlip()->with('principal')->where('status', 'approved')->get(),
+            "classassumption" => $user->classAssumption()->where('status', 'approved')->get()
         ]);
     }
 

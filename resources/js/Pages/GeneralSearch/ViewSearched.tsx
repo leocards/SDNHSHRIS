@@ -35,6 +35,10 @@ import {
     AccordionTrigger,
 } from "@/Components/ui/accordion";
 import { LOCATORSLIPTYPE } from "../LocatorSlip/LocatorSlip";
+import {
+    ClassAssumptionDetailsList,
+    CLASSASSUMPTIONTYPE,
+} from "../ClassAssumption/type";
 
 type Props = {
     tab: string | null;
@@ -45,9 +49,15 @@ type Props = {
     leavecount: number;
     attendances: any[];
     certificates: any[];
-    locatorslip: Array<LOCATORSLIPTYPE & {
-        principal: User
-    }>
+    locatorslip: Array<
+        LOCATORSLIPTYPE & {
+            principal: User;
+        }
+    >;
+    classassumption: Omit<
+        CLASSASSUMPTIONTYPE,
+        "principal" | "curriculumhead" | "academichead"
+    >[];
 };
 
 const ViewSearched: React.FC<Props> = ({
@@ -56,7 +66,8 @@ const ViewSearched: React.FC<Props> = ({
     leavecount,
     attendances,
     certificates,
-    locatorslip
+    locatorslip,
+    classassumption,
 }) => {
     const [selectedCertificate, setSelectedCertificate] = useState(0);
     const [viewCertificate, setViewCertificate] = useState(false);
@@ -65,17 +76,19 @@ const ViewSearched: React.FC<Props> = ({
     const { selectConversation } = useMessage();
     const { state } = useSidebar();
     const { width } = useWindowSize();
-    const [tabs, setTabs] = useState(tab??"details");
+    const [tabs, setTabs] = useState(tab ?? "details");
 
-    const srcolumns = `1fr ${width <= 456 ? "" : "10rem"} ${width <= 640 ? "" : "10rem"} 4rem`;
-    const columns = ["1fr", "10rem", "10rem", "4rem"].join(" ");
+    const srcolumns = `1fr ${width <= 456 ? "" : "10rem"} ${
+        width <= 640 ? "" : "10rem"
+    } 4rem`;
+    const cacolumns = `1fr 10rem`;
     const TabsLabel = {
         details: "Details",
         tardiness: "Attendance",
         sr: "Certificates",
         pds: "PDS",
         ls: "Locator Slip",
-    }[tabs??'details'];
+    }[tabs ?? "details"];
 
     return (
         <div>
@@ -108,17 +121,18 @@ const ViewSearched: React.FC<Props> = ({
                 onValueChange={setTabs}
                 value={tabs}
             >
-                {width > 537 && (
+                {width > 630 && (
                     <TabsList className="w-fit rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60">
                         <TabsTrigger value="details">Details</TabsTrigger>
                         <TabsTrigger value="tardiness">Attendance</TabsTrigger>
                         <TabsTrigger value="sr">Certificates</TabsTrigger>
                         <TabsTrigger value="pds">PDS</TabsTrigger>
                         <TabsTrigger value="ls">Locator Slip</TabsTrigger>
+                        <TabsTrigger value="ca">Class Assumption</TabsTrigger>
                     </TabsList>
                 )}
 
-                <div className="flex items-center gap-3 [@media(min-width:538px)]:hidden">
+                <div className="flex items-center gap-3 [@media(min-width:631px)]:hidden">
                     <Menubar>
                         <MenubarMenu>
                             <MenubarTrigger size="icon" variant={"outline"}>
@@ -169,6 +183,15 @@ const ViewSearched: React.FC<Props> = ({
                                     onClick={() => setTabs("ls")}
                                 >
                                     Locator Slip
+                                </MenubarItem>
+                                <MenubarItem
+                                    className={cn(
+                                        tabs === "ca" &&
+                                            "text-primary font-semibold"
+                                    )}
+                                    onClick={() => setTabs("ca")}
+                                >
+                                    Class Assumption
                                 </MenubarItem>
                             </MenubarContent>
                         </MenubarMenu>
@@ -481,7 +504,15 @@ const ViewSearched: React.FC<Props> = ({
                                 style={{ gridTemplateColumns: srcolumns }}
                                 key={index}
                                 className="cursor-pointer py-1"
-                                onClick={() => router.get(route('general-search.view.ls.view', [data.id]), {}, { onBefore: () => setProcess(true)})}
+                                onClick={() =>
+                                    router.get(
+                                        route("general-search.view.ls.view", [
+                                            data.id,
+                                        ]),
+                                        {},
+                                        { onBefore: () => setProcess(true) }
+                                    )
+                                }
                             >
                                 <div className="line-clamp-1">
                                     {data?.purposeoftravel}
@@ -491,10 +522,65 @@ const ViewSearched: React.FC<Props> = ({
                                         "[@media(max-width:456px)]:!hidden"
                                     )}
                                 >
-                                    {data?.type === 'business' ? 'Official Business' : 'Official Time'}
+                                    {data?.type === "business"
+                                        ? "Official Business"
+                                        : "Official Time"}
                                 </div>
                                 <div className="max-sm:!hidden">
                                     {format(data?.dateoffiling, "MMMM dd, y")}
+                                </div>
+                                <Button className="ml-auto" variant={"link"}>
+                                    <Eye />
+                                </Button>
+                            </TableRow>
+                        ))}
+                    </Card>
+                </TabsContent>
+
+                <TabsContent
+                    value="ca"
+                    className="w-full py-4 max-sm:px-0 [@media(max-width:456px)]:px-0"
+                >
+                    <Card className="min-h-[28rem] relative">
+                        <TableHeader style={{ gridTemplateColumns: cacolumns }}>
+                            <div>Type</div>
+                            <div></div>
+                        </TableHeader>
+                        {classassumption.length === 0 && (
+                            <div className="flex flex-col items-center absolute inset-0 justify-center pointer-events-none">
+                                <img
+                                    className="size-24 opacity-40 dark:opacity-65"
+                                    src={emptyData}
+                                />
+                                <div className="text-sm font-medium text-foreground/50 mt-1">
+                                    No recorded class assumption.
+                                </div>
+                            </div>
+                        )}
+
+                        {classassumption?.map((data, index) => (
+                            <TableRow
+                                style={{ gridTemplateColumns: cacolumns }}
+                                key={index}
+                                className="cursor-pointer py-1"
+                                onClick={() => router.get(route('general-search.view.ca.view', [data.id]), {}, { onBefore: () => setProcess(true)})}
+                            >
+                                <div className="line-clamp-1">
+                                    {["slothers", "obothers"].includes(
+                                        data.details.details.type
+                                    ) ? (
+                                        <span>
+                                            Others:{" "}
+                                            {data.details.details.others}
+                                        </span>
+                                    ) : (
+                                        ClassAssumptionDetailsList[
+                                            data.details.details.catype
+                                        ][
+                                            data.details.details
+                                                .type as keyof (typeof ClassAssumptionDetailsList)[typeof data.details.details.catype]
+                                        ]
+                                    )}
                                 </div>
                                 <Button className="ml-auto" variant={"link"}>
                                     <Eye />

@@ -39,6 +39,9 @@ export default {
     			],
     			bookman: [
     				'bookman'
+    			],
+    			'old-english': [
+    				'old-english'
     			]
     		},
     		borderRadius: {

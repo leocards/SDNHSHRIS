@@ -111,7 +111,7 @@ const SelectTrigger = forwardRef<
                 className
             )}
         >
-            {value ? value : placeholder}
+            {value ? <span className="line-clamp-1">{value}</span> : placeholder}
             <ChevronDown className="size-4 ml-1 group-data-[open]:rotate-180 duration-200 transition" />
         </MenubarTrigger>
     );

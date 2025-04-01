@@ -312,12 +312,14 @@ type ComboboxItemProps<T> = PropsWithChildren & {
     key: string;
     stateValue: T;
     isSelected: boolean;
+    disabled?: boolean;
 };
 export const ComboboxItem = <T,>({
     children,
     value,
     stateValue,
-    isSelected
+    isSelected,
+    disabled
 }: ComboboxItemProps<T>) => {
     const { setSelected, setOpen } = useCombobox<T>();
 
@@ -330,6 +332,7 @@ export const ComboboxItem = <T,>({
                 setOpen(false);
             }}
             className={cn(isSelected && "bg-accent text-primary")}
+            disabled={disabled}
         >
             {children}
             <Check

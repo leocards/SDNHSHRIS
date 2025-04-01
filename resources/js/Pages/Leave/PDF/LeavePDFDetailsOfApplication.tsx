@@ -262,7 +262,7 @@ const LeavePDFDetailsOfApplication = (
                         )}
                     >
                         <div className={cn(isDownload && "mb-1.5 mt-1", !from && "h-4")}>
-                            {from && !to ? formatDateRange({
+                            {(from && !to ) || (type === 'maternity') ? formatDateRange({
                                 from: from,
                                 to: to,
                             }) : from && to ? formatDateRanges(inclusivedates) : ''}

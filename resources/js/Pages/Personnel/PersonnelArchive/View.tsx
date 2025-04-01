@@ -17,6 +17,8 @@ import { Menu } from "lucide-react";
 import { useSidebar } from "@/Components/ui/sidebar";
 import PersonnelLocatorSlip from "./PersonnelLocatorSlip";
 import { LOCATORSLIPTYPE } from "@/Pages/LocatorSlip/LocatorSlip";
+import PersonnelClassAssumption from "./PersonnelClassAssumption";
+import { CLASSASSUMPTIONTYPE } from "@/Pages/ClassAssumption/type";
 
 type Props = {
     tab: string| null;
@@ -35,6 +37,10 @@ type Props = {
     locatorslip: Array<LOCATORSLIPTYPE & {
                 principal: User
             }>
+    classassumption: Omit<
+            CLASSASSUMPTIONTYPE,
+            "principal" | "curriculumhead" | "academichead"
+        >[];
 };
 
 const View: React.FC<Props> = ({
@@ -45,7 +51,8 @@ const View: React.FC<Props> = ({
     leaves,
     saln,
     servicecredits,
-    locatorslip
+    locatorslip,
+    classassumption
 }) => {
     const { state } = useSidebar()
 
@@ -59,6 +66,7 @@ const View: React.FC<Props> = ({
         "leave": "Leave",
         "saln": "SALN",
         "ls": "Locator Slip",
+        "ca": "Class Assumption",
     }[tabs]
 
     return (
@@ -77,7 +85,8 @@ const View: React.FC<Props> = ({
             >
                 <TabsList className={cn(
                     "w-fit flex rounded [&>button]:rounded-sm h-fit [&>button]:py-1.5 bg-primary/15 text-primary/60",
-                    "data-[state=expanded]:[@media(max-width:890px)]:hidden",
+                    "data-[state=expanded]:[@media(max-width:1030px)]:hidden",
+                    "data-[state=collapsed]:[@media(max-width:860px)]:hidden",
                     "[@media(max-width:659px)]:hidden"
                 )} data-state={state}>
                     <TabsTrigger value="details">Details</TabsTrigger>
@@ -87,12 +96,13 @@ const View: React.FC<Props> = ({
                     <TabsTrigger value="leave">Leave</TabsTrigger>
                     <TabsTrigger value="saln">SALN</TabsTrigger>
                     <TabsTrigger value="ls">Locator Slip</TabsTrigger>
+                    <TabsTrigger value="ca">Class Assumption</TabsTrigger>
                 </TabsList>
 
                 <div className={cn(
                     "flex items-center gap-3",
-                    "data-[state=expanded]:[@media(min-width:889px)]:hidden",
-                    "data-[state=collapsed]:[@media(max-width:889px)_and_(min-width:659px)]:hidden",
+                    "data-[state=expanded]:[@media(min-width:1030px)]:hidden",
+                    "data-[state=collapsed]:[@media(min-width:861px)]:hidden",
                 )} data-state={state}>
                     <Menubar>
                         <MenubarMenu>
@@ -107,6 +117,7 @@ const View: React.FC<Props> = ({
                                 <MenubarItem className={cn(tabs === 'leave' && "text-primary font-semibold")} onClick={() => setTabs('leave')}>Leave</MenubarItem>
                                 <MenubarItem className={cn(tabs === 'saln' && "text-primary font-semibold")} onClick={() => setTabs('saln')}>SALN</MenubarItem>
                                 <MenubarItem className={cn(tabs === 'ls' && "text-primary font-semibold")} onClick={() => setTabs('ls')}>Locator Slip</MenubarItem>
+                                <MenubarItem className={cn(tabs === 'ca' && "text-primary font-semibold")} onClick={() => setTabs('ca')}>Class Assumption</MenubarItem>
                             </MenubarContent>
                         </MenubarMenu>
                     </Menubar>
@@ -134,6 +145,8 @@ const View: React.FC<Props> = ({
                 <PersonnelLocatorSlip
                     locatorslip={locatorslip}
                 />
+
+                <PersonnelClassAssumption classassumption={classassumption} />
             </Tabs>
         </div>
     );

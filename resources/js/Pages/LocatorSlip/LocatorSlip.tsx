@@ -15,7 +15,7 @@ import {
 } from "@/Components/ui/menubar";
 import { Tabs, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { APPROVALTYPE, PAGINATEDDATA, User } from "@/Types";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import Empty from "@/Components/Empty";
 import empty from "@/Assets/empty-file.svg";
 import { Add, Eye } from "iconsax-react";
@@ -39,7 +39,7 @@ export type LOCATORSLIPTYPE = {
     destination: string;
     agenda: {
         date: string;
-        dateTo: null|string;
+        dateTo: null | string;
         time: string;
         inclusivedates: InclusiveDateInterface[];
     };
@@ -48,11 +48,9 @@ export type LOCATORSLIPTYPE = {
     approved_at: string | null;
 };
 
-type LocatorSlipProps = {};
+type LocatorSlipProps = { locatorslips: PAGINATEDDATA<LOCATORSLIPTYPE> };
 
-const LocatorSlip: React.FC<
-    LocatorSlipProps & { locatorslips: PAGINATEDDATA<LOCATORSLIPTYPE> }
-> = (props) => {
+const LocatorSlip: React.FC<LocatorSlipProps> = (props) => {
     return (
         <PaginateProvider<LOCATORSLIPTYPE>
             pageValue={props.locatorslips}
