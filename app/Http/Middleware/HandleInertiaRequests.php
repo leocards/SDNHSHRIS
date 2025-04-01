@@ -42,7 +42,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'schoolyear' => SchoolYear::latest()->first(),
             'ct' => csrf_token(),
-            'hasservicerecords' => $request->user()->serviceRecord()->where('status', '!=', 'disapproved')->exists()
+            'hasservicerecords' => $request->user()?->serviceRecord()?->where('status', '!=', 'disapproved')->exists()??false
         ];
     }
 }
