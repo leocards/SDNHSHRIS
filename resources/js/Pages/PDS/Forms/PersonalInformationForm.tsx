@@ -385,7 +385,7 @@ const PersonalInformationForm: React.FC<{
                                 label="GSIS No."
                                 inputClass="uppercase"
                                 type="number"
-                                maxLength={8}
+                                maxLength={10}
                             />
                             <FormInput
                                 form={form}
