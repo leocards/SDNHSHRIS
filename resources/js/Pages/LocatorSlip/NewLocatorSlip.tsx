@@ -47,16 +47,16 @@ const LOCATORSLIPOBJECT = z
                 })
             ).optional().default([]),
         }),
-        memoid: z.number().optional().nullable().default(null),
+        // memoid: z.number().optional().nullable().default(null),
     })
-    .superRefine(({ memoid, type, agenda }, ctx) => {
-        if (type === "business" && !memoid) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Please upload a memo.",
-                path: ["memoid"],
-            });
-        }
+    .superRefine(({ type, agenda }, ctx) => {
+        // if (type === "business"/*  && !memoid */) {
+        //     ctx.addIssue({
+        //         code: z.ZodIssueCode.custom,
+        //         message: "Please upload a memo.",
+        //         path: ["memoid"],
+        //     });
+        // }
 
         if ((type === "time" && !agenda.time) && !agenda.dateTo) {
             ctx.addIssue({
@@ -124,15 +124,15 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
         }
     }, [watchInclusivedates])
 
-    const handleFilepondLoad = (id: number): any => {
-        form.setValue(`memoid`, id, {
-            shouldDirty: true,
-        });
-    };
+    // const handleFilepondLoad = (id: number): any => {
+    //     form.setValue(`memoid`, id, {
+    //         shouldDirty: true,
+    //     });
+    // };
 
-    const handleFilePondRemove = () => {
-        form.setValue(`memoid`, null, { shouldDirty: true });
-    };
+    // const handleFilePondRemove = () => {
+    //     form.setValue(`memoid`, null, { shouldDirty: true });
+    // };
 
     const onSelectDates = (dateFrom?: Date, dateTo?: Date) => {
         if (dateFrom && dateTo) {
@@ -217,7 +217,7 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
             if(!watchDateTo)
                 form.setValue("agenda.time", time);
 
-            form.setValue("memoid", null);
+            // form.setValue("memoid", null);
         } else if (watchType && watchType === "business") {
             form.setValue("agenda.time", "");
         }
@@ -370,7 +370,7 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
                                 />
                             )}
 
-                        {watchType === "business" && (
+                        {/* {watchType === "business" && (
                             <div className="space-y-2">
                                 <TypographySmall
                                     className={cn(
@@ -397,7 +397,7 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
                                     </TypographySmall>
                                 )}
                             </div>
-                        )}
+                        )} */}
                     </div>
 
                     <div className="flex items-center mt-10">

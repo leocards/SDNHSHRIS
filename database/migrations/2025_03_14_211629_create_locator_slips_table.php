@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('destination');
             $table->json('agenda');
             $table->enum('status', ['disapproved', 'approved', 'pending'])->default('pending');
-            $table->string('memo', 1000)->nullable();
+            // $table->string('memo', 1000)->nullable();
             $table->date('approved_at')->nullable();
             $table->timestamps();
         });

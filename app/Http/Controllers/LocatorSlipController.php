@@ -96,30 +96,30 @@ class LocatorSlipController extends Controller
                     }
                 }
             ],
-            'memoid' => ['required_if:type,business']
+            // 'memoid' => ['required_if:type,business']
         ], [
             'purposeoftravel.required' => 'The purpose of travel field is required.',
             'destination.required' => 'The destination field is required.',
             'type.required' => 'This field is required.',
             'type.in' => 'Please select official business or official time.',
             'agenda.date.required' => 'The date of event/transaction/meeting field is required.',
-            'memoid.required_if' => 'The memo field is required.'
+            // 'memoid.required_if' => 'The memo field is required.'
         ]);
 
         DB::beginTransaction();
         try {
 
-            $filePath = '';
+            // $filePath = '';
 
-            if (!$lsid && $request->type === 'business') {
-                $file = $request->user()->temporary()->find($request->memoid);
-                $destinationPath = Str::replace('public/temporary', 'public/certificate', $file->path);
-                $move = Storage::move($file->path, $destinationPath);
+            // if (!$lsid && $request->type === 'business') {
+            //     $file = $request->user()->temporary()->find($request->memoid);
+            //     $destinationPath = Str::replace('public/temporary', 'public/certificate', $file->path);
+            //     $move = Storage::move($file->path, $destinationPath);
 
-                if (!$move) throw new Exception('Failed to upload file.');
+            //     if (!$move) throw new Exception('Failed to upload file.');
 
-                $filePath = Str::replace('public', '/storage', $destinationPath);
-            }
+            //     $filePath = Str::replace('public', '/storage', $destinationPath);
+            // }
 
             LocatorSlip::create([
                 'user_id' => $request->user()->id,
@@ -129,7 +129,7 @@ class LocatorSlipController extends Controller
                 'type' => $request->type,
                 'destination' => $request->destination,
                 'agenda' => $request->agenda,
-                'memo' => $filePath
+                // 'memo' => $filePath
             ]);
 
             DB::commit();
