@@ -675,7 +675,7 @@ const AccountInformationForm: React.FC<Props> = ({
                         )}
                         {cancelButton && cancelButton}
                         <Button className="ml-auto">
-                            {user ? "Save changes" : "Add Peresonnel"}
+                            {user ? "Save changes" : "Add Personnel"}
                         </Button>
                     </div>
                 </form>
