@@ -27,7 +27,6 @@ const MessageSearchList = ({ search }: { search: string }) => {
             .get(route("messages.search", {_query: { search }}))
             .then((response) => {
                 let data = response.data;
-                console.log(data);
                 setList(data);
             })
             .finally(() => setLoading(false));
