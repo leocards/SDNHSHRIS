@@ -523,7 +523,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                         </Fragment>
                                     )}
 
-                                <FormSelect
+                                {personneltype == 'teaching' && <FormSelect
                                     form={form}
                                     name="personnel.gradelevel"
                                     label="Grade Level"
@@ -541,7 +541,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                             />
                                         )
                                     )}
-                                />
+                                />}
 
                                 {personneltype == 'teaching' && (
                                     <FormSelect
