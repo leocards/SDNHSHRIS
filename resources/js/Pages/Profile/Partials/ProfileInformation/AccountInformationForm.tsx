@@ -151,7 +151,7 @@ interface Props {
     cancelButton?: React.ReactNode;
     curriculumnheads?: string[];
     academicheads?: string[];
-    personneltype: "teaching" | "non-teaching";
+    personneltype?: "teaching" | "non-teaching";
 }
 
 const AccountInformationForm: React.FC<Props> = ({
