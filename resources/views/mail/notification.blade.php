@@ -95,3 +95,21 @@ new account
 {{ config('app.name') }}
 </x-mail::message>
 @endif
+
+{{-- Locator Slip
+@if($type === "ls")
+<x-mail::message>
+@if ($data['status'] === "disapproved")
+Your locator slip has been disapproved.
+@else
+Your application for leave has been approved
+@endif
+
+<br>
+{{ $data['sender']['name'] }}<br>
+{{ $data['sender']['position'] }}<br>
+
+<hr>
+Via SDNHS HRIS
+</x-mail::message>
+@endif --}}
