@@ -541,7 +541,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                     )}
                                 />
 
-                                {(curriculumnheads?.length || 0) < 6 && (
+                                {(
                                     <FormSelect
                                         form={form}
                                         name="personnel.curriculumnhead"
@@ -591,7 +591,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                     />
                                 )}
 
-                                {(academicheads?.length ?? 0) < 2 && (
+                                {(
                                     <FormSelect
                                         form={form}
                                         name="personnel.academichead"

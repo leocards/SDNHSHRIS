@@ -210,7 +210,7 @@ const ViewSearched: React.FC<Props> = ({
                                 className="size-24"
                                 fallbackSize={40}
                             />
-                            <div className="text-center">
+                            <div className="text-center leading-5">
                                 <TypographySmall className="capitalize text-base">
                                     {user?.full_name}
                                 </TypographySmall>
@@ -218,6 +218,13 @@ const ViewSearched: React.FC<Props> = ({
                                 <TypographySmall className="capitalize">
                                     {user?.position}
                                 </TypographySmall>
+                                <br />
+                                {user?.curriculumnhead && (<TypographySmall className="capitalize">
+                                    Grade {user?.curriculumnhead} Curriculum Head
+                                </TypographySmall>)}
+                                {user?.academichead && (<TypographySmall className="capitalize">
+                                    Department[user?.academichead] Academic Head
+                                </TypographySmall>)}
                             </div>
 
                             <div className="md:ml-auto">

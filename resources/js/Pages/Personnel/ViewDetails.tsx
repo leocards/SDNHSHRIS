@@ -85,6 +85,16 @@ const ViewDetails: React.FC<Props> = ({ user, show, onClose }) => {
                         {Departments[user?.department??'N/A']}
                     </div>
 
+                    {user?.curriculumnhead && (<div className="flex items-center gap-2 text-sm mt-2">
+                        <div>Curriculum Head:</div>
+                        Grade {user.curriculumnhead}
+                    </div>)}
+
+                    {user?.academichead && (<div className="flex items-center gap-2 text-sm mt-2">
+                        <div>Academic Head:</div>
+                        {Departments[user.academichead]}
+                    </div>)}
+
                     <div className="flex items-center gap-2 text-sm mt-2">
                         <div>Credits:</div>
                         {user?.credits??0 + (user?.role != 'teaching' ? user?.splcredits??0 : 0)}
