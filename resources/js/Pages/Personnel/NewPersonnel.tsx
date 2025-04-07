@@ -149,6 +149,7 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({
                 hasPrincipal={hasPrincipal}
                 curriculumnheads={curriculumnheads}
                 academicheads={academicheads}
+                personneltype={personneltype}
             />
         </div>
     );

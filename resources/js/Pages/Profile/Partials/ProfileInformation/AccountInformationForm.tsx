@@ -151,6 +151,7 @@ interface Props {
     cancelButton?: React.ReactNode;
     curriculumnheads?: string[];
     academicheads?: string[];
+    personneltype: "teaching" | "non-teaching";
 }
 
 const AccountInformationForm: React.FC<Props> = ({
@@ -165,6 +166,7 @@ const AccountInformationForm: React.FC<Props> = ({
     cancelButton,
     curriculumnheads,
     academicheads,
+    personneltype,
     ...props
 }) => {
     const watchDepartment = form.watch(
@@ -541,7 +543,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                     )}
                                 />
 
-                                {(
+                                {personneltype == 'teaching' && (
                                     <FormSelect
                                         form={form}
                                         name="personnel.curriculumnhead"
@@ -591,7 +593,7 @@ const AccountInformationForm: React.FC<Props> = ({
                                     />
                                 )}
 
-                                {(
+                                {personneltype == 'teaching' && (
                                     <FormSelect
                                         form={form}
                                         name="personnel.academichead"
