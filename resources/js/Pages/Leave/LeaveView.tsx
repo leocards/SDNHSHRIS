@@ -61,7 +61,7 @@ const LeaveView: React.FC<LeaveViewProps> = ({
         contentRef,
     });
 
-    const LeaveStatus = role === "principal" || role === "hr" ? leave.hrstatus : leave.principalstatus
+    const LeaveStatus = role === "hr" ? leave.hrstatus : (role === "principal" ? leave.principalstatus : leave.principalstatus)
 
     return (
         <div className="overflow-hidden relative">
