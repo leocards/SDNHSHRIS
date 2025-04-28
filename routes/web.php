@@ -59,7 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::controller(DashboardController::class)->group(function () {
             Route::get('/', 'index')->name('dashboard');
-            Route::get('/leaveapplication', 'getLeaveapplications')->name('dashboard.leaveapplication');
+            Route::get('/leaveapplication/{sy}', 'getLeaveapplications')->name('dashboard.leaveapplication');
         });
     });
 
