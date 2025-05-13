@@ -90,7 +90,7 @@ const ImportSaln = ({ show, onClose }: Props) => {
     });
 
     return (
-        <Modal show={show} onClose={onClose} title="Import IPCR" maxWidth="lg">
+        <Modal show={show} onClose={onClose} title="Import SALN" maxWidth="lg">
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
                     <div className="space-y-4">
