@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Mail\EmailNotification;
 use App\Models\Notification;
 use App\Models\PdsPersonalInformation;
 use App\Models\User;
@@ -12,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -66,6 +68,22 @@ class ProfileController extends Controller
                 'message' => 'updated ' . $pronoun . ' profile.'
             ])->toArray()
         ]);
+
+        $data = [
+            'name' => $request->user()->name,
+            'pronoun' => $request->user()->gender == 'male' ? 'his' : 'her'
+        ];
+
+        Mail::to($hr->email)
+            ->send(new EmailNotification(
+                'Profile Update',
+                'updateprofile',
+                $data,
+                [
+                    'email' => $request->user()->email,
+                    'name' => $request->user()->name
+                ]
+            ));
 
         return Redirect::route('profile.edit')->with(['message' => 'Your acount profile has been updated.', 'title' => 'Account update successfull', 'status' => 'success']);
     }

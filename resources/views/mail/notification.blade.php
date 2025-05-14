@@ -69,7 +69,7 @@ Via SDNHS HRIS
 @if ($type === "updateprofile")
 <x-mail::message>
 
-new account
+{{ $data['name'] }} updated {{ $data['pronoun'] }} profile.
 
 {{ config('app.name') }}
 </x-mail::message>
