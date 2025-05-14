@@ -29,7 +29,6 @@ return new class extends Migration
             $table->enum('gradelevel', ['7','8','9','10','11','12'])->nullable();
             $table->enum('curriculumnhead', ['7','8','9','10','11','12'])->nullable();
             $table->enum('academichead', ['junior','senior'])->nullable();
-            $table->string('position')->nullable();
             $table->date('hiredate');
             $table->string('credits')->nullable();
             $table->string('splcredits')->nullable();
