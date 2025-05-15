@@ -90,9 +90,10 @@ Via SDNHS HRIS
 @if ($type === "announcement")
 <x-mail::message>
 
-new account
+You have new announcement: {{ $data['announcement'] }}
 
-{{ config('app.name') }}
+{{$data['login']}}
+
 </x-mail::message>
 @endif
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\User;
 use App\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +23,6 @@ class AnnouncementController extends Controller
 
     public function store(Request $request, $id = null)
     {
-
         $request->validate([
             'title' => 'required|max:255',
             'venue' => 'required',
@@ -54,7 +54,7 @@ class AnnouncementController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            return $this->returnResponse('New Announcement','Announcement failed to '.(!$id?'create':'update').'', 'error');
+            return $this->returnResponse('New Announcement', 'Announcement failed to '.(!$id?'create':'update').'', 'error');
         }
     }
 
