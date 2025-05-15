@@ -145,7 +145,7 @@ class PersonalDataSheetController extends Controller
                             });
                     });
                 })
-                ->latest()
+                ->latest('updated_at')
                 ->paginate($this->page);
 
             if ($request->expectsJson()) {
