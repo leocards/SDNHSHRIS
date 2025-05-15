@@ -89,20 +89,21 @@ class LeaveObserver implements ShouldHandleEventsAfterCommit
                     ])->toArray()
                 ]);
 
-                Mail::to($user->email)
-                    ->send(new EmailNotification(
-                        'APPLICATION FOR LEAVE',
-                        'leave',
-                        [
-                            'name' => $user->name,
-                            'status' => $leave->principalstatus,
-                            'message' => $leave->principalstatus,
-                            'sender' => [
-                                'name' => $principal->name,
-                                'position' => $principal->position,
-                            ],
-                        ]
-                    ));
+                if($user->enable_email_notification)
+                    Mail::to($user->email)
+                        ->send(new EmailNotification(
+                            'APPLICATION FOR LEAVE',
+                            'leave',
+                            [
+                                'name' => $user->name,
+                                'status' => $leave->principalstatus,
+                                'message' => $leave->principalstatus,
+                                'sender' => [
+                                    'name' => $principal->name,
+                                    'position' => $principal->position,
+                                ],
+                            ]
+                        ));
             }
         } else {
             Notification::create([

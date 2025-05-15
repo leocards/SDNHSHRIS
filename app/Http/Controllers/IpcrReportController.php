@@ -150,6 +150,7 @@ class IpcrReportController extends Controller
                     ->where('syid', $schoolyearid);
             })
             ->excludeHr()
+            ->orderBy('lastname')
             ->get(['id', 'firstname', 'lastname', 'middlename', 'extensionname', 'avatar'])
         );
     }

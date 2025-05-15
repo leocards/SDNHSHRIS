@@ -139,7 +139,7 @@ class ProfileController extends Controller
 
             $request->user()->save();
 
-            return response()->json(true);
+            return response()->json(['title' => 'Changes saved!', 'message' => 'Changes in settings has been saved.', 'status' => 'success']);
         } catch (\Throwable $th) {
             return response()->json(['title' => 'Update failed!', 'message' => $th->getMessage(), 'status' => 'error']);
         }

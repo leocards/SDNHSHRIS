@@ -35,7 +35,7 @@ class DueMedicalCommand extends Command
         try {
             $hr = User::where('role', 'hr')->first();
 
-            $leaveWithDueMedical = Leave::with('user:id,firstname,middlename,lastname,email')
+            $leaveWithDueMedical = Leave::with('user:id,firstname,middlename,lastname,email,enable_email_notification')
                 ->doesntHave('medical')
                 ->where('type', 'sick')
                 ->where(function ($query) {
@@ -62,12 +62,13 @@ class DueMedicalCommand extends Command
                     ])->toArray()
                 ]);
 
-                Mail::to($leave->user->email)
-                    ->send(new EmailNotification(
-                        'Medical Certificate Due',
-                        'duemedical',
-                        ['name' => $leave->user->full_name]
-                    ));
+                if($leave->user->enable_email_notification)
+                    Mail::to($leave->user->email)
+                        ->send(new EmailNotification(
+                            'Medical Certificate Due',
+                            'duemedical',
+                            ['name' => $leave->user->full_name]
+                        ));
             });
         } catch (\Throwable $th) {
             Log::info($th->getMessage());

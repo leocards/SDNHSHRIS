@@ -255,7 +255,6 @@ const Settings = () => {
                             />
                             <div className="ml-3">
                                 Enable email notification for announcement
-                                reminders
                             </div>
                             {enable.announcement.loading && (
                                 <div className="flex items-center ml-4 text-sm gap-2">

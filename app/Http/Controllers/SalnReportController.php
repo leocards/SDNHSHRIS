@@ -149,6 +149,7 @@ class SalnReportController extends Controller
                 ->with('salnreport:id')
                 ->whereNot('role', 'hr')
                 ->whereNot('role', 'principal')
+                ->orderBy('lastname')
                 ->get(['id', 'firstname', 'lastname', 'middlename', 'extensionname', 'avatar'])
         );
     }
