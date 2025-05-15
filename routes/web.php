@@ -29,6 +29,7 @@ use App\Http\Controllers\ServiceRecordController;
 use App\Http\Controllers\TardinessController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 
@@ -293,6 +294,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/seen-message/{conversation}', 'markAsSeen')->name('messages.seen');
             Route::post('/seen-all-message', 'markAllAsSeen')->name('messages.seen.all');
         });
+    });
+
+    Route::get('download-resources/{filename}', function ($filename) {
+        Storage::download($filename);
     });
 });
 
