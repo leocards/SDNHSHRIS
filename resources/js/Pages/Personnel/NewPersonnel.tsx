@@ -21,7 +21,7 @@ type NewPersonnelProps = {
 };
 
 let REFINEDSCHEMA = ACCOUNTSCHEMA.superRefine(({ personnel }, ctx) => {
-    if(!personnel.gradelevel)
+    if(!personnel.gradelevel && personnel.role != 'principal')
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Please select grade levels 7 to 12.',
@@ -81,7 +81,7 @@ const NewPersonnel: React.FC<NewPersonnelProps> = ({
                         ? "deped"
                         : undefined),
                 position: personnel?.position || undefined,
-                gradelevel: personnel ? personnel.gradelevel??null : null,
+                gradelevel: personnel ? personnel.gradelevel ?? null : null,
                 curriculumnhead: null,
                 academichead: null,
                 credits: !personnel && personneltype != "teaching" ? "30" : "0",
