@@ -187,7 +187,7 @@ const LogsPrint: React.FC<Props> = ({
                                                 <td>
                                                     {format(
                                                         log.created_at,
-                                                        "MMMM dd, y hh:ii aaa"
+                                                        "MMMM dd, y"
                                                     )}
                                                 </td>
                                             </tr>
