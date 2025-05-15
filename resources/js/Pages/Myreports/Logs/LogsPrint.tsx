@@ -184,7 +184,7 @@ const LogsPrint: React.FC<Props> = ({
                                                 <td className="text-center capitalize">
                                                     {log.status}
                                                 </td>
-                                                <td>
+                                                <td className="text-center">
                                                     {format(
                                                         log.created_at,
                                                         "MMMM dd, y"
