@@ -298,6 +298,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('download-resources/{filename}', function ($filename) {
         Storage::download($filename);
+
+        return 'download';
     });
 });
 
