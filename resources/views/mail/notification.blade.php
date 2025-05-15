@@ -69,9 +69,8 @@ Via SDNHS HRIS
 @if ($type === "updateprofile")
 <x-mail::message>
 
-{{ $data['name'] }} updated {{ $data['pronoun'] }} profile.
+{{ $data['name'] }} has updated {{ $data['pronoun'] }} profile.
 
-{{ config('app.name') }}
 </x-mail::message>
 @endif
 

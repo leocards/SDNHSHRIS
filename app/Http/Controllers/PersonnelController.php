@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DateParserTrait;
 use App\Http\Requests\PersonnelRequest;
+use App\Mail\EmailNotification;
 use App\Models\Leave;
 use App\Models\PersonalDataSheet;
 use App\Models\Tardiness;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class PersonnelController extends Controller
@@ -96,6 +98,20 @@ class PersonnelController extends Controller
                     'password' => Hash::make($request->password)
                 ]
             );
+
+            if ($personnelid && $request->user()->role == 'hr' && $user->enable_email_notification) {
+                $data = [
+                    'name' => 'HR',
+                    'pronoun' => 'your'
+                ];
+
+                Mail::to($user->email)
+                    ->send(new EmailNotification(
+                        'Profile Update',
+                        'updateprofile',
+                        $data
+                    ));
+            }
 
             if (!$personnelid)
                 PersonalDataSheet::create([
@@ -192,11 +208,11 @@ class PersonnelController extends Controller
                 $query->select('id', 'user_id', 'tin'); // Ensure foreign key is included
             }]),
             "servicecredits" => $user->serviceRecord()->where('status', 'approved')
-                    ->where('details->creditstatus', 'pending')
-                    ->get()
-                    ->reduce(function ($carry, $item) {
-                        return $carry + $item->details['remainingcredits'];
-                    }, 0),
+                ->where('details->creditstatus', 'pending')
+                ->get()
+                ->reduce(function ($carry, $item) {
+                    return $carry + $item->details['remainingcredits'];
+                }, 0),
             'tardinesses' => Inertia::defer(
                 fn() =>
                 Tardiness::with('schoolyear:id,start,end,resume')
