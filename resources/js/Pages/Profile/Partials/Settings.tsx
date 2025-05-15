@@ -35,14 +35,24 @@ const Settings = () => {
         },
     });
 
-    const enableEmailNotification = (
-        enableFor: "notification" | "message" | "announcement",
-        status: boolean
-    ) => {
-        const notification = {...enable, [enableFor]: { enabled: status, loading: status }}
-        setEnable(notification);
+    const [enableEmailNotif, setEnableEmailNotif] = useState({
+            enabled: auth.user.enable_email_notification,
+            loading: false,
+        })
+    const [enableEmailMessageNotif, setEmailMessageNotif] = useState({
+            enabled: auth.user.enable_email_message_notification,
+            loading: false,
+        })
+    const [enableEmailAnnounceNotif, setEmailAnnounceNotif] = useState({
+            enabled: auth.user.enable_email_announcement_reminder,
+            loading: false,
+        })
+
+    const enableEmailNotification = (status: boolean) => {
+        const notification = {enabled: status, loading: status}
+        setEnableEmailNotif(notification);
         window.axios
-            .post(route("profile.settings"), {...notification})
+            .post(route("profile.settings"), {...notification, type: 'notification'})
             .then((response) => {
                 let { data } = response
                 if("status" in data) {
@@ -54,10 +64,47 @@ const Settings = () => {
                 }
             })
             .finally(() =>
-                setEnable({
-                    ...enable,
-                    [enableFor]: { enabled: status, loading: false },
-                })
+                setEnableEmailNotif({enabled: status, loading: false })
+            );
+    };
+
+    const enableEmailMessageNotification = (status: boolean) => {
+        const notification = { enabled: status, loading: status }
+        setEmailMessageNotif(notification);
+        window.axios
+            .post(route("profile.settings"), {...notification, type: 'message'})
+            .then((response) => {
+                let { data } = response
+                if("status" in data) {
+                    toast({
+                        title: data.title,
+                        description: data.message,
+                        status: data.status
+                    })
+                }
+            })
+            .finally(() =>
+                setEmailMessageNotif({ enabled: status, loading: false })
+            );
+    };
+
+    const enableEmailAnnouncementNotification = (status: boolean) => {
+        const notification = { enabled: status, loading: status }
+        setEmailAnnounceNotif(notification);
+        window.axios
+            .post(route("profile.settings"), {...notification, type: 'announcement'})
+            .then((response) => {
+                let { data } = response
+                if("status" in data) {
+                    toast({
+                        title: data.title,
+                        description: data.message,
+                        status: data.status
+                    })
+                }
+            })
+            .finally(() =>
+                setEmailAnnounceNotif({enabled: status, loading: false })
             );
     };
 
@@ -184,24 +231,17 @@ const Settings = () => {
                             <Checkbox
                                 className="text-primary"
                                 checked={
-                                    enable.notification
-                                        .enabled
+                                    enableEmailNotif.enabled
                                 }
                                 disabled={
-                                    enable.notification
-                                        .loading
+                                    enableEmailNotif.loading
                                 }
-                                onCheckedChange={(status: boolean) =>
-                                    enableEmailNotification(
-                                        "notification",
-                                        status
-                                    )
-                                }
+                                onCheckedChange={enableEmailNotification}
                             />
                             <div className="ml-3">
                                 Enable email notifications
                             </div>
-                            {enable.notification.loading && (
+                            {enableEmailNotif.loading && (
                                 <div className="flex items-center ml-4 text-sm gap-2">
                                     <div className="loading loading-spinner loading-sm"></div>
                                     <div className="text-foreground/60">
@@ -214,19 +254,17 @@ const Settings = () => {
                             <Checkbox
                                 className="text-primary"
                                 checked={
-                                    enable.message.enabled
+                                    enableEmailMessageNotif.enabled
                                 }
                                 disabled={
-                                    enable.message.loading
+                                    enableEmailMessageNotif.loading
                                 }
-                                onCheckedChange={(status: boolean) =>
-                                    enableEmailNotification("message", status)
-                                }
+                                onCheckedChange={enableEmailMessageNotification}
                             />
                             <div className="ml-3">
                                 Enable email notification for new messages
                             </div>
-                            {enable.message.loading && (
+                            {enableEmailMessageNotif.loading && (
                                 <div className="flex items-center ml-4 text-sm gap-2">
                                     <div className="loading loading-spinner loading-sm"></div>
                                     <div className="text-foreground/60">
@@ -239,24 +277,17 @@ const Settings = () => {
                             <Checkbox
                                 className="text-primary"
                                 checked={
-                                    enable.announcement
-                                        .enabled
+                                    enableEmailAnnounceNotif.enabled
                                 }
                                 disabled={
-                                    enable.announcement
-                                        .loading
+                                    enableEmailAnnounceNotif.loading
                                 }
-                                onCheckedChange={(status: boolean) =>
-                                    enableEmailNotification(
-                                        "announcement",
-                                        status
-                                    )
-                                }
+                                onCheckedChange={enableEmailAnnouncementNotification}
                             />
                             <div className="ml-3">
                                 Enable email notification for announcement
                             </div>
-                            {enable.announcement.loading && (
+                            {enableEmailAnnounceNotif.loading && (
                                 <div className="flex items-center ml-4 text-sm gap-2">
                                     <div className="loading loading-spinner loading-sm"></div>
                                     <div className="text-foreground/60">

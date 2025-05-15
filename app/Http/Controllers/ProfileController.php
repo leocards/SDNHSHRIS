@@ -125,17 +125,22 @@ class ProfileController extends Controller
     public function settings(Request $request): JsonResponse
     {
         $request->validate([
-            'message.enabled' => 'boolean',
-            'notification.enabled' => 'boolean',
-            'announcement.enabled' => 'boolean',
+            'enabled' => 'boolean',
         ]);
 
         try {
-            $request->user()->update([
-                'enable_email_notification' => $request->notification['enabled'],
-                'enable_email_message_notification' => $request->message['enabled'],
-                'enable_email_announcement_reminder' => $request->announcement['enabled'],
-            ]);
+            if($request->type === 'notification')
+                $request->user()->update([
+                    'enable_email_notification' => $request->enabled,
+                ]);
+            else if($request->type === 'message')
+                $request->user()->update([
+                    'enable_email_message_notification' => $request->enabled,
+                ]);
+            else if($request->type === 'announcement')
+                $request->user()->update([
+                    'enable_email_announcement_reminder' => $request->enabled,
+                ]);
 
             $request->user()->save();
 
