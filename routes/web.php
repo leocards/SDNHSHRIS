@@ -300,6 +300,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/download-resources', function (Request $request) {
         if($request->path) {
             return Storage::download('public/'.$request->path);
+        } else {
+            return redirect('/dashboard');
         }
     });
 });
