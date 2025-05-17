@@ -296,9 +296,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::get('/download-resources/{filename}', function ($filename) {
-        return Storage::download('public/'.$filename);
-    });
+    // Route::get('/download-resources/{filename}', function ($filename) {
+    //     return Storage::download('public/'.$filename);
+    // });
 });
 
 Route::middleware('auth')->group(function () {
