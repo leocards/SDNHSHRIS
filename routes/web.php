@@ -27,6 +27,7 @@ use App\Http\Controllers\SalnReportController;
 use App\Http\Controllers\SchoolYearController;
 use App\Http\Controllers\ServiceRecordController;
 use App\Http\Controllers\TardinessController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -296,9 +297,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    // Route::get('/download-resources/{filename}', function ($filename) {
-    //     return Storage::download('public/'.$filename);
-    // });
+    Route::get('/download-resources', function (Request $request) {
+        if($request->path) {
+            return Storage::download('public/'.$request->path);
+        }
+    });
 });
 
 Route::middleware('auth')->group(function () {
