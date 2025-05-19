@@ -146,7 +146,7 @@ const Main = () => {
                                 style={{ gridTemplateColumns: column }}
                             >
                                 <div>Personnel name</div>
-                                <div className="[@media(max-width:611px)]:!hidden [@media(min-width:768px)_and_(max-width:915px)]:!hidden">Cartificate name</div>
+                                <div className="[@media(max-width:611px)]:!hidden [@media(min-width:768px)_and_(max-width:915px)]:!hidden">Certificate name</div>
                                 <div className="[@media(max-width:461px)]:!hidden">Type</div>
                                 <div className="[@media(max-width:1070px)]:!hidden">Date modified</div>
                                 <div>Actions</div>

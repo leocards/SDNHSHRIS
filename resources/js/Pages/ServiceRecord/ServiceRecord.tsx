@@ -158,7 +158,7 @@ const Main = () => {
                             <TableHeader
                                 style={{ gridTemplateColumns: column }}
                             >
-                                <div>Cartificate name</div>
+                                <div>Certificate name</div>
                                 <div className="max-sm:!hidden">Type</div>
                                 <div className="[@media(max-width:1024px)]:!hidden">Date modified</div>
                                 <div className="justify-center">Actions</div>
