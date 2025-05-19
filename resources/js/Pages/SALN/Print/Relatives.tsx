@@ -16,7 +16,7 @@ const Relatives: React.FC<Props> = ({ relatives }) => {
             </div>
 
             {relatives?.map((__dirname, index) => (
-                <div key={index} className="grid grid-cols-[13rem,9rem,7rem,1fr] divide-x divide-black text-[10pt] text-center [&>div]:px-1">
+                <div key={index} className="grid grid-cols-[13rem,9rem,7rem,1fr] divide-x divide-black text-[10pt] text-center [&>div]:px-1 uppercase">
                     <div>{__dirname?.name}</div>
                     <div>{__dirname?.relationship}</div>
                     <div>{__dirname?.position}</div>
