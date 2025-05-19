@@ -63,7 +63,7 @@ const SALNSCHEMA = z.object({
                 name: z.string(),
                 address: z.string(),
                 nature: z.string(),
-                date: z.date().or(z.string()).nullable(),
+                date: z.date().or(z.string()).optional().nullable(),
             }).partial()
         ).optional()
     }),
@@ -103,13 +103,6 @@ const SALNSCHEMA = z.object({
                     ctx.addIssue({
                         code: z.ZodIssueCode.custom,
                         path: ["biandfc.bifc", index, "nature"],
-                        message: "This field is required"
-                    });
-                }
-                if (!bifc.date) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        path: ["biandfc.bifc", index, "date"],
                         message: "This field is required"
                     });
                 }

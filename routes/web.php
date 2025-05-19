@@ -41,6 +41,8 @@ Route::get('/', function () {
         if(Auth::check()){
             if(URL::previous() === URL('/'))
                 return redirect('/dashboard');
+            else if(URL::previous() === URL('/download-resources'))
+                return redirect('/dashboard');
             else
                 return back();
         }
