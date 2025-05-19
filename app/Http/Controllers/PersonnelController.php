@@ -138,9 +138,9 @@ class PersonnelController extends Controller
 
     public function listOfPersonnel()
     {
-        $jhs = User::excludeHr()->whereNull('status_updated_at')->where('department', 'junior')->orderBy('lastname')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
-        $shs = User::excludeHr()->whereNull('status_updated_at')->where('department', 'senior')->orderBy('lastname')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
-        $accounting = User::excludeHr()->whereNull('status_updated_at')->where('department', 'accounting')->orderBy('lastname')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname']);
+        $jhs = User::excludeHr()->whereNull('status_updated_at')->where('department', 'junior')->orderBy('lastname')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname', 'position']);
+        $shs = User::excludeHr()->whereNull('status_updated_at')->where('department', 'senior')->orderBy('lastname')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname', 'position']);
+        $accounting = User::excludeHr()->whereNull('status_updated_at')->where('department', 'accounting')->orderBy('lastname')->get(['id', 'gender', 'department', 'firstname', 'lastname', 'middlename', 'extensionname', 'position']);
 
         return Inertia::render('Myreports/ListOfPersonnel/ListOfPersonnel', [
             "list" => collect([

@@ -123,15 +123,23 @@ const ListOfPersonnel = ({ list }: Props) => {
                         <div className="bg-zinc-200 dark:bg-white/10 p-2 font-semibold rounded-t-lg flex items-center">
                             <div>Junior High School</div>
                         </div>
-                        <div className="divide-y border rounded-b-lg max-h-[35rem] overflow-y-auto rounded-scrollbar [&::-webkit-scrollbar]:!bg-zinc-100">
+                        <div className="border rounded-b-lg max-h-[35rem] overflow-y-auto rounded-scrollbar [&::-webkit-scrollbar]:!bg-zinc-100">
+                            <div className="grid grid-cols-[3rem,1fr,1fr] [&>div]:p-2 font-medium sticky top-0 bg-background border-b">
+                                <div className="text-right pr-1 border-r">
+                                    #
+                                </div>
+                                <div className="pl-2 border-r">Personnel</div>
+                                <div className="pl-2">Position</div>
+                            </div>
                             <div className="divide-y">
-                                {list.jhs.map(({ name }, index) => (
+                                {list.jhs.map(({ name, position }, index) => (
                                     <Fragment key={index}>
-                                        <div className="grid grid-cols-[3rem,1fr] [&>div]:p-2">
+                                        <div className="grid grid-cols-[3rem,1fr,1fr] [&>div]:p-2">
                                             <div className="text-right pr-1 border-r">
                                                 {++index}
                                             </div>
-                                            <div className="pl-2">{name}</div>
+                                            <div className="pl-2 border-r">{name}</div>
+                                            <div className="pl-2">{position}</div>
                                         </div>
                                     </Fragment>
                                 ))}
@@ -148,15 +156,23 @@ const ListOfPersonnel = ({ list }: Props) => {
                         <div className="bg-zinc-200 dark:bg-white/10 p-2 font-semibold rounded-t-lg">
                             Senior High School
                         </div>
-                        <div className="divide-y border rounded-b-lg">
-                            <div className="divide-y max-h-[35rem] overflow-y-auto rounded-scrollbar [&::-webkit-scrollbar]:!bg-zinc-100">
-                                {list.shs.map(({ name }, index) => (
+                        <div className="border rounded-b-lg max-h-[35rem] overflow-y-auto rounded-scrollbar [&::-webkit-scrollbar]:!bg-zinc-100">
+                            <div className="grid grid-cols-[3rem,1fr,1fr] [&>div]:p-2 font-medium sticky top-0 bg-background border-b">
+                                <div className="text-right pr-1 border-r">
+                                    #
+                                </div>
+                                <div className="pl-2 border-r">Personnel</div>
+                                <div className="pl-2">Position</div>
+                            </div>
+                            <div className="divide-y">
+                                {list.shs.map(({ name, position }, index) => (
                                     <Fragment key={index}>
-                                        <div className="grid grid-cols-[3rem,1fr] [&>div]:p-2">
+                                        <div className="grid grid-cols-[3rem,1fr,1fr] [&>div]:p-2">
                                             <div className="text-right pr-1 border-r">
                                                 {++index}
                                             </div>
-                                            <div className="pl-2">{name}</div>
+                                            <div className="pl-2 border-r">{name}</div>
+                                            <div className="pl-2">{position}</div>
                                         </div>
                                     </Fragment>
                                 ))}
@@ -173,19 +189,27 @@ const ListOfPersonnel = ({ list }: Props) => {
                         <div className="bg-zinc-200 dark:bg-white/10 p-2 font-semibold rounded-t-lg">
                             Accounting
                         </div>
-                        <div className="divide-y border rounded-b-lg">
-                            <div className="divide-y max-h-[35rem] overflow-y-auto rounded-scrollbar [&::-webkit-scrollbar]:!bg-zinc-100">
-                                {list.accounting.map(({ name }, index) => (
+                        <div className="border rounded-b-lg max-h-[35rem] overflow-y-auto rounded-scrollbar [&::-webkit-scrollbar]:!bg-zinc-100">
+                            <div className="grid grid-cols-[3rem,1fr,1fr] [&>div]:p-2 font-medium sticky top-0 bg-background border-b">
+                                <div className="text-right pr-1 border-r">
+                                    #
+                                </div>
+                                <div className="pl-2 border-r">Personnel</div>
+                                <div className="pl-2">Position</div>
+                            </div>
+                            <div className="divide-y">
+                                {list.accounting.map(({ name, position }, index) => (
                                     <Fragment key={index}>
-                                        <div className="grid grid-cols-[3rem,1fr] [&>div]:p-2">
+                                        <div className="grid grid-cols-[3rem,1fr,1fr] [&>div]:p-2">
                                             <div className="text-right pr-1 border-r">
                                                 {++index}
                                             </div>
-                                            <div className="pl-2">{name}</div>
+                                            <div className="pl-2 border-r">{name}</div>
+                                            <div className="pl-2">{position}</div>
                                         </div>
                                     </Fragment>
                                 ))}
-                                {list.accounting.length === 0 && (
+                                {list.jhs.length === 0 && (
                                     <div className="py-2 text-center text-secondary-foreground/30">
                                         No records
                                     </div>

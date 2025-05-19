@@ -141,7 +141,14 @@ const PDFPersonnel = forwardRef<HTMLDivElement, Props>(
                 <table className="table border border-black [&>thead>tr]:border-black mt-4 text-[10pt]">
                     <thead>
                         <tr className="[&>th]:border-black [&>th]:border text-left text-foreground">
-                            <th colSpan={2}>JUNIOR HIGH SCHOOL</th>
+                            <th colSpan={3}>JUNIOR HIGH SCHOOL</th>
+                        </tr>
+                        <tr
+                            className="[&>td]:border-black [&>td]:border text-left text-foreground"
+                        >
+                            <td className="w-12 text-center shrink-0">#</td>
+                            <td className="w-[calc(50%-3rem)]">Personnel</td>
+                            <td className="w-[calc(45%)]">Position</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -150,8 +157,9 @@ const PDFPersonnel = forwardRef<HTMLDivElement, Props>(
                                 key={index}
                                 className="[&>td]:py-2 [&>td]:border-black [&>td]:border"
                             >
-                                <td className="w-12 text-center">{++index}</td>
-                                <td>{jhs?.name}</td>
+                                <td className="w-12 text-center shrink-0">{++index}</td>
+                                <td className="w-[calc(50%-3rem)]">{jhs?.name}</td>
+                                <td className="w-[calc(45%)]">{jhs?.position}</td>
                             </tr>
                         ))}
                         {summary.jhs.length === 0 && (
@@ -165,7 +173,14 @@ const PDFPersonnel = forwardRef<HTMLDivElement, Props>(
                 <table className="table border border-black [&>thead>tr]:border-black mt-4 text-[10pt] break-after-auto">
                     <thead>
                         <tr className="[&>th]:border-black [&>th]:border text-left text-foreground">
-                            <th colSpan={2}>SENIOR HIGH SCHOOL</th>
+                            <th colSpan={3}>SENIOR HIGH SCHOOL</th>
+                        </tr>
+                        <tr
+                            className="[&>td]:border-black [&>td]:border text-left text-foreground"
+                        >
+                            <td className="w-12 text-center shrink-0">#</td>
+                            <td className="w-[calc(50%-3rem)]">Personnel</td>
+                            <td className="w-[calc(45%)]">Position</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -174,8 +189,9 @@ const PDFPersonnel = forwardRef<HTMLDivElement, Props>(
                                 key={index}
                                 className="[&>td]:py-2 [&>td]:border-black [&>td]:border"
                             >
-                                <td className="w-12 text-center">{++index}</td>
-                                <td>{shs?.name}</td>
+                                <td className="w-12 text-center shrink-0">{++index}</td>
+                                <td className="w-[calc(50%-3rem)]">{shs?.name}</td>
+                                <td className="w-[calc(45%)]">{shs?.position}</td>
                             </tr>
                         ))}
                         {summary.shs.length === 0 && (
@@ -189,7 +205,14 @@ const PDFPersonnel = forwardRef<HTMLDivElement, Props>(
                 <table className="table border border-black [&>thead>tr]:border-black mt-4 text-[10pt] break-after-auto">
                     <thead>
                         <tr className="[&>th]:border-black [&>th]:border text-left text-foreground">
-                            <th colSpan={2}>ACCOUNTING</th>
+                            <th colSpan={3}>ACCOUNTING</th>
+                        </tr>
+                        <tr
+                            className="[&>td]:border-black [&>td]:border text-left text-foreground"
+                        >
+                            <td className="w-12 text-center shrink-0">#</td>
+                            <td className="w-[calc(50%-3rem)]">Personnel</td>
+                            <td className="w-[calc(45%)]">Position</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -198,8 +221,9 @@ const PDFPersonnel = forwardRef<HTMLDivElement, Props>(
                                 key={index}
                                 className="[&>td]:py-2 [&>td]:border-black [&>td]:border"
                             >
-                                <td className="w-12 text-center">{++index}</td>
-                                <td>{acc?.name}</td>
+                                <td className="w-12 text-center shrink-0">{++index}</td>
+                                <td className="w-[calc(50%-3rem)]">{acc?.name}</td>
+                                <td className="w-[calc(45%)]">{acc?.position}</td>
                             </tr>
                         ))}
 
