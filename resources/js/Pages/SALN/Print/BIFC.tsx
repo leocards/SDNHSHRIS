@@ -16,7 +16,7 @@ const BIFC: React.FC<Props> = ({ bifc }) => {
             </div>
 
             {bifc?.map((b, index) => (
-                <div key={index} className="grid grid-cols-4 divide-x divide-black text-[10pt] text-center [&>div]:px-1 uppercase">
+                <div key={index} className="grid grid-cols-4 divide-x divide-black text-[10pt] text-center [&>div]:px-1 uppercase pt-0.5">
                     <div>{b?.name}</div>
                     <div>{b?.address}</div>
                     <div>{b?.nature}</div>
@@ -24,7 +24,7 @@ const BIFC: React.FC<Props> = ({ bifc }) => {
                 </div>
             ))}
 
-            {Array.from({ length: 4 - (bifc?.length||0) }).map((__dirname, index) => (
+            {bifc.length === 0 && Array.from({ length: 4 - (bifc?.length||0) }).map((__dirname, index) => (
                 <div key={index} className="grid grid-cols-4 divide-x divide-black text-[9pt] text-center [&>div]:px-1 uppercase">
                     <div>N/A</div>
                     <div>N/A</div>

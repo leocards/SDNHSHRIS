@@ -59,7 +59,7 @@ const Card: React.FC<{children?: {
         >
             <div>{children?.name||"N/A"}</div>
             <div>{children?.dateofbirth?format(children?.dateofbirth, "MM/dd/y"):"N/A"}</div>
-            <div>{(children?.dateofbirth ? calculateAge(children?.dateofbirth) :null)||"N/A"}</div>
+            <div>{(children?.dateofbirth ? calculateAge(children?.dateofbirth)+' years old' :null)||"N/A"}</div>
         </div>
     )
 }

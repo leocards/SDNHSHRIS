@@ -20,7 +20,7 @@ const Liabilities: React.FC<Props> = ({ liabilities, saln_totals }) => {
                     <Card key={index} liability={liability} />
                 ))}
 
-                {Array.from({ length: 4 }).map((_, index) => (
+                {(!liabilities || liabilities.length === 0) && Array.from({ length: 4 }).map((_, index) => (
                     <div
                         key={index}
                         className="grid grid-cols-[1fr,1fr,10rem] text-[10pt] divide-x divide-black text-center [&>div]:"
