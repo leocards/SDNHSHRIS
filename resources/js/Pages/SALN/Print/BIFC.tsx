@@ -16,11 +16,11 @@ const BIFC: React.FC<Props> = ({ bifc }) => {
             </div>
 
             {bifc?.map((b, index) => (
-                <div key={index} className="grid grid-cols-4 divide-x divide-black text-[10pt] text-center [&>div]:px-1">
+                <div key={index} className="grid grid-cols-4 divide-x divide-black text-[10pt] text-center [&>div]:px-1 uppercase">
                     <div>{b?.name}</div>
                     <div>{b?.address}</div>
                     <div>{b?.nature}</div>
-                    <div>{b?.date}</div>
+                    <div>{b?.date??'n/a'}</div>
                 </div>
             ))}
 

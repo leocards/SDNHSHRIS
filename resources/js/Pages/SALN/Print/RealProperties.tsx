@@ -84,7 +84,7 @@ const Card: React.FC<{
     };
 }> = ({ real }) => {
     return (
-        <div className="grid grid-cols-[6.5rem,6.5rem,1fr,12rem,8rem,1fr] [&>div]:text-center divide-x divide-black border border-t-0 border-black text-center text-[8.5pt] h-11 uppercase">
+        <div className="grid grid-cols-[6.5rem,6.5rem,1fr,12rem,8rem,1fr] [&>div]:text-center divide-x divide-black border border-t-0 border-black text-center text-[8.5pt] h-11 uppercase [&>div]:leading-4">
             <div>{real ? real.description : "N/A"}</div>
             <div>{real ? real.kind : "N/A"}</div>
             <div>{real ? real.exactlocation : "N/A"}</div>
