@@ -90,15 +90,15 @@ const SALNPage2 = forwardRef<HTMLDivElement, Props>(({ pagecount, saln, spouse, 
                     <div className="mt-3">
                         <div className="grid grid-cols-[9rem,1fr] text-[8pt] text-left">
                             <div className="">Government Issued ID:</div>
-                            <div className="border-b border-black">{declarant?.governmentissuedid}</div>
+                            <div className="border-b border-black uppercase">{declarant?.governmentissuedid}</div>
                         </div>
                         <div className="grid grid-cols-[9rem,1fr] text-[8pt] text-left">
                             <div className="">ID No.:</div>
-                            <div className="border-b border-black">{declarant?.licensepassportid}</div>
+                            <div className="border-b border-black uppercase">{declarant?.licensepassportid}</div>
                         </div>
                         <div className="grid grid-cols-[9rem,1fr] text-[8pt] text-left">
                             <div className="">Date Issued:</div>
-                            <div className="border-b border-black">{declarant?.issued?extractDate(declarant?.issued):""}</div>
+                            <div className="border-b border-black uppercase">{declarant?.issued?extractDate(declarant?.issued):""}</div>
                         </div>
                     </div>
                 </div>
@@ -108,15 +108,15 @@ const SALNPage2 = forwardRef<HTMLDivElement, Props>(({ pagecount, saln, spouse, 
                     <div className="mt-3">
                         <div className="grid grid-cols-[9rem,1fr] text-[8pt] text-left">
                             <div className="">Government Issued ID:</div>
-                            <div className="border-b border-black">{spouse?.governmentissuedid}</div>
+                            <div className="border-b border-black uppercase">{spouse?.governmentissuedid}</div>
                         </div>
                         <div className="grid grid-cols-[9rem,1fr] text-[8pt] text-left">
                             <div className="">ID No.:</div>
-                            <div className="border-b border-black">{spouse?.idno}</div>
+                            <div className="border-b border-black uppercase">{spouse?.idno}</div>
                         </div>
                         <div className="grid grid-cols-[9rem,1fr] text-[8pt] text-left">
                             <div className="">Date Issued:</div>
-                            <div className="border-b border-black">{spouse?.dateissued?extractDate(spouse?.dateissued):""}</div>
+                            <div className="border-b border-black uppercase">{spouse?.dateissued?extractDate(spouse?.dateissued):""}</div>
                         </div>
                     </div>
                 </div>
