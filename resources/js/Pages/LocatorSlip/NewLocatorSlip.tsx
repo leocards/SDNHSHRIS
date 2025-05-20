@@ -276,12 +276,12 @@ const NewLocatorSlip: React.FC<NewLocatorSlipProps> = ({ show, onClose }) => {
                                     form={form}
                                     label={"From"}
                                     name="agenda.date"
-                                    disableDate={(date) => {
+                                    /* disableDate={(date) => {
                                         return (
                                             !isBefore(new Date(), date) &&
                                             !isToday(date)
                                         );
-                                    }}
+                                    }} */
                                     required={false}
                                     onSelect={(date) => onSelectDates(date, watchDateTo??undefined)}
                                     disabled={!watchType}

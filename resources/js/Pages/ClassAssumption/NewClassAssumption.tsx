@@ -183,9 +183,9 @@ const NewClassAssumption = ({
                                     form={form}
                                     label="Date out/absent"
                                     name="date.from"
-                                    disableDate={(date) => {
-                                        return (!isBefore(new Date(), date) && !isToday(date))
-                                    }}
+                                    // disableDate={(date) => {
+                                    //     return (!isBefore(new Date(), date) && !isToday(date))
+                                    // }}
                                 />
                                 <FormSelect
                                     form={form}
