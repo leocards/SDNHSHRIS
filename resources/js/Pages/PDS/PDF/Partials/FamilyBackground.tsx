@@ -47,7 +47,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 </div>
                                 <div className="bg-[#eaeaea] text-[6pt] relative w-[8rem] border-l-2 border-black">
                                     <span className={cn("absolute top-0 left-px", checkIfDownLoad('-mt-1.5'))}>
-                                        NAME EXTENSION (JR., SR)  <span className="text-[8pt] pl-2">{fb?.spouse?.extensionname}</span>
+                                        NAME EXTENSION (JR., SR)
                                     </span>
                                     <span className={cn("absolute top-0 right-1 text-[10pt] font-bold", checkIfDownLoad('-mt-1.5'))}>
                                         {fb?.spouse?.extensionname}
@@ -123,7 +123,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 </div>
                                 <div className="bg-[#eaeaea] text-[6pt] relative w-[8rem] border-l-2 border-black">
                                     <span className={cn("absolute top-0 left-px", checkIfDownLoad('-mt-1.5'))}>
-                                        NAME EXTENSION (JR., SR) <span className="text-[8pt] pl-2">{fb?.father?.extensionname}</span>
+                                        NAME EXTENSION (JR., SR)
                                     </span>
                                     <span className={cn("absolute top-0 right-1 text-[10pt] font-bold", checkIfDownLoad('-mt-1.5'))}>
                                         {fb?.father?.extensionname}
