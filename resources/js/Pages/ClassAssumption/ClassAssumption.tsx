@@ -199,7 +199,10 @@ const Main = () => {
 
             <NewClassAssumption
                 show={showNewCA}
-                onClose={setShowNewCA}
+                onClose={() => {
+                    setShowNewCA(false);
+                    setSelectedCA(null);
+                }}
                 type={showNewCAType}
                 ca={selectedCA}
             />

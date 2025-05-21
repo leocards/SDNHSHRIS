@@ -5,10 +5,11 @@ import { format } from "date-fns";
 import { User } from "@/Types";
 import { Check } from "lucide-react";
 import { cn } from "@/Lib/utils";
+import { formatDateRange } from "@/Types/types";
 
 type OfficialBusinessContentProps = {
     user: User;
-    date: Date;
+    date: CLASSASSUMPTIONTYPE['details']['date'];
     details: CLASSASSUMPTIONTYPE['details']['details'];
     loads: CLASSASSUMPTIONTYPE['details']['classloads'];
     curriculumhead: string;
@@ -30,8 +31,10 @@ const OfficialBusinessContent: React.FC<OfficialBusinessContentProps> = ({
                             <div className="space-y-2 mt-4">
                                 <div className="flex">
                                     <div className="indent-12">I regret to inform you that i will be out/absent on</div>{" "}
-                                    <div className="border-b border-black w-40 mx-1 text-center">{format(date, 'MMM d')}</div>
-                                    , {format(date, "y")} due to (plese
+                                    <div className="border-b border-black w-40 mx-1 text-center">{formatDateRange({
+                                                                            from: date.from, to: date.to??''
+                                                                        })}</div>
+                                    , {format(date.from, "y")} due to (plese
                                     check):
                                 </div>
                             </div>
