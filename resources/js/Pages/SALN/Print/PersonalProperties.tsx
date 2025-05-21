@@ -31,14 +31,14 @@ const PersonalProperties: React.FC<Props> = ({ asof, personal, saln_totals }) =>
             </div>
             <div className="grid grid-cols-[1fr,12rem,8rem] text-[10pt] font-bold">
                 <div className="col-span-2 text-right">Subtotal:</div>
-                <div className="border-b border-black text-center">P {Number(saln_totals.personal).toLocaleString()}</div>
+                <div className="border-b border-black text-center">₱ {Number(saln_totals.personal).toLocaleString()}</div>
             </div>
             <div className="grid grid-cols-[1fr,12rem,8rem] text-[10pt] mt-2 font-bold">
                 <div className="col-span-2 text-right">
                     TOTAL ASSETS (a+b):
                 </div>
                 <div className="border-b-2 border-black text-center">
-                    P {Number((saln_totals.personal) + (saln_totals.real)).toLocaleString()}
+                    ₱ {Number((saln_totals.personal) + (saln_totals.real)).toLocaleString()}
                 </div>
             </div>
         </div>

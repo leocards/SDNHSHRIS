@@ -36,7 +36,7 @@ const Liabilities: React.FC<Props> = ({ liabilities, saln_totals }) => {
                     Total Liabilities:
                 </div>
                 <div className="border-b border-black text-center">
-                    P {Number(saln_totals.liability).toLocaleString()}
+                    ₱ {Number(saln_totals.liability).toLocaleString()}
                 </div>
             </div>
             <div className="grid grid-cols-[1fr,1fr,10rem] text-[10pt] font-bold">
@@ -44,7 +44,7 @@ const Liabilities: React.FC<Props> = ({ liabilities, saln_totals }) => {
                     NET WORTH : Total Assets less Total Liabilities =
                 </div>
                 <div className="border-b border-black text-center">
-                    P {Number(saln_totals.networth).toLocaleString()}
+                    ₱ {Number(saln_totals.networth).toLocaleString()}
                 </div>
             </div>
         </div>

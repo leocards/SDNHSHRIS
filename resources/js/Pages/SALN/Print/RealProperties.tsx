@@ -62,7 +62,7 @@ const RealProperties: React.FC<Props> = ({ real, saln_totals }) => {
             <div className="grid grid-cols-[6.5rem,6.5rem,1fr,12rem,8rem,1fr] text-[10pt] font-bold">
                 <div className="col-start-5 text-right">Subtotal:</div>
                 <div className="h-5 border-b border-black text-center">
-                    P {Number(saln_totals.real).toLocaleString()}
+                    ₱ {Number(saln_totals.real).toLocaleString()}
                 </div>
             </div>
         </div>
