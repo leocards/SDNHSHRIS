@@ -44,7 +44,7 @@ const PDFClassAssumption = forwardRef<HTMLDivElement, Props>(({ ca }, ref) => {
                     academichead={ca.academichead.full_name}
                     curriculumhead={ca.curriculumnhead.full_name}
                     details={ca.details.details}
-                    date={new Date(ca.details.date.from)}
+                    date={ca.details.date}
                     loads={ca.details.classloads}
                 />
             ) : (

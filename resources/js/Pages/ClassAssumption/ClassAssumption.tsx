@@ -45,8 +45,6 @@ const Main = () => {
     const { url } = usePage();
     const { setProcess } = useProcessIndicator()
     const isApprovalPage = url.startsWith("/myapproval");
-    const { width } = useWindowSize();
-    const { state } = useSidebar();
 
     const [status, setStatus] = useState<APPROVALTYPE>("pending");
     const [filter, setFilter] = useState("all");
@@ -62,6 +60,7 @@ const Main = () => {
     const [showNewCAType, setShowNewCAType] = useState<"business" | "sick">(
         "business"
     );
+    const [selectedCA, setSelectedCA] = useState<CLASSASSUMPTIONTYPE | null>(null);
 
     const Columns = isApprovalPage ? `1fr 1fr 6rem` : `1fr 10rem`;
 
@@ -176,6 +175,14 @@ const Main = () => {
                                                 className="size-7"
                                                 variant="outline"
                                                 size="icon"
+                                                onClick={() => {
+                                                    setSelectedCA(data)
+                                                    setShowNewCAType(
+                                                        data.details.details
+                                                            .catype
+                                                    );
+                                                    setShowNewCA(true)
+                                                }}
                                             >
                                                 <Edit />
                                             </Button>
@@ -194,6 +201,7 @@ const Main = () => {
                 show={showNewCA}
                 onClose={setShowNewCA}
                 type={showNewCAType}
+                ca={selectedCA}
             />
         </div>
     );

@@ -33,11 +33,10 @@ import { X } from "lucide-react";
 import { useFieldArray } from "react-hook-form";
 import { Button } from "@/Components/ui/button";
 import { Add } from "iconsax-react";
-import { isBefore, isToday } from "date-fns";
 
 type NewClassAssumptionProps = ModalProps & {
     type: "sick" | "business";
-    ca?: CLASSASSUMPTIONTYPE;
+    ca?: CLASSASSUMPTIONTYPE | null;
 };
 
 const NewClassAssumption = ({
@@ -162,6 +161,14 @@ const NewClassAssumption = ({
             if(type) {
                 form.setValue('details.catype', type)
             }
+
+            if(ca) {
+                form.setValue('date.from', new Date(ca.details.date.from))
+                form.setValue('date.to', ca.details.date.to ? new Date(ca.details.date.to) : null)
+                form.setValue('details.type', ca.details.details.type??'')
+                form.setValue('details.others', ca.details.details.others??'')
+                form.setValue('classloads', ca.details.classloads)
+            }
         }
     }, [type, show])
 
@@ -181,12 +188,24 @@ const NewClassAssumption = ({
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <FormCalendar
                                     form={form}
-                                    label="Date out/absent"
+                                    label="Date out/absent From"
                                     name="date.from"
                                     // disableDate={(date) => {
                                     //     return (!isBefore(new Date(), date) && !isToday(date))
                                     // }}
                                 />
+                                <FormCalendar
+                                    form={form}
+                                    label="Date out/absent To"
+                                    name="date.to"
+                                    required={false}
+                                    // disableDate={(date) => {
+                                    //     return (!isBefore(new Date(), date) && !isToday(date))
+                                    // }}
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <FormSelect
                                     form={form}
                                     name="details.type"
@@ -207,18 +226,18 @@ const NewClassAssumption = ({
                                         ]
                                     }
                                 />
+                                <FormInput
+                                    form={form}
+                                    label="Others, please specify"
+                                    name="details.others"
+                                    disabled={
+                                        !["slothers", "obothers"].includes(
+                                            form.watch("details.type")
+                                        )
+                                    }
+                                />
                             </div>
 
-                            <FormInput
-                                form={form}
-                                label="Others, please specify"
-                                name="details.others"
-                                disabled={
-                                    !["slothers", "obothers"].includes(
-                                        form.watch("details.type")
-                                    )
-                                }
-                            />
 
                             {fields.map((field, index) => (
                                 <div

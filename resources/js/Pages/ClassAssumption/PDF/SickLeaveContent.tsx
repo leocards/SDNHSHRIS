@@ -5,10 +5,11 @@ import ClassLoads from "./ClassLoads";
 import { User } from "@/Types";
 import { Check } from "lucide-react";
 import { cn } from "@/Lib/utils";
+import { formatDateRange } from "@/Types/types";
 
 type SickLeaveContentProps = {
     user: User;
-    date: Date;
+    date: CLASSASSUMPTIONTYPE['details']['date'];
     details: CLASSASSUMPTIONTYPE['details']['details'];
     loads: CLASSASSUMPTIONTYPE['details']['classloads'];
     curriculumhead: string;
@@ -39,8 +40,10 @@ const SickLeaveContent: React.FC<SickLeaveContentProps> = ({
                                 </div>
                                 <div className="flex">
                                     <div className="">is absent today, </div>{" "}
-                                    <div className="border-b border-black w-40 mx-1 text-center">{format(date, "MMM d")}</div>
-                                    , {format(date, "y")} due to (plese
+                                    <div className="border-b border-black w-40 mx-1 text-center">{formatDateRange({
+                                        from: date.from, to: date.to??''
+                                    })}</div>
+                                    , {format(new Date(date.from), "y")} due to (plese
                                     check):
                                 </div>
                             </div>

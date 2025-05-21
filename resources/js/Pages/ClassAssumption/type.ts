@@ -18,7 +18,7 @@ export type CLASSASSUMPTIONTYPE = {
             timeTo: string;
             gradesection: string;
             subject: string;
-            teacher: number | string;
+            teacher: number;
         }>
         details: {
             catype: 'sick' | 'business'

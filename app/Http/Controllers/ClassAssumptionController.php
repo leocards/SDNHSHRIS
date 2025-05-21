@@ -43,7 +43,7 @@ class ClassAssumptionController extends Controller
                         $query->where('status', $status);
                     })->when($filter != 'all' && $filter, function ($query) use ($filter) {
                         $query->where('details->details->type', $filter);
-                    });
+                    })->where('user_id', Auth::id());
                 }
             )
             ->when(
@@ -127,10 +127,12 @@ class ClassAssumptionController extends Controller
     public function update(Request $request, ClassAssumption $ca)
     {
         try {
-
+            $ca->details = $request->all();
             $ca->saveQuietly();
+
+            return $this->returnResponse('Class Assumption', 'You have successfully updated your class assumption.', 'success');
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->returnResponse('Class Assumption', 'Failed to update your class assumption.', 'error');
         }
     }
 
