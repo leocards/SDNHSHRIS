@@ -79,7 +79,8 @@ class LogsReportController extends Controller
                 $query->whereYear('created_at', $filterYear);
             })
             ->latest()
-            ->get();
+            ->get()
+            ->unique('user_id')->values();
 
         return response()->json($logs);
     }

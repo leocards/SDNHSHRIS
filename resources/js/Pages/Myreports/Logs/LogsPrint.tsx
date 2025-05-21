@@ -195,7 +195,7 @@ const LogsPrint: React.FC<Props> = ({
                                     ) : (
                                         <tr className="[&>td]:py-2 [&>td]:border-black [&>td]:border">
                                             <td
-                                                colSpan={4}
+                                                colSpan={5}
                                                 className="text-center"
                                             >
                                                 No records to print.
