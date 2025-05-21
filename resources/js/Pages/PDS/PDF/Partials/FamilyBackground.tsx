@@ -49,7 +49,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                     <span className={cn("absolute top-0 left-px", checkIfDownLoad('-mt-1.5'))}>
                                         NAME EXTENSION (JR., SR)
                                     </span>
-                                    <span className={cn("absolute top-0 right-1 text-[10pt] font-bold", checkIfDownLoad('-mt-1.5'))}>
+                                    <span className={cn("absolute top-0 right-1 text-[10pt] font-bold uppercase", checkIfDownLoad('-mt-1.5'))}>
                                         {fb?.spouse?.extensionname}
                                     </span>
                                 </div>
@@ -61,7 +61,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 <div className={cn(checkIfDownLoad('-mt-1'))}>MIDDLE NAME</div>
                             </div>
                             <div className="border-black border-b-2 border-l-2 w-full h-[22px] flex justify-left pl-1 items-center">
-                                <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.spouse?.middlename}</div>
+                                <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.spouse?.middlename}</div>
                             </div>
                         </div>
                         <div className="flex ">
@@ -70,7 +70,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 <div className={cn(checkIfDownLoad('-mt-1'))}>OCCUPATION</div>
                             </div>
                             <div className="border-black border-b-2 border-l-2 w-full h-[22px] flex justify-left pl-1 items-center">
-                                <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.spouse?.occupation}</div>
+                                <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.spouse?.occupation}</div>
                             </div>
                         </div>
                         <div className="flex ">
@@ -79,7 +79,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 <div className={cn(checkIfDownLoad('-mt-1'))}>EMPLOYER/BUSINESS NAME</div>
                             </div>
                             <div className="border-black border-b-2 border-l-2 w-full h-[22px] flex items-center justify-left pl-1">
-                                <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.spouse?.employerbusiness}</div>
+                                <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.spouse?.employerbusiness}</div>
                             </div>
                         </div>
                         <div className="flex ">
@@ -88,7 +88,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 <div className={cn(checkIfDownLoad('-mt-1'))}>BUSINESS ADDRESS</div>
                             </div>
                             <div className="border-black border-b-2 border-l-2 w-full h-[22px] flex items-center justify-left pl-1">
-                                <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.spouse?.businessaddress}</div>
+                                <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.spouse?.businessaddress}</div>
                             </div>
                         </div>
                         <div className="flex h-[22px]">
@@ -97,7 +97,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 <div className={cn(checkIfDownLoad('-mt-1'))}>TELEPHONE NO.</div>
                             </div>
                             <div className="border-black border-l-2 border-b-2 w-full h-[22px] flex justify-left pl-1 items-center">
-                                <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.spouse?.telephone}</div>
+                                <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.spouse?.telephone}</div>
                             </div>
                         </div>
                     </div>
@@ -109,7 +109,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 <div  className={cn(checkIfDownLoad('-mt-1'))}>FATHER'S SURNAME</div>
                             </div>
                             <div className="border-black border-b-2 border-l-2 w-full h-[22px] flex justify-left pl-1 items-center">
-                                <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.father?.familyname}</div>
+                                <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.father?.familyname}</div>
                             </div>
                         </div>
                         <div className="flex">
@@ -119,13 +119,13 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                             </div>
                             <div className="border-black border-b-2 border-l-2 w-full h-[22px] flex">
                                 <div className="grow flex items-center justify-left pl-1">
-                                    <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.father?.firstname}</div>
+                                    <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.father?.firstname}</div>
                                 </div>
                                 <div className="bg-[#eaeaea] text-[6pt] relative w-[8rem] border-l-2 border-black">
                                     <span className={cn("absolute top-0 left-px", checkIfDownLoad('-mt-1.5'))}>
                                         NAME EXTENSION (JR., SR)
                                     </span>
-                                    <span className={cn("absolute top-0 right-1 text-[10pt] font-bold", checkIfDownLoad('-mt-1.5'))}>
+                                    <span className={cn("absolute top-0 right-1 text-[10pt] font-bold uppercase", checkIfDownLoad('-mt-1.5'))}>
                                         {fb?.father?.extensionname}
                                     </span>
                                 </div>
@@ -137,7 +137,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 <div className={cn(checkIfDownLoad('-mt-1'))}>MIDDLE NAME</div>
                             </div>
                             <div className="border-black border-l-2 border-b-2 w-full h-[22px] flex items-center justify-left pl-1">
-                                <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.father?.middlename}</div>
+                                <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.father?.middlename}</div>
                             </div>
                         </div>
                     </div>
@@ -156,7 +156,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 <div className={cn(checkIfDownLoad('-mt-1'))}>SURNAME</div>
                             </div>
                             <div className="border-black border-l-2 border-b-2 w-full h-[22px] flex justify-left pl-1 items-center">
-                                <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.mother?.familyname}</div>
+                                <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.mother?.familyname}</div>
                             </div>
                         </div>
                         <div className="flex">
@@ -165,7 +165,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 <div className={cn(checkIfDownLoad('-mt-1'))}>FIRST NAME</div>
                             </div>
                             <div className="border-black border-b-2 border-l-2 w-full h-[22px] flex justify-left pl-1 items-center">
-                                <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.mother?.firstname}</div>
+                                <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.mother?.firstname}</div>
                             </div>
                         </div>
                         <div className="flex">
@@ -174,7 +174,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 <div className={cn(checkIfDownLoad('-mt-1'))}>MIDDLE NAME</div>
                             </div>
                             <div className="border-black border-l-2 w-full border-b-2 flex justify-left pl-1 items-center">
-                                <div className={cn('font-bold', checkIfDownLoad('-mt-3.5'))}>{fb?.mother?.middlename}</div>
+                                <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3.5'))}>{fb?.mother?.middlename}</div>
                             </div>
                         </div>
                     </div>
@@ -183,7 +183,7 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                     <div className="flex divide-x-2 divide-black border-b-2 h-[22px] border-black">
                         <div className="flex bg-[#eaeaea] text-[7pt] grow">
                             <div className={cn("pr-1", checkIfDownLoad('-mt-1'))}>23.</div>
-                            <div className={cn(checkIfDownLoad('-mt-1'))}>
+                            <div className={cn('', checkIfDownLoad('-mt-1'))}>
                                 {" "}
                                 NAME of CHILDREN (Write full name and list all)
                             </div>
@@ -202,10 +202,10 @@ const FamilyBackground: React.FC<Props> = ({ fb }) => {
                                 className="divide-x-2 divide-black border-b-2 border-black h-[22px] flex"
                             >
                                 <div className="flex text-[7pt] grow items-center justify-center">
-                                    <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{child.name}</div>
+                                    <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3'))}>{child.name}</div>
                                 </div>
                                 <div className="text-[7pt] w-[7.5rem] flex items-center justify-center">
-                                    <div className={cn('font-bold', checkIfDownLoad('-mt-3'))}>{child.dateofbirth && child.dateofbirth != "N/A"?format(child.dateofbirth, "MM-dd-Y"):child.dateofbirth}</div>
+                                    <div className={cn('font-bold uppercase', checkIfDownLoad('-mt-3'))}>{child.dateofbirth && child.dateofbirth != "N/A"?format(child.dateofbirth, "MM-dd-Y"):child.dateofbirth}</div>
                                 </div>
                             </div>
                         ))}
