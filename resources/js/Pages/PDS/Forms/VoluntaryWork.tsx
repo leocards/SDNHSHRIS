@@ -89,7 +89,13 @@ const VoluntaryWork: React.FC<VoluntaryWorkProps> = ({ data }) => {
                                     type="button"
                                     variant="outline"
                                     size="icon"
-                                    onClick={() => remove(index)}
+                                    onClick={() => {
+                                        remove(index)
+                                        form.setValue('deletedVW', [
+                                            ...(form.getValues('deletedVW')||[]),
+                                            field.vwid!
+                                        ])
+                                    }}
                                     className="size-6 absolute top-1 right-1 text-destructive"
                                 >
                                     <Trash className="[&_path]:stroke-2 !size-4" />

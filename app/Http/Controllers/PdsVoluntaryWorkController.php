@@ -26,6 +26,9 @@ class PdsVoluntaryWorkController extends Controller
                 ]);
             }
 
+            if($request->deletedVW && count($request->deletedVW) !== 0)
+                PdsVoluntaryWork::destroy($request->deletedVW);
+
             $request->user()->personalDataSheet()->updateOrCreate([
                 'user_id' => $request->user()->id
             ],[

@@ -161,9 +161,18 @@ export const C4SCHEMA = z.object({
         })
     ),
     governmentids: z.object({
-        governmentissuedid: z.string().min(1, requiredError("government issued ID")).default(""),
-        licensepassportid: z.string().min(7, "Must have atleaset 7 digits.").min(1, requiredError("id/license/passport no.")).default(""),
-        issued: z.string().min(1, requiredError("date/place of issuance")).default("")
+        governmentissuedid: z.string().optional().default(""),
+        licensepassportid: z.string().optional().default(""),
+        issued: z.string().optional().default("")
+    }).superRefine((data, ctx) => {
+        if(data.licensepassportid) {
+            if (data.licensepassportid.length < 7)
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ['licensepassportid'],
+                    message: "Must have atleaset 7 digits."
+                })
+        }
     })
 })
 
