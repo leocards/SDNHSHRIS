@@ -261,7 +261,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                                 checkIfDownLoad("-mt-2")
                                             )}
                                         >
-                                            {props.civilstatus.status ===
+                                            {props?.civilstatus?.status ===
                                                 "single" && (
                                                 <span>&#x2714;</span>
                                             )}
@@ -285,7 +285,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                                 checkIfDownLoad("-mt-2")
                                             )}
                                         >
-                                            {props.civilstatus.status ===
+                                            {props.civilstatus?.status ===
                                                 "married" && (
                                                 <span>&#x2714;</span>
                                             )}
@@ -316,7 +316,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                                 checkIfDownLoad("-mt-2")
                                             )}
                                         >
-                                            {props.civilstatus.status ===
+                                            {props.civilstatus?.status ===
                                                 "widowed" && (
                                                 <span>&#x2714;</span>
                                             )}
@@ -340,7 +340,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                                 checkIfDownLoad("-mt-2")
                                             )}
                                         >
-                                            {props.civilstatus.status ===
+                                            {props.civilstatus?.status ===
                                                 "separate" && (
                                                 <span>&#x2714;</span>
                                             )}
@@ -373,7 +373,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                                     "widowed",
                                                     "separate",
                                                 ].includes(
-                                                    props.civilstatus.status
+                                                    props.civilstatus?.status
                                                 ) && <span>&#x2714;</span>}
                                         </div>
                                     </div>
@@ -394,8 +394,8 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                             checkIfDownLoad("-mt-2")
                                         )}
                                     >
-                                        {(props.civilstatus.status && props.civilstatus.status == "others") &&
-                                            props.civilstatus.others}
+                                        {(props.civilstatus?.status && props.civilstatus?.status == "others") &&
+                                            props.civilstatus?.others}
                                     </div>
                                 </div>
                             </div>
@@ -655,7 +655,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                                 checkIfDownLoad("-mt-2")
                                             )}
                                         >
-                                            {props.citizenship.citizen ===
+                                            {props.citizenship?.citizen ===
                                                 "filipino" && (
                                                 <span>&#x2714;</span>
                                             )}
@@ -678,7 +678,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                                 checkIfDownLoad("-mt-2")
                                             )}
                                         >
-                                            {props.citizenship.citizen ===
+                                            {props.citizenship?.citizen ===
                                                 "dual" && <span>&#x2714;</span>}
                                         </div>
                                     </div>
@@ -706,7 +706,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                                 checkIfDownLoad("-mt-2")
                                             )}
                                         >
-                                            {props.citizenship.dual?.by ===
+                                            {props.citizenship?.dual?.by ===
                                                 "birth" && (
                                                 <span>&#x2714;</span>
                                             )}
@@ -729,7 +729,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                                 checkIfDownLoad("-mt-2")
                                             )}
                                         >
-                                            {props.citizenship.dual?.by ===
+                                            {props.citizenship?.dual?.by ===
                                                 "naturalization" && (
                                                 <span>&#x2714;</span>
                                             )}
@@ -762,7 +762,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({ ...props }) => {
                                         checkIfDownLoad("-mt-2")
                                     )}
                                 >
-                                    {props.citizenship.dual?.country}
+                                    {props.citizenship?.dual?.country}
                                 </div>
                             </div>
                         </div>

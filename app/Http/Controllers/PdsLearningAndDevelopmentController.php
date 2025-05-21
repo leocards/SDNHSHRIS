@@ -27,6 +27,9 @@ class PdsLearningAndDevelopmentController extends Controller
                 ]);
             }
 
+            if($request->deletedLD && count($request->deletedLD) !== 0)
+                PdsLearningDevelopment::destroy($request->deletedLD);
+
             $request->user()->personalDataSheet()->updateOrCreate([
                 'user_id' => $request->user()->id
             ],[

@@ -23,7 +23,7 @@ import { C4TYPE } from "./Types/C4";
 import { APPROVALTYPE } from "@/Types";
 import { cn } from "@/Lib/utils";
 import { DocumentDownload, Export } from "iconsax-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import ImportExcelPds from "../Personnel/ImportExcelPds";
 import { usePage } from "@inertiajs/react";
 import PDSPDF from "./PDF/PDSPDF";

@@ -5,11 +5,27 @@ export const EDUCATION = z.object({
     nameofschool: z.string().min(1, requiredError('name of school')).default("N/A"),
     basiceddegreecourse: z.string().min(1, requiredError('basic education/degree/course')).default("N/A"),
     period: z.object({
-        from: z.string().min(1, requiredError('"from"')).default("N/A"),
-        to: z.string().min(1, requiredError('"to"')).default("N/A")
+        from: z.preprocess(
+            (val) => (typeof val === "number" ? val.toString() : val),
+            z.string().min(1, requiredError('"from"'))
+        ).default("N/A"),
+
+        to: z.preprocess(
+            (val) => (typeof val === "number" ? val.toString() : val),
+            z.string().min(1, requiredError('"to"'))
+        ).default("N/A"),
     }),
     highestlvl: z.string().min(1, requiredError('highest level/units earned')).default("N/A"),
-    yeargraduated: z.string().length(4, "The year graduated field must be YYYY or N/A format.").min(1, requiredError('year graduated')).or(z.literal("N/A")).default("N/A"),
+    yeargraduated: z.union([
+        z.preprocess((val) => {
+            // Convert number to string
+            if (typeof val === "number") return val.toString();
+            if (val === null || val === undefined) return 'N/A';
+            return val;
+        }, z.string().length(4, "The year graduated field must be YYYY or N/A format.")),
+        z.literal("N/A"),
+    ])
+    .default("N/A"),
     scholarshiphonor: z.string().min(1, requiredError('scholarship/academic honor received')).default("N/A")
 })
 

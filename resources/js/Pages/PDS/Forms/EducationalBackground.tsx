@@ -31,9 +31,12 @@ const EducationalBackground: React.FC<EducationalBackgroundProps> = ({
             | "college"
             | "graduate"
     ) => {
-        const education = data?.find((e) => e.type === type);
+        let education = data?.find((e) => e.type === type);
 
         if (education) {
+
+            education.details = education.details.map((items: any) => ({...items, yeargraduated: items.yeargraduated === null ? "N/A" : items.yeargraduated}))
+
             return education.details;
         }
 
@@ -41,7 +44,7 @@ const EducationalBackground: React.FC<EducationalBackgroundProps> = ({
     };
 
     const form = useFormSubmit<IFormEducationalBackground>({
-        route: data ? route("pds.update.eb") : route("pds.store.eb"),
+        route: data && data.length > 0 ? route("pds.update.eb") : route("pds.store.eb"),
         method: "POST",
         schema: EDUCATIONALBACKGROUNDSCHEMA,
         defaultValues: {
@@ -150,7 +153,7 @@ const Education: React.FC<{ form: any; name: string; edLevel: string }> = ({
 
             <div className="divide-y divide-border space-y-4">
                 {fields.map((field, index) => (
-                    <div className="relative pt-3">
+                    <div key={field.id} className="relative pt-3">
                         <Button
                             type="button"
                             className="absolute top-1 right-1 size-6 text-destructive"

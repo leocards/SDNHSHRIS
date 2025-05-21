@@ -93,7 +93,13 @@ const LearningAndDevelopment: React.FC<LearningAndDevelopmentProps> = ({ data })
                                     type="button"
                                     variant="outline"
                                     size="icon"
-                                    onClick={() => remove(index)}
+                                    onClick={() => {
+                                        remove(index)
+                                        form.setValue('deletedLD', [
+                                            ...(form.getValues('deletedLD')||[]),
+                                            field.ldid!
+                                        ])
+                                    }}
                                     className="size-6 absolute top-1 right-1 text-destructive"
                                 >
                                     <Trash className="[&_path]:stroke-2 !size-4" />

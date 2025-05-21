@@ -177,8 +177,11 @@ class PersonalDataSheetController extends Controller
         $user = User::withoutGlobalScopes()->find($userId);
 
         $pi = PdsPersonalInformation::where('user_id', $user->id)->first();
-        $pi->residential = $pi?->addresses->where('type', 'residential')->first();
-        $pi->permanent = $pi?->addresses->where('type', 'permanent')->first();
+
+        if($pi) {
+            $pi->residential = $pi?->addresses->where('type', 'residential')->first();
+            $pi->permanent = $pi?->addresses->where('type', 'permanent')->first();
+        }
 
         $education = PdsEducationalBackground::where('user_id', $user->id)
             ->get()->mapWithKeys(function ($item) {

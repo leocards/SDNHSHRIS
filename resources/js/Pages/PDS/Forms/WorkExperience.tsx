@@ -30,7 +30,7 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({ data }) => {
     const { toast } = useToast()
 
     const form = useFormSubmit<IFormWorkExperience>({
-        route: data && data.length !== 0 ? route('pds.update.we') : route("pds.store.we"),
+        route: data && data.length > 0 ? route('pds.update.we') : route("pds.store.we"),
         method: "POST",
         schema: WORKEXPERIENCESCHEMA,
         values: { we: data ? data.map((we) => ({
@@ -102,7 +102,13 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({ data }) => {
                                     type="button"
                                     variant="outline"
                                     size="icon"
-                                    onClick={() => remove(index)}
+                                    onClick={() => {
+                                        remove(index)
+                                        form.setValue(`deletedWE`, [
+                                            ...(form.getValues("deletedWE")||[]),
+                                            field.weid!,
+                                        ]);
+                                    }}
                                     className="size-6 absolute top-1 right-1 text-destructive"
                                 >
                                     <Trash className="[&_path]:stroke-2 !size-4" />

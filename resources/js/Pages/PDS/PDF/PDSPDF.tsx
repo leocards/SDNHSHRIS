@@ -114,23 +114,23 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
                                             <C1
                                                 personalInfo={
                                                     {
-                                                        ...data?.personalInformation,
+                                                        ...(data?.personalInformation??{}),
                                                         ...data?.user,
                                                         residential:
                                                             data
                                                                 ?.personalInformation
-                                                                .residential,
+                                                                ?.residential,
                                                         permanent:
                                                             data
                                                                 ?.personalInformation
-                                                                .permanent,
+                                                                ?.permanent,
                                                     } as PersonalInfoProps
                                                 }
                                                 familyBackground={
-                                                    data.familyBackground
+                                                    data?.familyBackground
                                                 }
                                                 education={
-                                                    data.educationalBackground
+                                                    data?.educationalBackground
                                                 }
                                             />
                                         </Pages>
@@ -150,15 +150,15 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
                                             <C1
                                                 personalInfo={
                                                     {
-                                                        ...data?.personalInformation,
+                                                        ...(data?.personalInformation??{}),
                                                         ...data?.user,
                                                     } as PersonalInfoProps
                                                 }
                                                 familyBackground={
-                                                    data.familyBackground
+                                                    data?.familyBackground
                                                 }
                                                 education={
-                                                    data.educationalBackground
+                                                    data?.educationalBackground
                                                 }
                                             />
                                         </Pages>
@@ -173,9 +173,9 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
                                     <PDSPDFIsDownloadProvider>
                                         <Pages pageNumber={2}>
                                             <C2
-                                                civilservice={data.civilService}
+                                                civilservice={data?.civilService}
                                                 workexperience={
-                                                    data.workExperience
+                                                    data?.workExperience
                                                 }
                                             />
                                         </Pages>
@@ -188,9 +188,9 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
                                     >
                                         <Pages ref={ref} pageNumber={2}>
                                             <C2
-                                                civilservice={data.civilService}
+                                                civilservice={data?.civilService}
                                                 workexperience={
-                                                    data.workExperience
+                                                    data?.workExperience
                                                 }
                                             />
                                         </Pages>
@@ -206,13 +206,13 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
                                         <Pages pageNumber={3}>
                                             <C3
                                                 voluntarywork={
-                                                    data.voluntaryWork
+                                                    data?.voluntaryWork
                                                 }
                                                 learningdevelopment={
-                                                    data.learningAndDevelopment
+                                                    data?.learningAndDevelopment
                                                 }
                                                 otherinformation={
-                                                    data.otherInformation
+                                                    data?.otherInformation
                                                 }
                                             />
                                         </Pages>
@@ -226,13 +226,13 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
                                         <Pages ref={ref} pageNumber={3}>
                                             <C3
                                                 voluntarywork={
-                                                    data.voluntaryWork
+                                                    data?.voluntaryWork
                                                 }
                                                 learningdevelopment={
-                                                    data.learningAndDevelopment
+                                                    data?.learningAndDevelopment
                                                 }
                                                 otherinformation={
-                                                    data.otherInformation
+                                                    data?.otherInformation
                                                 }
                                             />
                                         </Pages>
@@ -246,7 +246,7 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
                                 <div>
                                     <PDSPDFIsDownloadProvider>
                                         <Pages pageNumber={4}>
-                                            <C4 c4Data={data.c4} />
+                                            <C4 c4Data={data?.c4} />
                                         </Pages>
                                     </PDSPDFIsDownloadProvider>
                                 </div>
@@ -256,7 +256,7 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
                                         initialValue={true}
                                     >
                                         <Pages ref={ref} pageNumber={4}>
-                                            <C4 c4Data={data.c4} />
+                                            <C4 c4Data={data?.c4} />
                                         </Pages>
                                     </PDSPDFIsDownloadProvider>
                                 </div>
