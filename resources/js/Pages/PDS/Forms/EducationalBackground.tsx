@@ -106,6 +106,12 @@ const EducationalBackground: React.FC<EducationalBackgroundProps> = ({
 
                         <Education
                             form={form}
+                            name="senior"
+                            edLevel="Senior High"
+                        />
+
+                        <Education
+                            form={form}
                             name="vocational"
                             edLevel="VOCATIONAL/TRADE COURSE"
                         />

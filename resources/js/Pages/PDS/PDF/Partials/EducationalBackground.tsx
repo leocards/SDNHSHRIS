@@ -108,34 +108,35 @@ const EducationalBackground: React.FC<EducationalBackgroundType> = ({
                 {props.elementary?.map((elementary, index) => (
                     <EducationCard key={index} level="elementary" {...elementary} />
                 ))}
+                {(!props.elementary || props.elementary.length === 0) && <EmptyEducationCard level="elementary" />}
 
                 {props.secondary?.map((elementary, index) => (
                     <EducationCard key={index} level="secondary" {...elementary} />
                 ))}
+                {(!props.secondary||props.secondary.length === 0) && <EmptyEducationCard level="secondary" />}
 
                 {props.senior?.map((elementary, index) => (
                     <EducationCard key={index} level="Senior High" {...elementary} />
                 ))}
+                {(!props.senior||props.senior.length === 0) && <EmptyEducationCard level="Senior High" />}
 
                 {props.vocational?.map((elementary, index) => (
                     <EducationCard key={index} level="VOCATIONAL / TRADE COURSE" {...elementary} />
                 ))}
+                {(!props.vocational||props.vocational.length === 0) && <EmptyEducationCard level="VOCATIONAL / TRADE COURSE" />}
 
                 {props.college?.map((elementary, index) => (
                     <EducationCard key={index} level="college" {...elementary} />
                 ))}
+                {(!props.college||props.college.length === 0) && <EmptyEducationCard level="college" />}
 
                 {props.graduate?.map((elementary, index) => (
                     <EducationCard key={index} level="Graduate studies" {...elementary} />
                 ))}
+                {(!props.graduate||props.graduate.length === 0) && <EmptyEducationCard level="Graduate studies" />}
 
                 {/* default empty */}
-                {!props.elementary && <EmptyEducationCard level="elementary" />}
-                {!props.secondary && <EmptyEducationCard level="secondary" />}
-                {!props.senior && <EmptyEducationCard level="Senior High" />}
-                {!props.vocational && <EmptyEducationCard level="VOCATIONAL / TRADE COURSE" />}
-                {!props.college && <EmptyEducationCard level="college" />}
-                {!props.graduate && <EmptyEducationCard level="Graduate studies" />}
+
             </div>
         </div>
     );
@@ -193,27 +194,27 @@ const EmptyEducationCard = ({ level }: { level: string }) => {
                 </TextCenter>
             </div>
             <TextCenter className="text-center">
-                <div className={cn('font-bold')}></div>
+                <div className={cn('font-bold')}>N/A</div>
             </TextCenter>
             <TextCenter className="text-center">
-                <div className={cn('font-bold')}></div>
+                <div className={cn('font-bold')}>N/A</div>
             </TextCenter>
             <div className="grid grid-cols-2 divide-x-2 divide-black">
                 <TextCenter>
-                    <div className={cn('font-bold')}></div>
+                    <div className={cn('font-bold')}>N/A</div>
                 </TextCenter>
                 <TextCenter>
-                    <div className={cn('font-bold')}></div>
+                    <div className={cn('font-bold')}>N/A</div>
                 </TextCenter>
             </div>
             <TextCenter className="">
-                <div className={cn('font-bold')}></div>
+                <div className={cn('font-bold')}>N/A</div>
             </TextCenter>
             <TextCenter className="">
-                <div className={cn('font-bold')}></div>
+                <div className={cn('font-bold')}>N/A</div>
             </TextCenter>
             <TextCenter className="">
-                <div className={cn('font-bold')}></div>
+                <div className={cn('font-bold')}>N/A</div>
             </TextCenter>
         </div>
     );
