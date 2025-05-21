@@ -109,6 +109,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::controller(LeaveController::class)->middleware(['role:hr,principal'])->group(function () {
             Route::get('/leave', 'index')->name('myapproval.leave');
             Route::get('/leave/view/{leave}', 'view')->name('myapproval.leave.view');
+            Route::get('/get-user-leaves/{userId}', 'getusersLeaves')->name('leave.getUsersLeaves');
 
             Route::post('/leave/approval/{leave}', 'leaveApproval')->name('myapproval.leave.approval');
         });
@@ -136,6 +137,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::controller(ServiceRecordController::class)->middleware(['role:hr'])->group(function () {
             Route::get('/service-record', 'index')->name('myapproval.sr');
             Route::get('/service-record/view/{sr}', 'view')->name('myapproval.sr.view');
+            Route::get('/get-users-sr/{user}', 'getUsersServiceRecords')->name('myapproval.logs.getUsersServiceRecords');
 
             Route::post('/service-record/respond/{sr}', 'respond')->name('myapproval.sr.respond');
         });

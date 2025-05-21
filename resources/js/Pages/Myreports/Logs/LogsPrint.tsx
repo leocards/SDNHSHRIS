@@ -150,12 +150,22 @@ const LogsPrint: React.FC<Props> = ({
                                         <th className="w-12">No.</th>
                                         <th>Personnel</th>
                                         {type === "leave" && (
-                                            <th className="w-[9rem] text-center">Type of Leave</th>
+                                            <>
+                                                <th className="w-[9rem] text-center">Type of Leave</th>
+                                                <th className="w-10 text-center">
+                                                    Days Applied
+                                                </th>
+                                            </>
+                                        )}
+                                        {(type === "certificate" || type === 'coc') && (
+                                            <th className="w-10 text-center">
+                                                Credits
+                                            </th>
                                         )}
                                         <th className="w-28 text-center">
                                             Status
                                         </th>
-                                        <th className="w-[13.5rem] text-center">
+                                        <th className="w-[10rem] text-center">
                                             Date
                                         </th>
                                     </tr>
@@ -172,13 +182,23 @@ const LogsPrint: React.FC<Props> = ({
                                                 </td>
                                                 <td>{log.details.username}</td>
                                                 {type === "leave" && (
-                                                    <td className="text-center capitalize w-[9rem]">
-                                                        {
-                                                            LEAVETYPESOBJ[
-                                                                log.details
-                                                                    .type as LEAVETYPEKEYS
-                                                            ]
-                                                        }
+                                                    <>
+                                                        <td className="text-center capitalize w-[9rem]">
+                                                            {
+                                                                LEAVETYPESOBJ[
+                                                                    log.details
+                                                                        .type as LEAVETYPEKEYS
+                                                                ]
+                                                            }
+                                                        </td>
+                                                        <td className="text-center capitalize">
+                                                            {log.days}
+                                                        </td>
+                                                    </>
+                                                )}
+                                                {(type === "certificate" || type === 'coc') && (
+                                                    <td className="text-center capitalize">
+                                                        {log.credit}
                                                     </td>
                                                 )}
                                                 <td className="text-center capitalize">

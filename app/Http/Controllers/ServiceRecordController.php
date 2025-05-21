@@ -282,6 +282,13 @@ class ServiceRecordController extends Controller
         }
     }
 
+    public function getUsersServiceRecords(User $user)
+    {
+        $sr = $user->serviceRecord()->select('id', 'status', 'details->credits as credit')->where('status', '!=', 'pending')->latest()->get();
+
+        return response()->json($sr);
+    }
+
     function countWeekdays($startDate, $endDate, $session)
     {
         $timezone = "Asia/Manila";

@@ -23,25 +23,32 @@ class SalnReportController extends Controller
 
         if ($request->expectsJson()) {
             return response()->json(
-                SalnReport::with(['user' => function ($query) {
+                SalnReport::join('users', 'saln_reports.user_id', '=', 'users.id')->with(['user' => function ($query) {
                     $query->withoutGlobalScopes()
                         ->with('pdsPersonalInformation');
                 }])
-                ->where('year', $filter)->get()
+                ->where('year', $year?->first())
+                ->orderBy('users.lastname', 'asc')
+                ->select('saln_reports.*')
+                ->get()
             );
         }
 
         return Inertia::render('Myreports/SALN/SALN', [
             'principal' => User::where('role', 'principal')->first(),
-            'saln' => Inertia::defer(fn() => SalnReport::with(['user' => function ($query) {
-                $query->withoutGlobalScopes()
-                    ->with('pdsPersonalInformation');
-            }])->where('year', $year?->first())->get()),
+            'saln' => Inertia::defer(fn() => SalnReport::join('users', 'saln_reports.user_id', '=', 'users.id')->with(['user' => function ($query) {
+                    $query->withoutGlobalScopes()
+                        ->with('pdsPersonalInformation');
+                }])
+                ->where('year', $year?->first())
+                ->orderBy('users.lastname', 'asc')
+                ->select('saln_reports.*')
+                ->get()),
             'years' => $year
         ]);
     }
 
-    public function store(Request $request, SalnReport $saln = null)
+    public function store(Request $request, ?SalnReport $saln = null)
     {
         $request->validate([
             'networth' => ['required', 'regex:/^\d{1,3}(,\d{3})*(\.\d{1,2})?$/'],

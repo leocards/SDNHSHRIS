@@ -300,7 +300,7 @@ const Main: React.FC<Props> = ({ years, principal }) => {
 };
 
 type LogsListCardProps = {
-    children: (page: LOGSTYPE, column: string) => React.ReactNode;
+    children: (page: LOGSTYPE, column: string, userId?: number) => React.ReactNode;
     headers: string[];
     headerColumn: string[];
     buttonColumn: string;
@@ -335,7 +335,7 @@ const LogsListCard: React.FC<LogsListCardProps> = ({
                         </div>
                     ))}
                 </TableHeader>
-                {children(log, headerColumn.join(" "))}
+                {children(log, headerColumn.join(" "), log.id)}
             </AccordionContent>
         </AccordionItem>
     ));
@@ -351,8 +351,8 @@ const PDSData = ({
     return (
         <LogsListCard
             buttonColumn={buttonColumn}
-            headers={["Status", "Date", "View"]}
-            headerColumn={Array(3).fill("1fr")}
+            headers={["Status", "Date"]}
+            headerColumn={Array(2).fill("1fr")}
         >
             {(pdsLog, column) =>
                 pdsLog.logs?.map((log, index) => (
@@ -377,7 +377,7 @@ const PDSData = ({
                         <div className="justify-center">
                             {format(log.created_at, "MMMM dd, y")}
                         </div>
-                        <div className="justify-center">
+                        {/* <div className="justify-center">
                             <Button
                                 variant="outline"
                                 size="icon"
@@ -386,7 +386,7 @@ const PDSData = ({
                             >
                                 <Eye />
                             </Button>
-                        </div>
+                        </div> */}
                     </TableRow>
                 ))
             }
@@ -404,51 +404,78 @@ const LeaveData = ({
     return (
         <LogsListCard
             buttonColumn={buttonColumn}
-            headers={["Type of leave", "Status", "Date", "View"]}
+            headers={["Type of leave", "Status", "Date", "Days Applied"/* , "View" */]}
             headerColumn={Array(4).fill("1fr")}
         >
-            {(leaveLog, column) =>
-                leaveLog?.logs?.map((log, index) => (
-                    <TableRow
-                        key={index}
-                        style={{ gridTemplateColumns: column }}
-                        className="hover:bg-background"
-                    >
-                        <div className="justify-center">
-                            {LEAVETYPESOBJ[log.details.type as LEAVETYPEKEYS]}
-                        </div>
-                        <div className="capitalize justify-center">
-                            <TypographyStatus
-                                status={
-                                    log.status as
-                                        | "approved"
-                                        | "disapproved"
-                                        | "invalid"
-                                        | "pending"
-                                }
-                            >
-                                {log.status}
-                            </TypographyStatus>
-                        </div>
-                        <div className="justify-center">
-                            {format(log.created_at, "MMMM dd, y")}
-                        </div>
-                        <div className="justify-center">
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="size-7"
-                                onClick={() => onView?.(log.details.leaveid)}
-                            >
-                                <Eye />
-                            </Button>
-                        </div>
-                    </TableRow>
-                ))
+            {(leaveLog, column, userId) =>
+                <LeaveDataContents leaveLog={leaveLog} column={column} userId={userId}/>
             }
         </LogsListCard>
     );
 };
+
+const LeaveDataContents: React.FC<{
+    leaveLog: LOGSTYPE;
+    column: string;
+    userId?: number;
+}> = ({ leaveLog, column, userId }) => {
+
+    const [listOfLeaves, setListOfLeaves] = useState<any[]>([]);
+
+    const getLeaves = async (id: number) => {
+        let response = await window.axios.get(route('leave.getUsersLeaves', [id]))
+
+        setListOfLeaves(response.data);
+    }
+
+    useEffect(() => {
+        if(userId && listOfLeaves.length === 0)
+            getLeaves(userId)
+    }, [userId])
+
+    return (
+        leaveLog?.logs?.map((log, index) => (
+            <TableRow
+                key={index}
+                style={{ gridTemplateColumns: column }}
+                className="hover:bg-background"
+            >
+                <div className="justify-center">
+                    {LEAVETYPESOBJ[log.details.type as LEAVETYPEKEYS]}
+                </div>
+                <div className="capitalize justify-center">
+                    <TypographyStatus
+                        status={
+                            log.status as
+                                | "approved"
+                                | "disapproved"
+                                | "invalid"
+                                | "pending"
+                        }
+                    >
+                        {log.status}
+                    </TypographyStatus>
+                </div>
+                <div className="justify-center">
+                    {format(log.created_at, "MMMM dd, y")}
+                </div>
+                <div className="justify-center">
+                    {listOfLeaves?.find((leave) => (leave.id === log.details.leaveid))?.daysapplied??'Loading...'}
+                </div>
+            {/*  <div className="justify-center">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="size-7"
+                        onClick={() => onView?.(log.details.leaveid)}
+                    >
+                        <Eye />
+                    </Button>
+                </div> */}
+            </TableRow>
+        ))
+    )
+}
 
 const COCData = ({
     buttonColumn,
@@ -460,48 +487,74 @@ const COCData = ({
     return (
         <LogsListCard
             buttonColumn={buttonColumn}
-            headers={["Status", "Date", "View"]}
-            headerColumn={Array(3).fill("1fr")}
+            headers={["Status", "Date"/* , "View" */]}
+            headerColumn={Array(2).fill("1fr")}
         >
-            {(cdLog, column) =>
-                cdLog.logs?.map((log, index) => (
-                    <TableRow
-                        key={index}
-                        style={{ gridTemplateColumns: column }}
-                        className="hover:bg-background"
-                    >
-                        <div className="capitalize justify-center">
-                            <TypographyStatus
-                                status={
-                                    log.status as
-                                        | "approved"
-                                        | "disapproved"
-                                        | "invalid"
-                                        | "pending"
-                                }
-                            >
-                                {log.status}
-                            </TypographyStatus>
-                        </div>
-                        <div className="justify-center">
-                            {format(log.created_at, "MMMM dd, y")}
-                        </div>
-                        <div className="justify-center">
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="size-7"
-                                onClick={() => onView?.(log.details.cocid)}
-                            >
-                                <Eye />
-                            </Button>
-                        </div>
-                    </TableRow>
-                ))
+            {(cdLog, column, userId) =>
+                <COCContents  cdLog={cdLog} column={column} userId={userId} />
             }
         </LogsListCard>
     );
 };
+
+const COCContents: React.FC<{
+    cdLog: LOGSTYPE;
+    column: string;
+    userId?: number;
+}> = ({ cdLog, column, userId }) => {
+    const [listOfCertificate, setListOfCertificate] = useState<any[]>([]);
+
+    const getCertificates = async (id: number) => {
+        let response = await window.axios.get(route('myapproval.logs.getUsersServiceRecords', [id]))
+
+        setListOfCertificate(response.data);
+    }
+
+    useEffect(() => {
+        if(userId && listOfCertificate.length === 0)
+            getCertificates(userId)
+    }, [userId])
+
+    return (
+       cdLog.logs?.map((log, index) => (
+            <TableRow
+                key={index}
+                style={{ gridTemplateColumns: column }}
+                className="hover:bg-background"
+            >
+                <div className="capitalize justify-center">
+                    <TypographyStatus
+                        status={
+                            log.status as
+                                | "approved"
+                                | "disapproved"
+                                | "invalid"
+                                | "pending"
+                        }
+                    >
+                        {log.status}
+                    </TypographyStatus>
+                </div>
+                <div className="justify-center">
+                    {format(log.created_at, "MMMM dd, y")}
+                </div>
+                <div className="justify-center">
+                    {listOfCertificate?.find((sr) => sr.id == log.details.cocid)?.credit ?? 'Loading...'}
+                </div>
+                {/* <div className="justify-center">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="size-7"
+                        onClick={() => onView?.(log.details.cocid)}
+                    >
+                        <Eye />
+                    </Button>
+                </div> */}
+            </TableRow>
+        ))
+    )
+}
 
 const CertificateData = ({
     buttonColumn,
@@ -513,46 +566,11 @@ const CertificateData = ({
     return (
         <LogsListCard
             buttonColumn={buttonColumn}
-            headers={["Status", "Date", "View"]}
+            headers={["Status", "Date", "Credits"/* , "View" */]}
             headerColumn={Array(3).fill("1fr")}
         >
-            {(cdLog, column) =>
-                cdLog.logs?.map((log, index) => (
-                    <TableRow
-                        key={index}
-                        style={{ gridTemplateColumns: column }}
-                        className="hover:bg-background"
-                    >
-                        <div className="capitalize justify-center">
-                            <TypographyStatus
-                                status={
-                                    log.status as
-                                        | "approved"
-                                        | "disapproved"
-                                        | "invalid"
-                                        | "pending"
-                                }
-                            >
-                                {log.status}
-                            </TypographyStatus>
-                        </div>
-                        <div className="justify-center">
-                            {format(log.created_at, "MMMM dd, y")}
-                        </div>
-                        <div className="justify-center">
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="size-7"
-                                onClick={() =>
-                                    onView?.(log.details.certificateid)
-                                }
-                            >
-                                <Eye />
-                            </Button>
-                        </div>
-                    </TableRow>
-                ))
+            {(cdLog, column, userId) =>
+                <CertificateContents cdLog={cdLog} column={column} userId={userId} />
             }
         </LogsListCard>
     );
@@ -589,5 +607,66 @@ const CertificateData = ({
     //     </TableRow>
     // ));
 };
+
+const CertificateContents: React.FC<{
+    cdLog: LOGSTYPE;
+    column: string;
+    userId?: number;
+}> = ({ cdLog, column, userId }) => {
+    const [listOfCertificate, setListOfCertificate] = useState<any[]>([]);
+
+    const getCertificates = async (id: number) => {
+        let response = await window.axios.get(route('myapproval.logs.getUsersServiceRecords', [id]))
+
+        setListOfCertificate(response.data);
+    }
+
+    useEffect(() => {
+        if(userId && listOfCertificate.length === 0)
+            getCertificates(userId)
+    }, [userId])
+
+    return (
+        cdLog.logs?.map((log, index) => (
+            <TableRow
+                key={index}
+                style={{ gridTemplateColumns: column }}
+                className="hover:bg-background"
+            >
+                <div className="capitalize justify-center">
+                    <TypographyStatus
+                        status={
+                            log.status as
+                                | "approved"
+                                | "disapproved"
+                                | "invalid"
+                                | "pending"
+                        }
+                    >
+                        {log.status}
+                    </TypographyStatus>
+                </div>
+                <div className="justify-center">
+                    {format(log.created_at, "MMMM dd, y")}
+                </div>
+                <div className="justify-center">
+                    {listOfCertificate?.find((sr) => sr.id == log.details.certificateid)?.credit ?? 'Loading...'}
+                </div>
+                {/* <div className="justify-center">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="size-7"
+                        onClick={() =>
+                            onView?.(log.details.certificateid)
+                        }
+                    >
+                        <Eye />
+                    </Button>
+                </div> */}
+            </TableRow>
+        ))
+    )
+}
 
 export default Logs;

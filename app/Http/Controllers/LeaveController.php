@@ -285,6 +285,13 @@ class LeaveController extends Controller
         ]);
     }
 
+    public function getusersLeaves(User $userId)
+    {
+        $leaves = $userId->leave()->select('id', 'daysapplied')->get();
+
+        return response()->json($leaves);
+    }
+
     public function leaveApproval(Request $request, Leave $leave)
     {
         $request->validate([

@@ -59,7 +59,7 @@ const Card: React.FC<{asof:string; personal?: {
         >
             <div>{personal? personal.description : "N/A"}</div>
             <div>{personal? personal.yearacquired + ('-' + format(asof, 'y')) : "N/A"}</div>
-            <div>{personal? !isNaN(parseFloat(personal.acquisitioncost)) ? "P " + Number(personal.acquisitioncost).toLocaleString() : "N/A" : "N/A"}</div>
+            <div>{personal? !isNaN(parseFloat(personal.acquisitioncost)) ? "₱ " + Number(personal.acquisitioncost).toLocaleString() : "N/A" : "N/A"}</div>
         </div>
     );
 }

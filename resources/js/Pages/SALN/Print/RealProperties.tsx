@@ -103,7 +103,7 @@ const Card: React.FC<{
             <div>
                 {real
                     ? !isNaN(parseFloat(real.acquisitioncost))
-                        ? "P " + Number(real.acquisitioncost).toLocaleString()
+                        ? "₱ " + Number(real.acquisitioncost).toLocaleString()
                         : "N/A"
                     : "N/A"}
             </div>

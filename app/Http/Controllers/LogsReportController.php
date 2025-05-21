@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Leave;
 use App\Models\LogsReport;
 use App\Models\ServiceRecord;
 use App\Models\User;
@@ -79,8 +80,23 @@ class LogsReportController extends Controller
                 $query->whereYear('created_at', $filterYear);
             })
             ->latest()
-            ->get()
-            ->unique('user_id')->values();
+            ->get();
+
+        if($type === "leave") {
+            $logs = $logs->map(function ($log) {
+                $log['days'] = Leave::find($log->details['leaveid'])?->daysapplied;
+
+                return $log;
+            });
+        }
+
+        if($type === "certificate" || $type === "coc") {
+            $logs = $logs->map(function ($log) use ($type) {
+                $log['credit'] = ServiceRecord::find($type == "certificate" ? $log->details['certificateid'] : $log->details['cocid'])?->details['credits'];
+
+                return $log;
+            });
+        }
 
         return response()->json($logs);
     }
