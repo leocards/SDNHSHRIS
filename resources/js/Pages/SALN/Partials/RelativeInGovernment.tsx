@@ -92,7 +92,7 @@ const RelativeInGovernment: React.FC<{ form: any }> = ({ form }) => {
                         }
                     >
                         <Add className="" />
-                        <span>New row</span>
+                        <span>Add Relative</span>
                     </Button>
                 </div>
             </div>

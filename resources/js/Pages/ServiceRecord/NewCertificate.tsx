@@ -10,6 +10,7 @@ import {
     Form,
     FormCalendar,
     FormInput,
+    FormLabel,
     FormSelect,
 } from "@/Components/ui/form";
 import { Button } from "@/Components/ui/button";
@@ -166,7 +167,7 @@ const NewCertificate: React.FC<Props> = ({ show, onClose }) => {
             show={show}
             onClose={onClose}
             maxWidth="3xl"
-            title="Upload Certificate"
+            title="Apply Service Records"
         >
             <Form {...form}>
                 <form onSubmit={form.onSubmit}>
@@ -189,7 +190,7 @@ const NewCertificate: React.FC<Props> = ({ show, onClose }) => {
                             onClick={() => append(defaultSR)}
                         >
                             <Add className="" />
-                            <span>New row</span>
+                            <span>New Service Record</span>
                         </Button>
                     </div>
 
@@ -324,7 +325,8 @@ const ServiceRecordCard: React.FC<ServiceRecordCardProps> = ({
                 />
             </div>
 
-            <div className="size-full pt-2">
+            <div className="size-full">
+                <FormLabel className="required">Add Attach</FormLabel>
                 <FilePondUploader
                     route={route("sr.temporary")}
                     mimetypes={allowedMimeTypes}

@@ -58,7 +58,6 @@ const PersonalInformationForm: React.FC<{
                 isSameResidential: address?.same ?? false
             };
         } else {
-
             return {
                 pdspi_id: address?.pdspi_id ?? null,
                 province: address?.province ?? "",

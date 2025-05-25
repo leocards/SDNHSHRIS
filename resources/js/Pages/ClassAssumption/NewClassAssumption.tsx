@@ -313,7 +313,7 @@ const NewClassAssumption = ({
                                     })
                                 }
                             >
-                                <Add /> Add row
+                                <Add /> Add Teacher
                             </Button>
                         </div>
 

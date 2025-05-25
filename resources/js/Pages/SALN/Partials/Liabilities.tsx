@@ -69,7 +69,7 @@ const Liabilities: React.FC<{ form: any }> = ({ form }) => {
                     }
                 >
                     <Add className="" />
-                    <span>New row</span>
+                    <span>Add Liabilities</span>
                 </Button>
             </div>
         </div>

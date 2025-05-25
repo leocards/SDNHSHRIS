@@ -20,6 +20,7 @@ import { Edit, Eye } from "iconsax-react";
 import useWindowSize from "@/Hooks/useWindowResize";
 import { useSidebar } from "@/Components/ui/sidebar";
 import { cn } from "@/Lib/utils";
+import { Plus } from "lucide-react";
 
 const SALN: React.FC<{ saln: PAGINATEDDATA<SALNTYPE> }> = (props) => {
     return (
@@ -80,7 +81,8 @@ const Main = () => {
                         );
                     }}
                 >
-                    Add SALN
+                    <Plus />
+                    Apply
                 </Button>
             </Tabs>
 

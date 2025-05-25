@@ -23,6 +23,7 @@ import { usePage } from "@inertiajs/react";
 import { FilterButton, FilterItem } from "@/Components/ui/menubar";
 import useWindowSize from "@/Hooks/useWindowResize";
 import { useSidebar } from "@/Components/ui/sidebar";
+import { Plus } from "lucide-react";
 
 export type CERTIFICATEAPPROVALTYPE = "pending" | "approved" | "invalid";
 
@@ -133,16 +134,16 @@ const Main = () => {
                     </FilterButton>}
 
                     {(role === "non-teaching" || role === "principal") && <Button onClick={() => setNewcoc(true)}>
-                        <DocumentUpload />
-                        <span>COC</span>
+                        <Plus />
+                        <span>Apply COC</span>
                     </Button>}
 
                     <Button
                         className="ml-4"
                         onClick={() => setNewCertificate(true)}
                     >
-                        <DocumentUpload />
-                        <span>Certificate</span>
+                        <Plus />
+                        <span>Apply</span>
                     </Button>
                 </div>
             </Tabs>

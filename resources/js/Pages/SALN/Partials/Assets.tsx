@@ -153,7 +153,7 @@ const Assets = ({ form }: Props) => {
                     }
                 >
                     <Add className="" />
-                    <span>New row</span>
+                    <span>Add Real Properties</span>
                 </Button>
             </div>
 
@@ -222,7 +222,7 @@ const Assets = ({ form }: Props) => {
                     }
                 >
                     <Add className="" />
-                    <span>New row</span>
+                    <span>Personal Properties</span>
                 </Button>
             </div>
         </div>

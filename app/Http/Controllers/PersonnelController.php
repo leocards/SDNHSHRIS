@@ -6,6 +6,7 @@ use App\DateParserTrait;
 use App\Http\Requests\PersonnelRequest;
 use App\Mail\EmailNotification;
 use App\Models\Leave;
+use App\Models\PdsAddress;
 use App\Models\PersonalDataSheet;
 use App\Models\Tardiness;
 use App\Models\User;
@@ -113,10 +114,56 @@ class PersonnelController extends Controller
                     ));
             }
 
-            if (!$personnelid)
+            if (!$personnelid) {
                 PersonalDataSheet::create([
                     'user_id' => $personnel->id
                 ]);
+
+                $data = $this->getDefaultPDS();
+                $pi = $data['pi'];
+                $fb = $data['fb'];
+                $eb = $data['eb'];
+                $oi = $data['otherinformation'];
+                $pdsc4 = $data['pdsc4'];
+
+                $pdspi = $personnel->pdsPersonalInformation()->create($pi->except(['residentialaddress', 'permanentaddress'])->toArray());
+
+                $pdspi->addresses()->createMany($pi['addresses']);
+
+                $personnel->pdsFamilyBackground()->createMany([
+                    ["type" => "spouse", "details" => $fb['spouse']],
+                    ["type" => "father", "details" => $fb['father']],
+                    ["type" => "mother", "details" => $fb['mother']],
+                    ["type" => "child", "details" => $fb['children']]
+                ]);
+
+                $personnel->pdsEducationalBackground()->createMany([
+                    ["type" => "elementary","details" => $eb['elementary']],
+                    ["type" => "secondary","details" => $eb['secondary']],
+                    ["type" => "senior","details" => $eb['senior']],
+                    ["type" => "vocational","details" => $eb['vocational']],
+                    ["type" => "college","details" => $eb['college']],
+                    ["type" => "graduate","details" => $eb['graduatestudies']]
+                ]);
+
+                $personnel->pdsOtherInformation()->createMany([
+                    ['type' => 'skills', 'details' => $oi['skills']],
+                    ['type' => 'recognition', 'details' => $oi['recognition']],
+                    ['type' => 'association', 'details' => $oi['association']]
+                ]);
+
+                $personnel->pdsC4()->createMany([
+                    ['type' => "34", 'details' => $pdsc4['34']],
+                    ['type' => "35", 'details' => $pdsc4['35']],
+                    ['type' => "36", 'details' => $pdsc4['36']],
+                    ['type' => "37", 'details' => $pdsc4['37']],
+                    ['type' => "38", 'details' => $pdsc4['38']],
+                    ['type' => "39", 'details' => $pdsc4['39']],
+                    ['type' => "40", 'details' => $pdsc4['40']],
+                    ['type' => "41", 'details' => $pdsc4['41']],
+                    ['type' => "governmentId", 'details' => $pdsc4['governmentId']]
+                ]);
+            }
 
             DB::commit();
 
@@ -130,7 +177,7 @@ class PersonnelController extends Controller
 
             return back()->with([
                 'title' => 'Process failed!',
-                'message' => 'Unable to ' . (!$personnelid ? 'add' : 'update') . ' personnel.',
+                'message' => $th->getMessage().'Unable to ' . (!$personnelid ? 'add' : 'update') . ' personnel.',
                 'status' => 'error'
             ]);
         }
@@ -253,5 +300,175 @@ class PersonnelController extends Controller
             'applicant' => $leave->userWithoutScopes()->first()->only(['name', 'full_name', 'role']),
             'principal' => User::where('role', 'principal')->first()?->only(['name', 'full_name', 'position'])
         ]));
+    }
+
+    function getDefaultPDS()
+    {
+        $address = collect([
+            "pdspi_id" => null,
+            "province" => "",
+            "citymunicipality" => "",
+            "barangay" => "",
+            "subdivision" => "",
+            "street" => "",
+            "houselotblockno" => "",
+            "zipcode" => "",
+            "same" => false
+        ]);
+
+        return collect([
+            "pi" => collect([
+                'placeofbirth' => '',
+                'height' => '',
+                'weight' => '',
+                'bloodtype' => null,
+                'civilstatus' => [
+                    'status' => 'undefined',
+                    'others' => '',
+                ],
+                'gsis' => '',
+                'pagibig' => '',
+                'philhealth' => '',
+                'sss' => '',
+                'tin' => '',
+                'agencyemployee' => '',
+                'citizenship' => [
+                    'citizen' => null,
+                    'dual' => [
+                        'by' => null,
+                        'country' => '',
+                    ],
+                ],
+                'telephone' => '',
+                'mobile' => '',
+                'email' => '',
+                'addresses' => collect([
+                    ['type' => 'residential', ...$address],
+                    ['type' => 'permanent', ...$address]
+                ]),
+            ]),
+            "fb" => collect([
+                'spouse' => [
+                    'familyname' => '',
+                    'firstname' => '',
+                    'middlename' => '',
+                    'extensionname' => '',
+                    'occupation' => '',
+                    'employerbusiness' => '',
+                    'businessaddress' => '',
+                    'telephone' => '',
+                ],
+                'father' => [
+                    'familyname' => '',
+                    'firstname' => '',
+                    'middlename' => '',
+                    'extensionname' => '',
+                ],
+                'mother' => [
+                    'familyname' => '',
+                    'firstname' => '',
+                    'middlename' => '',
+                ],
+                'children' => [],
+            ]),
+            "eb" => collect([
+                "elementary" => [],
+                "secondary" => [],
+                "senior" => [],
+                "vocational" => [],
+                "college" => [],
+                "graduatestudies" => []
+            ]),
+            // cs skip
+            // vw skip
+            // ld skip
+            // we skip
+            "otherinformation" => collect([
+                "skills" => [],
+                "recognition" => [],
+                "association" => [],
+            ]),
+
+            "pdsc4" => collect([
+                "34" => [
+                    "choicea" => [
+                        "choices" => null,
+                    ],
+                    "choiceb" => [
+                        "choices" => null,
+                        "details" => "",
+                    ],
+                ],
+                "35" => [
+                    "choicea" => [
+                        "choices" => null,
+                        "details" => "",
+                    ],
+                    "choiceb" => [
+                        "choices" => null,
+                        "datefiled" => null,
+                        "statusofcase" => "",
+                    ],
+                ],
+                "36" => [
+                    "choices" => null,
+                    "details" => "",
+                ],
+                "37" => [
+                    "choices" => null,
+                    "details" => "",
+                ],
+                "38" => [
+                    "choicea" => [
+                        "choices" => null,
+                        "details" => "",
+                    ],
+                    "choiceb" => [
+                        "choices" => null,
+                        "details" => "",
+                    ],
+                ],
+                "39" => [
+                    "choices" => null,
+                    "details" => "",
+                ],
+                "40" => [
+                    "choicea" => [
+                        "choices" => null,
+                        "details" => "",
+                    ],
+                    "choiceb" => [
+                        "choices" => null,
+                        "details" => "",
+                    ],
+                    "choicec" => [
+                        "choices" => null,
+                        "details" => "",
+                    ],
+                ],
+                "41" => collect([
+                    [
+                        'name' => '',
+                        'address' => '',
+                        'telno' => '',
+                    ],
+                    [
+                        'name' => '',
+                        'address' => '',
+                        'telno' => '',
+                    ],
+                    [
+                        'name' => '',
+                        'address' => '',
+                        'telno' => '',
+                    ],
+                ]), // assuming this is a function that returns a value
+                "governmentId" => [
+                    "governmentissuedid" => "",
+                    "licensepassportid" => "",
+                    "issued" => "",
+                ],
+            ])
+        ]);
     }
 }

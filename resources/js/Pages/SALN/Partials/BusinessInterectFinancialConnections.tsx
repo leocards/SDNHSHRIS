@@ -103,7 +103,7 @@ const BusinessInterectFinancialConnections: React.FC<{ form: any }> = ({
                         }
                     >
                         <Add className="" />
-                        <span>New row</span>
+                        <span>Add data</span>
                     </Button>
                 </div>
             </div>

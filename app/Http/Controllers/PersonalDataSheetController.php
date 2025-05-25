@@ -48,7 +48,14 @@ class PersonalDataSheetController extends Controller
                         $query->withoutGlobalScopes();
                     });
                 })
-                ->whereNotNull('file')
+                ->where(function ($query) {
+                    $query->whereNotNull('file')
+                        ->orWhereHas('user.pdsFamilyBackground')
+                        ->orWhereHas('user.pdsEducationalBackground')
+                        ->orWhereHas('user.pdsOtherInformation')
+                        ->orWhereHas('user.pdsPersonalInformation')
+                        ->orWhereHas('user.pdsC4');
+                })
                 ->where(function ($query) use ($search) {
                     $query->whereHas('user', function ($query) use ($search) {
                         $query
@@ -178,7 +185,7 @@ class PersonalDataSheetController extends Controller
 
         $pi = PdsPersonalInformation::where('user_id', $user->id)->first();
 
-        if($pi) {
+        if ($pi) {
             $pi->residential = $pi?->addresses->where('type', 'residential')->first();
             $pi->permanent = $pi?->addresses->where('type', 'permanent')->first();
         }
@@ -308,7 +315,7 @@ class PersonalDataSheetController extends Controller
         DB::beginTransaction();
         try {
 
-            if($user->pdsExcel->file)
+            if ($user->pdsExcel->file)
                 throw new Exception("User already has an uploaded PDS excel.");
 
             $path = $request->file('file')->store('public/PDSfiles');
@@ -934,8 +941,9 @@ class PersonalDataSheetController extends Controller
         ]);
     }
 
-    function getDigitsOrNA($string) {
-        if(!$string) return 'N/A';
+    function getDigitsOrNA($string)
+    {
+        if (!$string) return 'N/A';
 
         $digits = preg_replace('/[^0-9]/', '', $string);
         return empty($digits) ? 'N/A' : $digits;

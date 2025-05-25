@@ -61,10 +61,10 @@ const HeaderNavigationBar: React.FC<Props> = ({}) => {
 
                                 <div className="text-left max-lg:hidden min-w-20">
                                     <div className="line-clamp-1">
-                                        {user?.firstname} {user?.lastname}
+                                        {user?.role === 'hr' ? 'SDNHS' : `${user?.firstname} ${user?.lastname}`}
                                     </div>
                                     <div className="text-[11px] leading-3 mb-px">
-                                        SDNHS-{user?.position??"HR"}
+                                        {user?.role === 'hr' ? 'HUMAN RESOURCE' : `SDNHS-${user?.position}`}
                                     </div>
                                 </div>
 

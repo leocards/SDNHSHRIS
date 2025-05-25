@@ -99,7 +99,7 @@ const Children = ({ form }: Props) => {
                     onClick={() => append({ name: "", dateofbirth: "", age: "" })}
                 >
                     <Add className="" />
-                    <span>New row</span>
+                    <span>Add Child</span>
                 </Button>
             </div>
         </div>

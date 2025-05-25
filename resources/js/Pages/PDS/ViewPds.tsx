@@ -2,7 +2,7 @@ import Modal, { ModalProps } from "@/Components/Modal";
 import { Button } from "@/Components/ui/button";
 import { X } from "lucide-react";
 import PDSPDF from "./PDF/PDSPDF";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { PDSTABSTYPE } from "@/Types/types";
 import { TooltipLabel } from "@/Components/ui/tooltip";
@@ -56,6 +56,12 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
         );
     };
 
+    useEffect(() => {
+        if(show) {
+            setTab('C1')
+        }
+    }, [show])
+
     return (
         <Modal show={show} onClose={onClose} maxWidth="5xl" closeable={false}>
             <div className="flex items-center">
@@ -71,6 +77,7 @@ const ViewPds: React.FC<Props> = ({ userid, show, onClose }) => {
 
             <div className="flex items-center gap-4 mx-auto w-fit">
                 <Tabs
+                    value={tab}
                     defaultValue={tab}
                     className="overflow-hidden rounded-md grow flex flex-col my-5"
                     onValueChange={(value) => setTab(value as PDSTABSTYPE)}

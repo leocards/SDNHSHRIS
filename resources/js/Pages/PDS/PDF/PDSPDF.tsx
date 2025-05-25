@@ -61,12 +61,13 @@ export type PDSPDFDATATYPES = {
 type PDSPDFProps = {
     userid: number | null;
     tab: PDSTABSTYPE;
+    isDownLoad?: boolean;
     onStatus?: (status: APPROVALTYPE) => void;
     onLoad?: (load: boolean) => void;
     onEmpty?: (empty: boolean) => void;
 };
 
-const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
+const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>(({isDownLoad = true, ...props}, ref) => {
     const [loading, setLoading] = useState(false);
     const [emptyData, setEmptyData] = useState(false);
     const [data, setData] = useState<PDSPDFDATATYPES>();
@@ -139,7 +140,7 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
 
                                 <div>
                                     <PDSPDFIsDownloadProvider
-                                        initialValue={true}
+                                        initialValue={isDownLoad}
                                     >
                                         <Pages
                                             ref={ref}
@@ -184,7 +185,7 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
 
                                 <div>
                                     <PDSPDFIsDownloadProvider
-                                        initialValue={true}
+                                        initialValue={isDownLoad}
                                     >
                                         <Pages ref={ref} pageNumber={2}>
                                             <C2
@@ -221,7 +222,7 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
 
                                 <div>
                                     <PDSPDFIsDownloadProvider
-                                        initialValue={true}
+                                        initialValue={isDownLoad}
                                     >
                                         <Pages ref={ref} pageNumber={3}>
                                             <C3
@@ -253,7 +254,7 @@ const PDSPDF = forwardRef<HTMLDivElement, PDSPDFProps>((props, ref) => {
 
                                 <div>
                                     <PDSPDFIsDownloadProvider
-                                        initialValue={true}
+                                        initialValue={isDownLoad}
                                     >
                                         <Pages ref={ref} pageNumber={4}>
                                             <C4 c4Data={data?.c4} />

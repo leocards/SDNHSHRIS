@@ -29,6 +29,7 @@ import { usePage } from "@inertiajs/react";
 import PDSPDF from "./PDF/PDSPDF";
 import { PDSTABSTYPE } from "@/Types/types";
 import { Margin, usePDF } from "react-to-pdf";
+import { Printer } from "lucide-react";
 
 type PersonalDataSheetProps = {
     status: APPROVALTYPE;
@@ -88,9 +89,9 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                                         download_pdf.toPDF();
                                 }}
                             >
-                                <DocumentDownload />
+                                <Printer />
                                 <span className="max-lg:hidden">
-                                    {isLoading ? "Loading" : "Download"}
+                                    {isLoading ? "Loading" : "Print"}
                                 </span>
                             </Button>
                         </div>
@@ -106,7 +107,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                         >
                             {props.status}
                         </TypographySmall>
-                        <Button
+                        {/* <Button
                             onClick={() => {
                                 if (!!!props.hasImport) setShowImport(true);
                             }}
@@ -120,7 +121,7 @@ const PersonalDataSheet: React.FC<PersonalDataSheetProps> = (props) => {
                                     <span>Import</span>
                                 </>
                             )}
-                        </Button>
+                        </Button> */}
                     </div>
                 </div>
                 <TabsContent value="C1">
