@@ -73,7 +73,7 @@ function Dashboard({
             <Head title="Dashboard" />
 
             <div className="leading-tight">
-                <Header>Welcome, {`${user.firstname} ${user.lastname}`}</Header>
+                <Header>Welcome, {user.role === 'hr' ? 'HR OFFICER' : `${user.firstname} ${user.lastname}`}</Header>
                 <div className="text-sm font-medium">{dateTime.date}</div>
                 <div className="text-sm font-medium">{dateTime.time}</div>
             </div>

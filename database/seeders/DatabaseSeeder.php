@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::createQuietly([
-            'firstname' => 'Floramie',
-            'lastname' => 'Lopez',
+            'firstname' => 'Huram Resource',
+            'lastname' => 'SDNHS',
             'birthday' => '2000-02-23',
             'gender' => 'female',
             'personnelid' => 'SDNHS-123',
