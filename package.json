@@ -4,7 +4,8 @@
     "scripts": {
         "build": "tsc && vite build",
         "dev": "vite",
-        "start:all": "concurrently \"php artisan serve\" \"php artisan reverb:start\" \"php artisan queue:work\" \"php artisan schedule:work\" \"npm run dev\""
+        "start:all": "concurrently \"php artisan serve\" \"php artisan reverb:start\" \"php artisan queue:work\" \"php artisan schedule:work\" \"npm run dev\"",
+        "start-artisan": "concurrently \"php artisan reverb:start\" \"php artisan queue:work\" \"php artisan schedule:work\""
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",
