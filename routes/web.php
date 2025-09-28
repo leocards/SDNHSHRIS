@@ -77,7 +77,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::post('/school-year', [SchoolYearController::class, 'store'])->middleware(['role:hr'])->name('school-year.store');
-    Route::put('/school-year-update/{schoolYear}', [SchoolYearController::class, 'update'])->middleware(['role:hr'])->name('school-year.update');
+    Route::post('/school-year-update/{schoolYear}', [SchoolYearController::class, 'update'])->middleware(['role:hr'])->name('school-year.update');
 
     Route::prefix('personnel')->group(function () {
         Route::controller(PersonnelController::class)->group(function () {
