@@ -26,7 +26,7 @@ FRESH SYSTEM
 
 - php artisan serve --host=ip_address
     - (change the ip_address with the ip address of the computer, to make the system available to all computers connected to the same wifi)
-    - OR you can just double click the system.bat (a file named 'system' inside the root directory next to README)
+    - OR you can just double click the system.bat (a file named 'system' inside the root directory)
 
 - npm run start-artisan
 
