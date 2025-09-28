@@ -33,5 +33,22 @@ FRESH SYSTEM
 - npm run start-artisan
 
 
+USING OWN GMAIL FOR THE SYSTEM
+- go to manage your google account
+- search 'app password'
+- select App Passwords
+- enter your password
+- type the app name that you want, in our case SDNHS-HRIS, then click create
+- a password will display, copy it and paste it on MAIL_PASSWORD of your .env
+
+put this in your .env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your email
+MAIL_PASSWORD=the password you copy
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="your email"
+MAIL_FROM_NAME="${APP_NAME}"
 
 
