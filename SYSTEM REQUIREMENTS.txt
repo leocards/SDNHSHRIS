@@ -24,7 +24,10 @@ FRESH SYSTEM
 - php artisan storage:link
 
 - npm run build
-  - run this command only once. (This will compile all the front-end codes for optimization)
+  - run this command only once if no changes in front-end code. (This will compile all the front-end codes for optimization)
+
+NOTE: comment the "resources/js/Pages/{$page['component']}.tsx" in your resources>views>app.blade.php.
+      - uncomment only if you run npm run dev
 
 - php artisan serve --host=ip_address
     - (change the ip_address with the ip address of the computer, to make the system available to all computers connected to the same wifi)
