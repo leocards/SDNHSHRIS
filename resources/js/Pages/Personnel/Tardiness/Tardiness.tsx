@@ -64,7 +64,7 @@ const Main: React.FC<TardinessProps> = ({ schoolyears }) => {
         id: number;
         label: string;
     }>({
-        id: schoolyears[0].id,
+        id: schoolyears[0]?.id,
         label: schoolyears[0].schoolyear,
     });
     const [filterMonth, setFilterMonth] = useState(format(new Date(), "MMMM"));
