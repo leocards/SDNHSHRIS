@@ -19,6 +19,8 @@ FRESH SYSTEM
       email: sdnhs.lopez.floramie@gmail.com
       password: 12345678
 
+- php artisan key:generate
+
 - php artisan storage:link
 
 - npm run build
